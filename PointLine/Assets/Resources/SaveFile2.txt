@@ -1,0 +1,11 @@
+Point,-2.657938,1.039359,0,0,False,True
+Point,-0.4822621,-0.7635006,0,1,False,True
+Circle,0,2.095535,2000,True
+Module,5,1,2000,0,3000,True
+Point,-1.035314,3.352574,0,2,False,True
+Module,5,2,2000,0,3001,True
+Point,-4.834516,-0.7624114,0,3,False,True
+Module,5,3,2000,0,3002,True
+Line,2,3,1000,True
+Line,3,1,1001,True
+Line,1,2,1002,True

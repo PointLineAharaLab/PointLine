@@ -1,0 +1,8 @@
+Point,2.445845,-2.048452,0,0,True,True
+Point,1.396298,-1.130555,0,1,False,True
+Point,-2.647421,2.29133,0,2,True,True
+Line,2,0,1000,True
+Line,0,1,1001,True
+Line,1,2,1002,True
+Module,7,1000,1001,0,3000,True
+Module,7,1001,1002,0,3001,True

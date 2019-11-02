@@ -1,0 +1,1265 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class ClickOnPanel : AppMgr //MonoBehaviour
+{
+    static int PointId=0;
+    static int LineId=1000;
+    static int CircleId=2000;
+    static int ModuleId=3000;
+
+    public int DraggedPointId=0;
+    private Vector3 MouseDownVec=Vector3.zero;
+    private Vector3 MouseUpVec = Vector3.zero;
+
+    private int FirstClickId=-1;
+    private Vector3 FirstClickVec = Vector3.zero;
+    private int SecondClickId=-1;
+
+    string FirstKey="";
+
+    public GameObject MainCamera;
+    public GameObject PreferenceDialog;
+
+    public static float WorldHeight;
+
+    // Use this for initialization
+    void Start()
+    {
+        SetId(0, 1000, 2000, 3000);
+        FirstKey = "";
+        Util.InitLog();
+        WorldHeight = MainCamera.GetComponent<Camera>().orthographicSize;
+        //Debug.Log(WorldHeight);
+        Util.LogLeft = (WorldHeight / Screen.height * Screen.width)-1.5f;
+        Util.IsometryColor = new Color[10];
+        Util.IsometrySelectedColor = new Color[10];
+        for(int i=0; i<10; i++)
+        {
+            float vx = ColorCode[3 * i];
+            float vy = ColorCode[3 * i + 1];
+            float vz = ColorCode[3 * i + 2];
+            Util.IsometryColor[i] = new Color((vx + 1f) * 0.5f, (vy + 1f) * 0.5f, (vz + 1f) * 0.5f);
+            Util.IsometrySelectedColor[i] = new Color(vx, vy, vz);
+        }
+    }
+
+    private readonly float[] ColorCode = new float[]{ 
+        0.7f, 0.7f, 0.0f,
+        0.0f, 0.7f, 0.7f, 
+        0.7f, 0.0f, 0.7f,
+        0.8f, 0.4f, 0.0f,
+        0.0f, 0.8f, 0.4f,
+        0.0f, 0.0f, 0.8f,
+        0.4f, 0.0f, 0.0f,
+        0.4f, 0.8f, 0.0f,
+        0.0f, 0.4f, 0.8f,
+        0.8f, 0.0f, 0.4f,
+    };
+
+    void Update()
+    {
+        if (AppMgr.KeyOn)
+        {
+            OnKey();
+        }
+        Util.SetGameLogPosition();
+        if (Input.GetMouseButtonDown(0)){
+            OnMouseDown();
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            OnMouseDrag();
+        }
+        //else if (Input.GetMouseButtonUp(0))
+        //{
+        //    print("mousebuttonup 0");
+        //}
+        Util.SetIsometry();
+    }
+
+    public static void SetId(int PId, int LId, int CId, int MId)
+    {
+        PointId = PId;
+        LineId = LId;
+        CircleId = CId;
+        ModuleId = MId;
+    }
+
+    private float Hypot(float x, float y)
+    {
+        return Mathf.Sqrt(x * x + y * y);
+    }
+
+    private int MouseOnPoints(Vector3 v)
+    {
+        if (pts == null) return -1;
+        for (int i = 0; i < pts.Length; i++)
+        {
+            double dist = Hypot(v.x - pts[i].Vec.x, v.y - pts[i].Vec.y);
+            //Debug.Log("dist - " + dist);
+            if (dist < 0.25)
+            {
+                return pts[i].Id;
+            }
+        }
+        return -1;
+    }
+
+    private int MouseOnLines(Vector3 v)
+    {
+        if (lns == null) return -1;
+        for (int i = 0; i < lns.Length; i++)
+        {
+            if (lns[i].GetDistance(v))
+            {
+                return lns[i].Id;
+            }
+        }
+        return -1;
+    }
+
+    private int MouseOnCircle(Vector3 v)
+    {// 
+        if (cis == null) return -1;
+        Circle[] ci = FindObjectsOfType<Circle>();
+        if (ci != null)
+        {
+            for (int i = 0; i < ci.Length; i++)
+            {
+                float dist = Hypot(ci[i].CenterVec.x - v.x, ci[i].CenterVec.y - v.y);
+                if (ci[i].Radius - 0.25 < dist && dist < ci[i].Radius + 0.25)
+                {
+                    //Debug.Log("MouseOnCircle " + ci[i].Id);
+                    return ci[i].Id;
+                }
+            }
+        }
+        return -1;
+    }
+
+
+    int MouseOnGameLog(Vector3 v)
+    {
+        if (Util.logs == null) return -1;
+        for(int i=0; i<Util.logs.Count; i++)
+        {
+            Log lg  = Util.logs[i];
+            if (lg.Position.x + 1.0f < v.x && v.x < lg.Position.x + 1.5f
+                && lg.Position.y  < v.y && v.y < lg.Position.y + 0.5)
+            {
+                return i + 4500;
+            }
+            if (lg.Position.x-1.5f < v.x && v.x < lg.Position.x+1.5f 
+                && lg.Position.y-0.5 < v.y && v.y < lg.Position.y + 0.5)
+            {
+                return i+4000;
+            }
+        }
+        return -1;
+    }
+
+    bool MouseOnPreference(Vector3 v)
+    {
+        Preference lg = PreferenceDialog.GetComponent<Preference>();
+        //print(lg.Position);
+        //print(v);
+        if (lg.Position.x - 1.5f < v.x && v.x < lg.Position.x + 1.5f
+            && lg.Position.y + 1.5f < v.y && v.y < lg.Position.y + 2.25f)
+        {
+            if (lg.show)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private int MousePosition()
+    {
+        Vector3 v = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        v.z = 0.0f;
+        bool MOPre = MouseOnPreference(v);// マウスがプリファレンスの上にあるかどうかのチェック
+        if (MOPre)
+        {
+            return 5000;// プリファレンスのコード
+        }
+        int MOL = MouseOnGameLog(v);// マウスがログの上にあるかどうかのチェック
+        if(MOL != -1)
+        {
+            return MOL;//ログの上にある時が優先
+        }
+        int MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
+        if (MOP == -1)
+        {
+            MOP = MouseOnLines(v);// ラインをクリックしたかどうかのチェック
+            //Debug.Log("no existing point, so check it is on a line." + MOP);
+            if (MOP == -1)
+            {
+                MOP = MouseOnCircle(v);//サークルをクリックしたかどうかのチェック
+            }
+        }
+        if (MOP >= 0 && MOP < 3000)
+        {// MOP番のオブジェクト
+            return MOP;
+        }
+        else if (ClickOnButton(Input.mousePosition))
+        {
+            return -2;//メニューを押した。
+        }
+        else
+        {
+            return -1;// 何もないところ
+        }
+    }
+
+    void OnKey()
+    {
+        if (FirstKey == "")
+        {
+            OnKeyFirst();
+        }
+        else if (FirstKey == "A")
+        {
+            OnKeyAdd();
+        }
+        else if (FirstKey == "P")
+        {
+            OnKeyPoint();
+        }
+        else if (FirstKey == "L")
+        {
+            OnKeyLine();
+        }
+        else if (FirstKey == "T")
+        {
+            OnKeyTangent();
+        }
+        else if (FirstKey == "F")
+        {
+            OnKeyFix();
+        }
+        else if (FirstKey == "D")
+        {
+            OnKeyDelete();
+        }
+
+    }
+
+    void OnKeyFirst() {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            FirstKey = "A";
+        }
+        else if (Input.GetKeyDown(KeyCode.P))
+        {
+            FirstKey = "P";
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            FirstKey = "L";
+        }
+        else if (Input.GetKeyDown(KeyCode.T))
+        {
+            FirstKey = "T";
+        }
+        else if (Input.GetKeyDown(KeyCode.F))
+        {
+            FirstKey = "F";
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            FirstKey = "D";
+        }
+        else if (Input.GetKeyDown(KeyCode.Z))
+        {
+            Debug.Log("undo (key)");
+            Mode = MENU.UNDO;
+            Util.Undo();
+            Mode = 0;
+            ModeStep = 0;
+            MenuOn = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Y))
+        {
+            Debug.Log("redo (key)");
+            Mode = MENU.REDO;
+            Util.Redo();
+            Mode = 0;
+            ModeStep = 0;
+            MenuOn = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("save (key)");
+
+            Mode = MENU.SAVE;
+            FileDialogOn = true;
+            Util.RemakeLog();
+            Util.SaveLog("TmpLog.txt");
+            Util.CopyLog("TmpLog.txt", "TmpSaveFile.txt");
+            //モードを非描画モードにする。
+            DrawOn = false;
+            //保存ダイアログの描画＋ファイル保存
+            Util.SaveLogSelectFile();
+            // モードを通常に戻す。
+            Mode = 0;
+            ModeStep = 0;
+            MenuOn = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.O))
+        {
+            Debug.Log("open (key)");
+
+            Mode = MENU.OPEN;
+            FileDialogOn = true;
+            //モードを非描画モードにする。
+            DrawOn = false;
+            Util.OpenLogSelectFile();
+            //SceneManager.LoadScene("OpenDialog");
+            Mode = 0;
+            ModeStep = 0;
+            MenuOn = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log("quit (key)");
+            Mode = MENU.QUIT;
+            ModeStep = 0;
+            MenuOn = false;
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBPLAYER
+		    Application.OpenURL("http://aharalab.sakura.ne.jp/");
+#else
+		    Application.Quit();
+#endif
+            return;
+        }
+        else if (Input.GetKeyDown(KeyCode.B))
+        {
+            Util.DebugLog();
+        }
+        else if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            if (PreferenceDialog.GetComponent<Preference>().show) { 
+                PreferenceDialog.GetComponent<Preference>().EnterKeyDownProc();
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (PreferenceDialog.GetComponent<Preference>().show)
+            {
+                PreferenceDialog.GetComponent<Preference>().show = false;
+            }
+        }
+    }
+
+    void OnKeyAdd()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("add a point (key)");
+            Mode = MENU.ADD_POINT;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.M))
+        {
+            Debug.Log("add a midpoint (key)");
+            Mode = MENU.ADD_MIDPOINT;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log("add a line (key)");
+            Mode = MENU.ADD_LINE;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log("add a circle (key)");
+            Mode = MENU.ADD_CIRCLE;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+    }
+
+    void OnKeyPoint()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("Set a point on a point(key)");
+            Mode = MENU.POINT_ON_POINT;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log("Set a point on a line (key)");
+            Mode = MENU.POINT_ON_LINE;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log("Set a point on a circle (key)");
+            Mode = MENU.POINT_ON_CIRCLE;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+    }
+
+    void OnKeyLine()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            Debug.Log("Let two lines isometry(key)");
+            Mode = MENU.LINES_ISOMETRY;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("Let two lines perpendicular (key)");
+            Mode = MENU.LINES_PERPENDICULAR;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log("Let two lines parallel (key)");
+            Mode = MENU.LINES_PARALLEL;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+    }
+
+    void OnKeyTangent()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log("Make a circle tangent to a line (key)");
+            Mode = MENU.CIRCLE_TANGENT_LINE;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log("Make a circle tangent to a circle  (key)");
+            Mode = MENU.CIRCLE_TANGENT_CIRCLE;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+    }
+
+    void OnKeyFix()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("fix a point (key)");
+            Mode = MENU.FIX_POINT;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+    }
+
+    void OnKeyDelete()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("delete a point (key)");
+            Mode = MENU.DELETE_POINT;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            Debug.Log("clear all  (key)");
+            Mode = MENU.DELETE_ALL;
+            ClickOnPanel.DeleteAll();
+            Mode = 0;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+    }
+
+
+    float DraggedGameLogStartTop = 0f;
+    Vector3 DraggedPreferencePosition;
+    public void OnMouseDown()
+    {
+        if (!DrawOn) return;
+        if (Camera.main == null) return;
+        MouseDownVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        MouseDownVec.z = 0.0f;
+        DraggedPointId = MousePosition();
+        //print(DraggedPointId);
+        DraggedGameLogStartTop = Util.StartTop;
+        DraggedPreferencePosition = PreferenceDialog.GetComponent<Preference>().Position;
+    }
+
+    public void OnMouseDrag()
+    {
+        if (pts == null) return;
+        if (!DrawOn) return;
+        if (DraggedPointId != -1)
+        {
+            Vector3 v3 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            v3.z = 0.0f;
+            if(DraggedPointId == 5000)
+            {//プリファレンスダイアログをドラッグ
+                PreferenceDialog.GetComponent<Preference>().Position = DraggedPreferencePosition + v3 - MouseDownVec;
+                PreferenceDialog.GetComponent<Preference>().SetScreenPosition();
+
+            }
+            if (DraggedPointId >= 4000 && DraggedPointId<5000)
+            {// ログをドラッグ
+                Util.StartTop = DraggedGameLogStartTop + (v3.y - MouseDownVec.y);
+                int LL = Util.LogLength;
+                if (Util.StartTop > 3f + LL)
+                {
+                    Util.StartTop = 3f + LL;
+                }
+                else if(Util.StartTop < -4f)
+                {
+                    Util.StartTop = -4f;
+                }
+            }
+            for (int i = 0; i < pts.Length; i++)
+            {//点のドラッグ
+                if (pts[i].Id == DraggedPointId)
+                {
+                    if (MouseDownVec - v3 != Vector3.zero)//0.768
+                    {
+                        pts[i].Vec = v3;
+                        ExecuteAllModules();
+                    }
+                }
+            }
+        }
+    }
+
+    private int AddNewPoint()
+    {
+        Util.AddPoint(MouseUpVec, PointId);
+        //        Util.DebugLog();
+        // 新しい点をselected，そのほかの点は選択をはずす。
+        Point.MakeOnePointSelected(PointId);
+        Line.AllLinesUnselected();
+        Circle.AllCirclesUnselected();
+        PointId++;
+        return PointId - 1;
+    }
+
+    private void AddNewMidpoint(int MOP)
+    {
+        if (ModeStep == 0)
+        {//モード１２ステップ０ならば，「一つ目の点」をFirstClickIdに記録
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1)
+        {//モード１２ステップ１ならば，「二つ目の点」をSecondClickIdに記録
+            Point.AddOnePointSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            if (FirstClickId != SecondClickId)
+            {
+                // 新しい点の追加
+                Util.AddMidpoint(FirstClickId, SecondClickId, PointId, ModuleId);
+                //ログの作成とlogsへの追加
+                Point.AddOnePointSelected(PointId);
+                PointId++;
+                ModuleId++;
+            }
+            Mode = MENU.ADD_MIDPOINT;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+    }
+
+    private void AddNewLine(int MOP)
+    {
+        if (ModeStep == 0)
+        {//モード１ステップ０ならば，「一つ目の点」をFirstClickIdに記録
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1)
+        {//モード１ステップ１ならば，「二つ目の点」をSecondClickIdに記録
+            Point.AddOnePointSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            // 新しい線の追加
+            if (FirstClickId != SecondClickId)
+            {
+                Util.AddLine(FirstClickId, SecondClickId, LineId++);
+                //追加したラインを選択
+                Line.MakeOneLineSelected(LineId - 1);
+            }
+            Point.AllPointsUnselected();
+            Mode = MENU.ADD_LINE;
+            ModeStep = 0;
+        }
+    }
+
+    private int AddCircle(int MOP)
+    {// 円を追加
+        if (ModeStep == 0 && 0 <= MOP && MOP < 1000)
+        {//モード４ステップ０ならば一つ目の点のIDをFirstClickIdに記録
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            FirstClickVec = MouseUpVec;
+            ModeStep = 1;
+            return CircleId;
+        }
+        else if (ModeStep == 1)
+        {// モード４ステップ１ならば、点 MouseUpVec を使って円を描く。
+            //半径を計算する
+            float rd = Hypot(MouseUpVec.x - FirstClickVec.x, MouseUpVec.y - FirstClickVec.y);
+            Util.AddCircle(FirstClickId, rd, CircleId);
+            // 新しい点をselected，そのほかの点は選択をはずす。
+            Circle.MakeOneCircleSelected(CircleId);
+            Point.AllPointsUnselected();
+            //cis = FindObjectsOfType<Circle>();
+            Mode = MENU.ADD_CIRCLE;
+            ModeStep = 0;
+            CircleId++;
+            return CircleId - 1;
+        }
+        return -1;
+    }
+
+    private void MakeTwoPointsIntoOne(int MOP)
+    {
+        if (ModeStep == 0)
+        {//モード２ステップ０ならば，「一つ目の点」をFirstClickIdに記録
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1)
+        {//モード２ステップ１ならば，「二つ目の点」をSecondClickIdに記録
+            Point.AddOnePointSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            if (FirstClickId != SecondClickId)
+            {
+                // 新しいモジュールの追加
+                Util.AddModule(MENU.POINT_ON_POINT, FirstClickId, SecondClickId, 0, ModuleId++);
+            }
+            Mode = MENU.POINT_ON_POINT;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+    }
+
+    private void MakeAPointOnLine(int MOP)
+    {
+        if (ModeStep == 0 && 0<= MOP && MOP <1000)
+        {//モード３ステップ０ならば，「一つ目の点」をFirstClickIdに記録
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 1000 <= MOP && MOP < 2000)
+        {//モード３ステップ１ならば，「一つ目の線」をSecondClickIdに記録
+            Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            // 新しいモジュールの追加
+            Util.AddModule(MENU.POINT_ON_LINE, FirstClickId, SecondClickId, 0, ModuleId++);
+            // Debug.Log("New module was created " + FirstClickId + " " + SecondClickId);
+            // 細い補助線の追加
+            Util.AddThinLine(FirstClickId, SecondClickId);
+            Mode = MENU.POINT_ON_LINE;
+            ModeStep = 0;
+        }
+    }
+
+    private void MakeAPointOnCircle(int MOP)
+    {
+        if (ModeStep == 0 && 0 <= MOP && MOP < 1000)
+        {//モード５ステップ０ならば，「一つ目の点」をFirstClickIdに記録
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 2000 <= MOP && MOP < 3000)
+        {//モード５ステップ１ならば，「一つ目の円」をSecondClickIdに記録
+            Circle.AddOneCircleSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            // 新しいモジュールの追加
+            Util.AddModule(MENU.POINT_ON_CIRCLE, FirstClickId, SecondClickId, 0, ModuleId++);
+            // Debug.Log("New module was created " + FirstClickId + " " + SecondClickId);
+            Mode = MENU.POINT_ON_CIRCLE;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+    }
+
+    private void MakeTwoLinesIsometry(int MOP)
+    {
+        if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
+        {//モード６ステップ０ならば，「一つ目の線」をFirstClickIdに記録
+            Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 1000 <= MOP && MOP < 2000)
+        {//モード６ステップ１ならば，「二つ目の線」をSecondClickIdに記録
+            Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            if (FirstClickId != SecondClickId)
+            {
+                Module NewMd = Util.AddModule(MENU.LINES_ISOMETRY, FirstClickId, SecondClickId, 0, ModuleId++);
+                Util.SetIsometry();
+            }
+            Mode = MENU.LINES_ISOMETRY;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+    }
+
+    private void MakeTwoLinesPerpendicular(int MOP)
+    {
+        if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
+        {//モード７ステップ０ならば，「一つ目の線」をFirstClickIdに記録
+            Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 1000 <= MOP && MOP < 2000)
+        {//モード７ステップ１ならば，「二つ目の線」をSecondClickIdに記録
+            Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            if (FirstClickId != SecondClickId)
+            {
+                // 新しいモジュールの追加
+                Util.AddModule(MENU.LINES_PERPENDICULAR, FirstClickId, SecondClickId, 0, ModuleId++);
+                // 新しい直角記号の追加
+                Util.AddAngleMark(FirstClickId, SecondClickId);
+            }
+            Mode = MENU.LINES_PERPENDICULAR;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+    }
+
+    private void MakeTwoLinesParallel(int MOP)
+    {
+        if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
+        {//モード８ステップ０ならば，「一つ目の線」をFirstClickIdに記録
+            Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 1000 <= MOP && MOP < 2000)
+        {//モード８ステップ１ならば，「二つ目の線」をSecondClickIdに記録
+            Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            // 新しいモジュールの追加
+            Util.AddModule(MENU.LINES_PARALLEL, FirstClickId, SecondClickId, 0, ModuleId++);
+            Mode = MENU.LINES_PARALLEL;
+            //Mode = 0;
+            ModeStep = 0;
+
+        }
+    }
+
+    private void MakeCircleTangentLine(int MOP)
+    {
+        if (ModeStep == 0 && 2000 <= MOP && MOP < 3000)
+        {//モード９ステップ０ならば，「一つ目の円」をFirstClickIdに記録
+            Circle.MakeOneCircleSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 1000 <= MOP && MOP < 2000)
+        {//モード９ステップ１ならば，「二つ目の線」をSecondClickIdに記録
+            Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            // 新しいモジュールの追加
+            Util.AddModule(MENU.CIRCLE_TANGENT_LINE, FirstClickId, SecondClickId, 0, ModuleId++);
+            Mode = MENU.CIRCLE_TANGENT_LINE;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+    }
+
+    private void MakeCircleTangentCircle(int MOP)
+    {
+        if (ModeStep == 0 && 2000 <= MOP && MOP < 3000)
+        {//モード１０ステップ０ならば，「一つ目の円」をFirstClickIdに記録
+            Circle.MakeOneCircleSelected(MOP);//クリックした円のみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 2000 <= MOP && MOP < 3000)
+        {//モード１０ステップ１ならば，「二つ目の円」をSecondClickIdに記録
+            Circle.AddOneCircleSelected(MOP);//クリックした円を追加選択
+            SecondClickId = MOP;
+            if (FirstClickId != SecondClickId)
+            {
+                // 新しいモジュールの追加
+                Util.AddModule(MENU.CIRCLE_TANGENT_CIRCLE, FirstClickId, SecondClickId, 0, ModuleId++);
+            }
+            Mode = MENU.CIRCLE_TANGENT_CIRCLE;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+
+    }
+
+    private void MakeAPointFixed(int MOP)
+    {//モード１１ステップ０ならば，「一つ目の点」のMOPから
+     // 該当する点のFixedフラグを反転させる。
+        if (pts == null) return;
+
+        Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
+        FirstClickId = MOP;
+
+        for(int i = 0; i < pts.Length; ++i)
+        {
+            if(pts[i].Id == MOP)
+            {
+                pts[i].Fixed = !pts[i].Fixed;
+            }
+        }
+
+        Util.MakeALogFixed(MOP);
+        Util.CopyLog("TmpLog.txt", "TmpBeforeLastLog.txt");
+        Util.SaveLog("TmpLog.txt");
+
+        Mode = MENU.FIX_POINT;
+        //Mode = 0;
+        ModeStep = 0;
+    }
+
+
+    private void DeleteAPoint(int MOP)
+    {
+        GameObject[] gp = FindObjectsOfType<GameObject>();
+        if (gp != null)
+        {
+            for (int i = 0; i < gp.Length; ++i)
+            {
+                Module md = (Module)gp[i].GetComponent("Module");
+                if (md != null)
+                {
+                    if (md.Object1Id == MOP || md.Object2Id == MOP || md.Object3Id == MOP)
+                    {
+                        Util.DeleteLogAtID(md.Id);//ログの消去
+                        Destroy(gp[i]);//モジュールの消去
+                        mds = FindObjectsOfType<Module>();
+                    }
+                }
+                Circle ci = (Circle)gp[i].GetComponent("Circle");
+                if (ci != null)
+                {
+                    if (ci.CenterPointId == MOP)
+                    {
+                        GameObject[] gp2 = FindObjectsOfType<GameObject>();
+                        if (gp2 != null)
+                        {
+                            for (int j = 0; j < gp2.Length; ++j)
+                            {
+                                Module md2 = (Module)gp2[j].GetComponent("Module");
+                                if (md2 != null)
+                                {
+                                    if (md2.Object1Id == ci.Id || md2.Object2Id == ci.Id || md2.Object3Id == ci.Id)
+                                    {
+                                        Util.DeleteLogAtID(md2.Id);//ログの消去
+                                        Destroy(gp2[j]);//モジュールの消去
+                                        mds = FindObjectsOfType<Module>();
+                                        break;
+                                    }
+
+                                }
+
+                            }
+                            Util.DeleteLogAtID(ci.Id);//ログの消去
+                            Destroy(gp[i]);//円の消去
+                            cis = FindObjectsOfType<Circle>();
+                        }
+                    }
+                }
+                Line ln = (Line)gp[i].GetComponent("Line");
+                if (ln != null)
+                {
+                    if (ln.Point1Id == MOP || ln.Point2Id == MOP)
+                    {
+                        GameObject[] gp2 = FindObjectsOfType<GameObject>();
+                        if (gp2 != null)
+                        {
+                            for (int j = 0; j < gp2.Length; ++j)
+                            {
+                                Module md2 = (Module)gp2[j].GetComponent("Module");
+                                if (md2 != null)
+                                {
+                                    if (md2.Object1Id == ln.Id || md2.Object2Id == ln.Id || md2.Object3Id == ln.Id)
+                                    {
+                                        // モジュールを消去する際に，「直角マーク」が関連していたらそれも消去する。
+                                        if (md2.Type == MENU.LINES_PERPENDICULAR)//直交させるモジュールの場合
+                                        {
+                                            GameObject[] gp3 = FindObjectsOfType<GameObject>();
+                                            if (gp3 != null)
+                                            {
+                                                for (int k = 0; k < gp3.Length; k++)
+                                                {
+                                                    AngleMark am = (AngleMark)gp3[k].GetComponent("AngleMark");
+                                                    if (am != null)
+                                                    {
+                                                        if (am.Object1Id == ln.Id || am.Object2Id == ln.Id)
+                                                        {
+                                                            Destroy(gp3[k]);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // モジュールを消去する際に，「細線補助線」が関連していたらそれも消去する。
+                                        if (md2.Type == MENU.POINT_ON_LINE)//直交させるモジュールの場合
+                                        {
+                                            GameObject[] gp3 = FindObjectsOfType<GameObject>();
+                                            if (gp3 != null)
+                                            {
+                                                for (int k = 0; k < gp3.Length; k++)
+                                                {
+                                                    ThinLine TL = (ThinLine)gp3[k].GetComponent("ThinLine");
+                                                    if (TL != null)
+                                                    {
+                                                        if (TL.LineId == ln.Id)
+                                                        {
+                                                            Destroy(gp3[k]);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        Util.DeleteLogAtID(md2.Id);//ログの消去
+                                        Destroy(gp2[j]);//モジュールの消去
+                                        mds = FindObjectsOfType<Module>();
+                                        break;
+                                    }
+                                }
+                            }
+                            Util.DeleteLogAtID(ln.Id);//ログの消去
+                            Destroy(gp[i]);//直線の消去
+                            lns = FindObjectsOfType<Line>();
+                        }
+                    }
+                }
+                Point obj = (Point)gp[i].GetComponent("Point");
+                if (obj != null)
+                {
+                    if (obj.Id == MOP)
+                    {
+                        GameObject[] gp2 = FindObjectsOfType<GameObject>();
+                        if (gp2 != null)
+                        {
+                            for (int j = 0; j < gp2.Length; ++j)
+                            {
+                                Module md2 = (Module)gp2[j].GetComponent("Module");
+                                if (md2 != null)
+                                {
+                                    if (md2.Object1Id == MOP || md2.Object2Id == MOP || md2.Object3Id == MOP)
+                                    {
+                                        // モジュールを消去する際に，「細線補助線」が関連していたらそれも消去する。
+                                        if (md2.Type == MENU.POINT_ON_LINE)//直交させるモジュールの場合
+                                        {
+                                            GameObject[] gp3 = FindObjectsOfType<GameObject>();
+                                            if (gp3 != null)
+                                            {
+                                                for (int k = 0; k < gp3.Length; k++)
+                                                {
+                                                    ThinLine TL = (ThinLine)gp3[k].GetComponent("ThinLine");
+                                                    if (TL != null)
+                                                    {
+                                                        if (TL.PointId == MOP)
+                                                        {
+                                                            Destroy(gp3[k]);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Util.DeleteLogAtID(MOP);//ログの消去
+                        Destroy(obj.PTobject, 0f);//点に付随する文字の消去
+                        Destroy(gp[i], 0.5f);//モジュールの消去
+
+                    }
+                }
+            }
+        }
+        Mode = MENU.DELETE_POINT;
+        ModeStep = 0;
+
+    }
+
+    public static  void DeleteAll()
+    {
+        Util.SetAllLogActive();
+        GameObject[] gp = FindObjectsOfType<GameObject>();
+        for (int i = gp.Length-1; i>=0; i--)
+        {
+            Module md = (Module)gp[i].GetComponent("Module");
+            if (md != null)
+            {
+                Destroy(gp[i]);
+            }
+            //直角マークも消しておく。
+            AngleMark am = (AngleMark)gp[i].GetComponent("AngleMark");
+            if (am != null)
+            {
+                Destroy(gp[i]);
+            }
+            //細線補助線も消しておく。
+            ThinLine TL = (ThinLine)gp[i].GetComponent("ThinLine");
+            if (TL != null)
+            {
+                Destroy(gp[i]);
+            }
+            Circle ci = (Circle)gp[i].GetComponent("Circle");
+            if (ci != null)
+            {
+                    Destroy(gp[i],0.2f);
+            }
+            Line ln = (Line)gp[i].GetComponent("Line");
+            if (ln != null)
+            {
+                    Destroy(gp[i],0.4f);
+            }
+            Point obj = (Point)gp[i].GetComponent("Point");
+            if (obj != null)
+            {
+                    Destroy(gp[i], 0.6f);
+            }
+        }
+        Util.InitLog();
+        pts = null;
+        lns = null;
+        cis = null;
+        mds = null;
+        Mode = MENU.DELETE_ALL;
+        //Mode = 0;
+        ModeStep = 0;
+    }
+
+
+    public void OnMouseUp()
+    {
+        if (!DrawOn) return;
+        Vector3 mPs = Input.mousePosition;
+        mPs.y = Screen.height - mPs.y;
+        if (mPs.x < 110 && mPs.y < 90) return;
+        if (Camera.main == null) return;
+        MouseUpVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        MouseUpVec.z = 0.0f;
+        if (Hypot(MouseDownVec.x - MouseUpVec.x, MouseDownVec.y - MouseUpVec.y) < 0.1)
+        {// クリックののちマウスアップ
+            //ログを右クリック
+            int MOL = MouseOnGameLog(MouseUpVec); 
+            if(4500 <= MOL && MOL<5000){
+                PreferenceDialog.GetComponent<Preference>().SetData(Util.logs[MOL - 4500]);
+                PreferenceDialog.GetComponent<Preference>().show = true;
+            }
+            //アニメーション
+            GameObject _prefab = Resources.Load<GameObject>("Prefabs/MouseDown");
+            GameObject g = Point.Instantiate(_prefab, MouseDownVec, Quaternion.identity) as GameObject;
+            MouseDown obj = g.GetComponent<MouseDown>();
+            obj.Vec = MouseDownVec;
+            //Point obj = g.GetComponent<Point>();
+            Destroy(g, 1.2f);//モジュールの消去
+
+
+            int MOP = MousePosition();
+            //Debug.Log("MOP (OnMouseUp) = " + MOP);
+            if (MOP == -2)
+            {//モード切替
+                MenuOn = true;
+            }
+            if (MOP == -1)
+            {//カラ打ち
+                if(Mode == MENU.ADD_LINE && ModeStep == 0)
+                {
+                    MOP = AddNewPoint();
+                    AddNewLine(MOP);
+                }
+                else if (Mode == MENU.ADD_LINE && ModeStep == 1)
+                {
+                    MOP = AddNewPoint();
+                    AddNewLine(MOP);
+                }
+                else if (Mode == MENU.POINT_ON_LINE && ModeStep == 0)
+                {
+                    MOP = AddNewPoint();
+                    MakeAPointOnLine(MOP);
+                }
+                else if (Mode == MENU.POINT_ON_CIRCLE && ModeStep == 0)
+                {
+                    MOP = AddNewPoint();
+                    MakeAPointOnCircle(MOP);
+                }
+                else if (Mode == MENU.ADD_CIRCLE && ModeStep == 0)
+                {//円を描く。から打ちして場所を決める。
+                    MOP = AddNewPoint();
+                    AddCircle(MOP);
+                }
+                else if (Mode == MENU.ADD_CIRCLE && ModeStep == 1)
+                {//円を描く。から打ちして場所を決める。
+                    AddCircle(MOP);
+                }
+                else
+                {//新しい点の追加
+                    AddNewPoint();
+                }
+            }
+            else if (0 <= MOP && MOP < 1000)
+            {// 点の上をクリック
+                if (Mode == MENU.ADD_POINT)
+                {//クリックしたポイントのみを選択
+                    Point.MakeOnePointSelected(MOP);
+                    Line.AllLinesUnselected();
+                }
+                if (Mode == MENU.ADD_LINE)
+                {//２点を通る線分を追加
+                    AddNewLine(MOP);
+                }
+                else if (Mode == MENU.POINT_ON_POINT)
+                {//二つの点を合流する
+                    MakeTwoPointsIntoOne(MOP);
+                }
+                else if (Mode == MENU.POINT_ON_LINE && ModeStep == 0)
+                {//点を線に載せるのに、まず点を選ぶ
+                    MakeAPointOnLine(MOP);
+                }
+                else if(Mode == MENU.ADD_CIRCLE && ModeStep == 0)
+                {//円を追加するのに、まず点を選ぶ
+                    AddCircle(MOP);
+                }
+                else if (Mode == MENU.ADD_CIRCLE && ModeStep == 1)
+                {//円を追加するのに、点をクリックしたら、その点を通るような円にする
+                    int id = AddCircle(MOP);// 円のId
+                    Mode = MENU.POINT_ON_CIRCLE;
+                    ModeStep = 0;
+                    MakeAPointOnCircle(MOP);
+                    MakeAPointOnCircle(id);
+                }
+                else if (Mode == MENU.POINT_ON_CIRCLE && ModeStep == 0)
+                {//点を円に載せるのに、まず点を選ぶ
+                    MakeAPointOnCircle(MOP);
+                }
+                else if (Mode == MENU.FIX_POINT)
+                {//点を固定するのに、点を選ぶ
+                    MakeAPointFixed(MOP);
+                }
+                else if (Mode == MENU.ADD_MIDPOINT)
+                {//２点の中点を追加
+                    AddNewMidpoint(MOP);
+                }
+                else if(Mode == MENU.DELETE_POINT)
+                {// 点を一つ消去する
+                    DeleteAPoint(MOP);
+                }
+            }
+            else if (1000 <= MOP && MOP < 2000)
+            {// ラインの上をクリック
+                if(Mode == MENU.ADD_POINT)
+                {
+                    Mode = MENU.POINT_ON_LINE;
+                    ModeStep = 0;
+                    int id = AddNewPoint();
+                    MakeAPointOnLine(id);
+                    MakeAPointOnLine(MOP);
+                }
+                else if (Mode == MENU.POINT_ON_LINE && ModeStep == 0)
+                {
+                    int id = AddNewPoint();
+                    MakeAPointOnLine(id);
+                    MakeAPointOnLine(MOP);
+                }
+                else if (Mode == MENU.POINT_ON_LINE && ModeStep == 1)
+                {//点を線に載せるのに、次に線をを選ぶ
+                    MakeAPointOnLine(MOP);
+                }
+                else if (Mode == MENU.LINES_ISOMETRY)
+                {//２つの線の長さを同じにするのに、線をを選ぶ
+                    MakeTwoLinesIsometry(MOP);
+                }
+                else if (Mode == MENU.LINES_PERPENDICULAR)
+                {//２つの線を直交にするのに、線をを選ぶ
+                    MakeTwoLinesPerpendicular(MOP);
+                }
+                else if (Mode == MENU.LINES_PARALLEL)
+                {//２つの線を並行にするのに、線をを選ぶ
+                    MakeTwoLinesParallel(MOP);
+                }
+                else if (Mode == MENU.CIRCLE_TANGENT_LINE && ModeStep == 1)
+                {
+                    MakeCircleTangentLine(MOP);
+                }
+            }
+            else if (2000 <= MOP && MOP < 3000)
+            {// サークルの上をクリック
+                if (Mode == MENU.ADD_POINT)
+                {
+                    Mode = MENU.POINT_ON_CIRCLE;
+                    ModeStep = 0;
+                    int id0 = AddNewPoint();
+                    MakeAPointOnCircle(id0);
+                    MakeAPointOnCircle(MOP);
+                }
+                else if (Mode == MENU.POINT_ON_CIRCLE && ModeStep == 0)
+                {//点を円に載せる
+                    int id0 = AddNewPoint();
+                    MakeAPointOnCircle(id0);
+                    MakeAPointOnCircle(MOP);
+                }
+                else if (Mode == MENU.POINT_ON_CIRCLE && ModeStep == 1)
+                {//点を円に載せるのに、次に円を選ぶ
+                        MakeAPointOnCircle(MOP);
+                }
+                else if(Mode == MENU.CIRCLE_TANGENT_LINE && ModeStep == 0)
+                {
+                    MakeCircleTangentLine(MOP);
+                }
+                else if (Mode == MENU.CIRCLE_TANGENT_CIRCLE)
+                {
+                    MakeCircleTangentCircle(MOP);
+                }
+            }
+        }
+        else 
+        {//　ドラッグののちマウスアップ
+            DraggedPointId = -1;
+        }
+    }
+
+
+}
