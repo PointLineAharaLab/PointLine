@@ -744,6 +744,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     private void MakeIntersection(int MOP)
     {
+        Debug.Log(ModeStep + "," + MOP);
         if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
         {//モード６ステップ０ならば，「一つ目の線」をFirstClickIdに記録
             Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
@@ -761,14 +762,46 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Line.AddOneLineSelected(MOP);//クリックしたラインのみを選択
             SecondClickId = MOP;
             ModeStep = 0;
-            // あとなにかする
+            if (FirstClickId != SecondClickId)
+            {
+                // 新しい点の追加
+                int NewPointId = PointId;
+                Util.AddPoint(MouseUpVec, PointId++);
+                // 新しいモジュールの追加
+                if (1000 <= FirstClickId && FirstClickId < 2000)
+                {// 一つ目に選んだものが直線のとき
+                    Util.AddModule(MENU.POINT_ON_LINE, NewPointId, FirstClickId, 0, ModuleId++);
+                    Util.AddModule(MENU.POINT_ON_LINE, NewPointId, SecondClickId, 0, ModuleId++);
+                }
+                else if (2000 <= FirstClickId && FirstClickId < 3000)
+                {// 一つ目に選んだものが円のとき
+                    Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, FirstClickId, 0, ModuleId++);
+                    Util.AddModule(MENU.POINT_ON_LINE, NewPointId, SecondClickId, 0, ModuleId++);
+                }
+            }
         }
         else if (ModeStep == 1 && 2000 <= MOP && MOP < 3000)
         {//ステップ1ならば，「2つ目の円」をSecondClickIdに記録
             Line.AddOneLineSelected(MOP);//クリックした円のみを選択
             SecondClickId = MOP;
             ModeStep = 0;
-            // あとなにかする
+            if (FirstClickId != SecondClickId)
+            {
+                // 新しい点の追加
+                int NewPointId = PointId;
+                Util.AddPoint(MouseUpVec, PointId++);
+                // 新しいモジュールの追加
+                if (1000 <= FirstClickId && FirstClickId < 2000)
+                {// 一つ目に選んだものが直線のとき
+                    Util.AddModule(MENU.POINT_ON_LINE, NewPointId, FirstClickId, 0, ModuleId++);
+                    Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, SecondClickId, 0, ModuleId++);
+                }
+                else if (2000 <= FirstClickId && FirstClickId < 3000)
+                {// 一つ目に選んだものが円のとき
+                    Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, FirstClickId, 0, ModuleId++);
+                    Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, SecondClickId, 0, ModuleId++);
+                }
+            }
         }
 
     }
@@ -1184,7 +1217,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     MakeAPointOnCircle(MOP);
                 }
 
-                //ここに何かを書く
+                
 
                 else if (Mode == MENU.ADD_CIRCLE && ModeStep == 0)
                 {//円を描く。から打ちして場所を決める。
@@ -1268,6 +1301,16 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 {//点を線に載せるのに、次に線をを選ぶ
                     MakeAPointOnLine(MOP);
                 }
+
+                else if (Mode == MENU.INTERSECTION && ModeStep == 0)
+                {
+                    MakeIntersection(MOP);
+                }
+                else if (Mode == MENU.INTERSECTION && ModeStep == 1)
+                {
+                    MakeIntersection(MOP);
+                }
+
                 else if (Mode == MENU.LINES_ISOMETRY)
                 {//２つの線の長さを同じにするのに、線をを選ぶ
                     MakeTwoLinesIsometry(MOP);
@@ -1305,6 +1348,16 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 {//点を円に載せるのに、次に円を選ぶ
                         MakeAPointOnCircle(MOP);
                 }
+
+                else if (Mode == MENU.INTERSECTION && ModeStep == 0)
+                {
+                    MakeIntersection(MOP);
+                }
+                else if (Mode == MENU.INTERSECTION && ModeStep == 1)
+                {
+                    MakeIntersection(MOP);
+                }
+
                 else if(Mode == MENU.CIRCLE_TANGENT_LINE && ModeStep == 0)
                 {
                     MakeCircleTangentLine(MOP);
