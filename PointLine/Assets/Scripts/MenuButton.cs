@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MenuButton : Menu,IPointerEnterHandler, IPointerExitHandler
+public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
 {
 
     bool HoverOn = false;
@@ -17,12 +17,13 @@ public class MenuButton : Menu,IPointerEnterHandler, IPointerExitHandler
 {
 #if JAPANESE
         " メニューから出る " , " 点追加 ",  " 中点追加(AM) ", " 直線追加(AL) ", " 円追加(AC) ", // 0 - 4
-        " ほかの頂点に点を載せる(PP) ", " 直線に点を載せる(PL) ", " 円に点を載せる(PC) ", // 5 - 7
+        " ほかの頂点に点を載せる(PP) ", " 直線に点を載せる(PL) ", " 円に点を載せる(PC) ","交点を追加",// 5 - 7
         " 2直線を等長に(LI) ", " 2直線を垂直に(LP) ", " 2直線を平行に(LQ) ", // 8 - 10
         " 円を直線に接させる(TL) ", " 円を他の円に接させる(TC) ",//11 - 12
         " 頂点を固定する(FP) ", " 頂点を消去する(DP) ", " すべて消去する(DA) ", //13 - 15
         " 戻る(Z) ", " 進む(Y) ",// 16, 17
-        " 保存(S) "," 開く(O) "," TeX保存 "," 終了(Q) " // 18 - 21
+        " ログ表示・非表示(W) ",//18
+        " 保存(S) "," 開く(O) "," TeX保存 "," 終了(Q) " // 19 - 22
 #else
         " out of menu ", " add a point ", " add a midpoint(AM) ", " add a line(AL) ", " add a circle(AC) ", // 0 - 4
         " Set a point on another point(PP) ", " Set a point on a line(PL) ", " Set a point on a circle(PC) ", //5 - 7
@@ -50,9 +51,8 @@ public class MenuButton : Menu,IPointerEnterHandler, IPointerExitHandler
         {
             for (int i = 0; i < PrefabCloneName.Length; i++)
             {
-                if (name == PrefabCloneName[i])
+                if (name.Contains(PrefabCloneName[i]))
                 {
-                    //Debug.Log("" + i + " " + PrefabCloneName[i]+" " + MenuText[i]);
                     message = MenuText[i];
                     break;
                 }
@@ -170,6 +170,17 @@ public class MenuButton : Menu,IPointerEnterHandler, IPointerExitHandler
         AppMgr.DrawOn = true;
     }
 
+    public void OnClickIntersection()
+    {
+        Debug.Log("Add an intersection(mouse)");
+        AppMgr.Mode = MENU.INTERSECTION;
+        AppMgr.ModeStep = 0;
+        AppMgr.MenuOn = false;
+        DestroyMenuOnUI();
+        CreateMenuOffUI();
+        AppMgr.DrawOn = true;
+    }
+
     public void OnClickIsom()
     {
         Debug.Log("Let two lines isometry(mouse)");
@@ -275,6 +286,23 @@ public class MenuButton : Menu,IPointerEnterHandler, IPointerExitHandler
         AppMgr.Mode = 0;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
+        DestroyMenuOnUI();
+        CreateMenuOffUI();
+        AppMgr.DrawOn = true;
+    }
+    public void OnClickShowLogs()
+    {
+        Debug.Log("show/hide logs  (mouse)");
+        AppMgr.Mode = MENU.ADD_POINT;
+        AppMgr.Mode = 0;
+        AppMgr.ModeStep = 0;
+        AppMgr.MenuOn = false;
+        Log[] Logs = MonoBehaviour.FindObjectsOfType<Log>();
+        Util.ShowLog = !Util.ShowLog;
+        for (int i=0; i<Logs.Length; i++)
+        {
+            Logs[i].Show = Util.ShowLog;
+        }
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;

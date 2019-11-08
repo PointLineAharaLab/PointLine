@@ -24,6 +24,7 @@ public class Util
     private static GameObject LogFolder = null;
     public static float LogLeft = 0;
     public static float StartTop = 4f;
+    public static bool ShowLog = false;
 
     public static Color[] IsometryColor;
     public static Color[] IsometrySelectedColor;
@@ -501,7 +502,7 @@ public class Util
         AppMgr.FileDialogOn = false;
     }
 
-    private static  bool PortraitMode = false;
+    //private static  bool PortraitMode = false;
 
     public static bool SaveLogSelectFile()
     {

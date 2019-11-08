@@ -9,6 +9,7 @@ public class Log : MonoBehaviour
     public bool Active;
     public bool Fixed;
     public bool Selected;
+    public bool Show;
     public GameObject parent = null;
     public GameObject child = null;
 
@@ -207,7 +208,7 @@ public class Log : MonoBehaviour
         }
         TextObj1.GetComponent<TextMesh>().text = Text1;
         TextObj2.GetComponent<TextMesh>().text = Text2;
-        if (Position.y < -4f || Position.y > 4 || !Active)
+        if (Position.y < -4f || Position.y > 4 || !Active || !Show)
         {
             Position.y = 100f;
         }
@@ -221,6 +222,7 @@ public class Log : MonoBehaviour
         Id = -1;
         Active = true;
         Fixed = false;
+        Show = Util.ShowLog;
         parent = null;
         child = null;
     }
@@ -230,6 +232,7 @@ public class Log : MonoBehaviour
         Id = _id;
         Active = true;
         Fixed = false;
+        Show = Util.ShowLog;
         PName = "";
     }
 
@@ -242,6 +245,7 @@ public class Log : MonoBehaviour
         parent = _pa;
         Active = _active;
         Fixed = _fixed;
+        Show = Util.ShowLog;
         PName = _pname;
         Position.x = Util.LogLeft;
         Text1 = "点 " + PName;
@@ -273,6 +277,7 @@ public class Log : MonoBehaviour
         }
         parent = _pa;
         Active = _active;
+        Show = Util.ShowLog;
         PName = _pname;
         Position.x = Util.LogLeft;
         Text1 = "直線 " + PName;
@@ -300,6 +305,7 @@ public class Log : MonoBehaviour
         Radius = _rad;
         parent = _pa;
         Active = _active;
+        Show = Util.ShowLog;
         PName = _pname;
         Text1 = "円 " + PName;
         Text2 = Object1.GetComponent<Point>().PointName + ":" + Mathf.Round(Radius*1000f)/1000f;
@@ -378,6 +384,7 @@ public class Log : MonoBehaviour
         ModuleType = _mt;
         parent = _pa;
         Active = _active;
+        Show = Util.ShowLog;
         PName = _pname;
         Text1 = "作図 ：" + PName;
         Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2) ;

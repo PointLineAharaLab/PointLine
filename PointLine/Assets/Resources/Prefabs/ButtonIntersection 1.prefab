@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1958998511660688
+--- !u!1 &7840663266053750546
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,52 +8,52 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 224153796238225724}
-  - component: {fileID: 222331202635690778}
-  - component: {fileID: 114194757442917752}
-  - component: {fileID: 114173260549748186}
-  - component: {fileID: 114548294643005436}
+  - component: {fileID: 8058836982672925306}
+  - component: {fileID: 8060848510286985096}
+  - component: {fileID: 7880517296727593974}
+  - component: {fileID: 7880246840135621984}
+  - component: {fileID: 7880394517895124980}
   m_Layer: 5
-  m_Name: ButtonIntersection
+  m_Name: ButtonIntersection 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &224153796238225724
+--- !u!224 &8058836982672925306
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958998511660688}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 7840663266053750546}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9999912, y: 0.9999912, z: 0.9999912}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1292, y: -726}
+  m_AnchoredPosition: {x: 1213, y: -758}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &222331202635690778
+--- !u!222 &8060848510286985096
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958998511660688}
+  m_GameObject: {fileID: 7840663266053750546}
   m_CullTransparentMesh: 0
---- !u!114 &114194757442917752
+--- !u!114 &7880517296727593974
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958998511660688}
+  m_GameObject: {fileID: 7840663266053750546}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -75,13 +75,13 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &114173260549748186
+--- !u!114 &7880246840135621984
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958998511660688}
+  m_GameObject: {fileID: 7840663266053750546}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -114,12 +114,13 @@ MonoBehaviour:
     m_SelectedTrigger: Highlighted
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 114194757442917752}
+  m_TargetGraphic: {fileID: 7880517296727593974}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114548294643005436}
-        m_MethodName: OnClickIntersection
+      - m_Target: {fileID: 114557651215550788, guid: d3c4ab116f4ec564ab930ab1bec9a87d,
+          type: 3}
+        m_MethodName: OnClickPointOnCircle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -129,13 +130,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
---- !u!114 &114548294643005436
+--- !u!114 &7880394517895124980
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958998511660688}
+  m_GameObject: {fileID: 7840663266053750546}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2166b44b8424560438fb38ae90083182, type: 3}
@@ -208,5 +209,5 @@ MonoBehaviour:
     m_FixedHeight: 0
     m_StretchWidth: 1
     m_StretchHeight: 0
-  LeftTop: {x: -8.002852, y: 5, z: -10}
-  RightTop: {x: 8.002852, y: 5, z: -10}
+  LeftTop: {x: 0, y: 0, z: 0}
+  RightTop: {x: 0, y: 0, z: 0}

@@ -17,6 +17,7 @@ public class MENU
     public const int POINT_ON_POINT = 2;
     public const int POINT_ON_LINE = 3;
     public const int POINT_ON_CIRCLE = 5;
+    public const int INTERSECTION = 22;
     public const int LINES_ISOMETRY = 6;
     public const int LINES_PERPENDICULAR = 7;
     public const int LINES_PARALLEL = 8;
@@ -28,9 +29,10 @@ public class MENU
     public const int QUIT = 15;
     public const int UNDO = 16;
     public const int REDO = 17;
-    public const int SAVE = 18;
-    public const int OPEN = 19;
-    public const int SAVE_TEX = 20;
+    public const int SHOW_LOGS = 18;
+    public const int SAVE = 19;
+    public const int OPEN = 20;
+    public const int SAVE_TEX = 21;
 
 }
 
@@ -38,14 +40,14 @@ public class MENU
 public class Menu : MonoBehaviour
 {
 
-    public string[] PrefabCloneName = new string[]
+    public static string[] PrefabCloneName = new string[]
     {
         "ButtonMenuOff(Clone)", "ButtonAddPoint(Clone)", "ButtonAddMidPoint(Clone)","ButtonAddLine(Clone)","ButtonAddCircle(Clone)",
-        "ButtonPointOnPoint(Clone)" ,"ButtonPointOnLine(Clone)","ButtonPointOnCircle(Clone)", 
+        "ButtonPointOnPoint(Clone)" ,"ButtonPointOnLine(Clone)","ButtonPointOnCircle(Clone)","ButtonIntersection(Clone)", 
         "ButtonIsom(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)", 
         "ButtonTangentL2C(Clone)", "ButtonTangentC2C(Clone)", 
         "ButtonFixPoint(Clone)", "ButtonDeletePoint(Clone)", "ButtonDeleteAll(Clone)", 
-        "ButtonUndo(Clone)", "ButtonRedo(Clone)", 
+        "ButtonUndo(Clone)", "ButtonRedo(Clone)", "ButtonShowLogs(Clone)",
         "ButtonSave(Clone)", "ButtonOpen(Clone)", "ButtonSave2TeX(Clone)", "ButtonQuit(Clone)"
 
 
@@ -66,6 +68,8 @@ public class Menu : MonoBehaviour
     private const string TextPOINT_ON_LINE1 = " 点を直線の上に載せる: 直線を選択.";
     private const string TextPOINT_ON_CIRCLE0 = " 点を円の上に載せる: 頂点を選択.";
     private const string TextPOINT_ON_CIRCLE1 = " 点を円の上に載せる: 円を選択.";
+    private const string TextINTERSECTION0 = "交点を追加：一つ選択";
+    private const string TextINTERSECTION1 = "交点を追加：もう一つ選択";
     private const string TextLINES_ISOMETRY0 = " ２直線を同じ長さにする: 直線を選択.";
     private const string TextLINES_ISOMETRY1 = " ２直線を同じ長さにする: もう一つ直線を選択.";
     private const string TextLINES_PERPENDICULAR0 = " ２直線を直交させる: 直線を選択.";
@@ -233,6 +237,16 @@ public class Menu : MonoBehaviour
                     GUILabel(TextPOINT_ON_CIRCLE1);
                 }
                 break;
+            case MENU.INTERSECTION:// どこかに挿入.
+                if (AppMgr.ModeStep == 0)
+                {
+                    GUILabel(TextINTERSECTION0);
+                }
+                else
+                {
+                    GUILabel(TextINTERSECTION1);
+                }
+                break;
             case MENU.LINES_ISOMETRY:// make two lines isometry
                 if (AppMgr.ModeStep == 0)
                 {
@@ -319,6 +333,7 @@ public class Menu : MonoBehaviour
                 go[i].name == "ButtonPointOnPoint(Clone)" ||
                 go[i].name == "ButtonPointOnLine(Clone)" ||
                 go[i].name == "ButtonPointOnCircle(Clone)" ||
+                go[i].name == "ButtonIntersection(Clone)"||
                 go[i].name == "ButtonIsom(Clone)" ||
                 go[i].name == "ButtonPerp(Clone)" ||
                 go[i].name == "ButtonPara(Clone)" ||
@@ -329,6 +344,7 @@ public class Menu : MonoBehaviour
                 go[i].name == "ButtonDeleteAll(Clone)" ||
                 go[i].name == "ButtonUndo(Clone)" ||
                 go[i].name == "ButtonRedo(Clone)" ||
+                go[i].name == "ButtonShowLogs(Clone)" ||
                 go[i].name == "ButtonSave(Clone)" ||
                 go[i].name == "ButtonOpen(Clone)" ||
                 go[i].name == "ButtonSave2TeX(Clone)" ||
@@ -350,6 +366,7 @@ public class Menu : MonoBehaviour
         CreatePointOnPointButton();
         CreatePointOnLineButton();
         CreatePointOnCircleButton();
+        CreateIntersectionButton();
         CreateIsomButton();
         CreatePerpButton();
         CreateParaButton();
@@ -360,6 +377,7 @@ public class Menu : MonoBehaviour
         CreateDeleteAllButton();
         CreateUndoButton();
         CreateRedoButton();
+        CreateShowLogsButton();
         CreateSaveButton();
         CreateOpenButton();
         CreateSaveToTeXButton();
@@ -454,6 +472,14 @@ public class Menu : MonoBehaviour
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
+    public void CreateIntersectionButton()// CreatePointOnCircleButton()の後に挿入
+    {
+        // Intersection button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonIntersection");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 2, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+    }
+
     public void CreateIsomButton()
     {
         // isom button
@@ -529,6 +555,14 @@ public class Menu : MonoBehaviour
         // Redo button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonRedo");
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 6, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+    }
+
+    public void CreateShowLogsButton()
+    {
+        // Redo button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonShowLogs");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 6, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 

@@ -96,6 +96,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     private int MouseOnPoints(Vector3 v)
     {
+        Point pt = null;
         if (pts == null) return -1;
         for (int i = 0; i < pts.Length; i++)
         {
@@ -103,10 +104,23 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             //Debug.Log("dist - " + dist);
             if (dist < 0.25)
             {
-                return pts[i].Id;
+                if (pts[i].Fixed)
+                {
+                    return pts[i].Id;
+                }
+                else
+                {
+                    pt = pts[i];
+                }
             }
         }
-        return -1;
+        if(pt == null) { 
+            return -1;
+        }
+        else
+        {
+            return pt.Id;
+        }
     }
 
     private int MouseOnLines(Vector3 v)
@@ -148,15 +162,17 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         for(int i=0; i<Util.logs.Count; i++)
         {
             Log lg  = Util.logs[i];
-            if (lg.Position.x + 1.0f < v.x && v.x < lg.Position.x + 1.5f
-                && lg.Position.y  < v.y && v.y < lg.Position.y + 0.5)
-            {
-                return i + 4500;
-            }
-            if (lg.Position.x-1.5f < v.x && v.x < lg.Position.x+1.5f 
-                && lg.Position.y-0.5 < v.y && v.y < lg.Position.y + 0.5)
-            {
-                return i+4000;
+            if (lg.Show) {
+                if (lg.Position.x + 1.0f < v.x && v.x < lg.Position.x + 1.5f
+                    && lg.Position.y < v.y && v.y < lg.Position.y + 0.5)
+                {
+                    return i + 4500;
+                }
+                if (lg.Position.x - 1.5f < v.x && v.x < lg.Position.x + 1.5f
+                    && lg.Position.y - 0.5 < v.y && v.y < lg.Position.y + 0.5)
+                {
+                    return i + 4000;
+                }
             }
         }
         return -1;
@@ -189,6 +205,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         int MOL = MouseOnGameLog(v);// マウスがログの上にあるかどうかのチェック
         if(MOL != -1)
         {
+            Debug.Log("MOL = "+MOL);
             return MOL;//ログの上にある時が優先
         }
         int MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
@@ -287,6 +304,15 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Debug.Log("redo (key)");
             Mode = MENU.REDO;
             Util.Redo();
+            Mode = 0;
+            ModeStep = 0;
+            MenuOn = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            Debug.Log("Show/Hide logs (key)");
+
+            Mode = MENU.ADD_POINT;
             Mode = 0;
             ModeStep = 0;
             MenuOn = false;
@@ -716,6 +742,37 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
     }
 
+    private void MakeIntersection(int MOP)
+    {
+        if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
+        {//モード６ステップ０ならば，「一つ目の線」をFirstClickIdに記録
+            Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 0 && 2000 <= MOP && MOP < 3000)
+        {//ステップ０ならば，「一つ目の円」をFirstClickIdに記録
+            Circle.MakeOneCircleSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 1000 <= MOP && MOP < 2000)
+        {//ステップ1ならば，「2つ目の線」をSecondClickIdに記録
+            Line.AddOneLineSelected(MOP);//クリックしたラインのみを選択
+            SecondClickId = MOP;
+            ModeStep = 0;
+            // あとなにかする
+        }
+        else if (ModeStep == 1 && 2000 <= MOP && MOP < 3000)
+        {//ステップ1ならば，「2つ目の円」をSecondClickIdに記録
+            Line.AddOneLineSelected(MOP);//クリックした円のみを選択
+            SecondClickId = MOP;
+            ModeStep = 0;
+            // あとなにかする
+        }
+
+    }
+
     private void MakeTwoLinesIsometry(int MOP)
     {
         if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
@@ -1126,6 +1183,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     MOP = AddNewPoint();
                     MakeAPointOnCircle(MOP);
                 }
+
+                //ここに何かを書く
+
                 else if (Mode == MENU.ADD_CIRCLE && ModeStep == 0)
                 {//円を描く。から打ちして場所を決める。
                     MOP = AddNewPoint();
