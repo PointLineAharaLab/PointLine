@@ -21,6 +21,7 @@ public class MENU
     public const int LINES_ISOMETRY = 6;
     public const int LINES_PERPENDICULAR = 7;
     public const int LINES_PARALLEL = 8;
+    public const int ANGLE = 23;
     public const int CIRCLE_TANGENT_LINE = 9;
     public const int CIRCLE_TANGENT_CIRCLE = 10;
     public const int FIX_POINT = 11;
@@ -44,7 +45,7 @@ public class Menu : MonoBehaviour
     {
         "ButtonMenuOff(Clone)", "ButtonAddPoint(Clone)", "ButtonAddMidPoint(Clone)","ButtonAddLine(Clone)","ButtonAddCircle(Clone)",
         "ButtonPointOnPoint(Clone)" ,"ButtonPointOnLine(Clone)","ButtonPointOnCircle(Clone)","ButtonIntersection(Clone)", 
-        "ButtonIsom(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)", 
+        "ButtonIsom(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)","ButtonAngle(Clone)" ,
         "ButtonTangentL2C(Clone)", "ButtonTangentC2C(Clone)", 
         "ButtonFixPoint(Clone)", "ButtonDeletePoint(Clone)", "ButtonDeleteAll(Clone)", 
         "ButtonUndo(Clone)", "ButtonRedo(Clone)", "ButtonShowLogs(Clone)",
@@ -76,6 +77,9 @@ public class Menu : MonoBehaviour
     private const string TextLINES_PERPENDICULAR1 = " ２直線を直交させる: もう一つ直線を選択.";
     private const string TextLINES_PARALLEL0 = " ２直線を平行にする: 直線を選択.";
     private const string TextLINES_PARALLEL1 = " ２直線を平行にする: もう一つ直線を選択.";
+    private const string TextANGLE0 = " 角度を指定する: 頂点を選択.";
+    private const string TextANGLE1 = " 角度を指定する: もう一つ頂点を選択.";
+    private const string TextANGLE2 = " 角度を指定する: さらに頂点を選択.";
     private const string TextCIRLCE_TANGENT_LINE0 = " 円を直線に接させる: 円を選択.";
     private const string TextCIRLCE_TANGENT_LINE1 = " 円を直線に接させる: 直線を選択.";
     private const string TextCIRLCE_TANGENT_CIRCLE0 = " 円を円に接させる: 円を選択.";
@@ -277,6 +281,20 @@ public class Menu : MonoBehaviour
                     GUILabel(TextLINES_PARALLEL1);
                 }
                 break;
+            case MENU.ANGLE:
+                if (AppMgr.ModeStep == 0)
+                {
+                    GUILabel(TextANGLE0);
+                }
+                else if (AppMgr.ModeStep == 1)
+                {
+                    GUILabel(TextANGLE1);
+                }
+                else
+                {
+                    GUILabel(TextANGLE2);
+                }
+                break;
             case MENU.CIRCLE_TANGENT_LINE:// make a circle tangent to a line
                 if (AppMgr.ModeStep == 0)
                 {
@@ -337,6 +355,7 @@ public class Menu : MonoBehaviour
                 go[i].name == "ButtonIsom(Clone)" ||
                 go[i].name == "ButtonPerp(Clone)" ||
                 go[i].name == "ButtonPara(Clone)" ||
+                go[i].name == "ButtonAngle(Clone)" ||
                 go[i].name == "ButtonTangentL2C(Clone)" ||
                 go[i].name == "ButtonTangentC2C(Clone)" ||
                 go[i].name == "ButtonFixPoint(Clone)" ||
@@ -370,6 +389,7 @@ public class Menu : MonoBehaviour
         CreateIsomButton();
         CreatePerpButton();
         CreateParaButton();
+        CreateAngleButton();
         CreateTangentL2CButton();
         CreateTangentC2CButton();
         CreateFixPointButton();
@@ -501,6 +521,14 @@ public class Menu : MonoBehaviour
         // para button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonPara");
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+    }
+
+    public void CreateAngleButton()
+    {
+        // angle button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAngle");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 3, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 

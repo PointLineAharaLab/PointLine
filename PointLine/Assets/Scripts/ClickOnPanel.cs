@@ -18,6 +18,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     private int FirstClickId=-1;
     private Vector3 FirstClickVec = Vector3.zero;
     private int SecondClickId=-1;
+    private int ThirdClickId = -1;
 
     string FirstKey="";
 
@@ -875,7 +876,34 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
     }
 
-    private void MakeCircleTangentLine(int MOP)
+    private void MakeThreePointAngle(int MOP)
+    {
+        if (ModeStep == 0 && 0 <= MOP && MOP < 1000)
+        {//アングルモード、ステップ０ならば，「一つ目の点」をFirstClickIdに記録
+            Point.AllPointsUnselected();
+            Point.AddOnePointSelected(MOP);//クリックした点を選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 0 <= MOP && MOP < 1000)
+        {//アングルモード、ステップ1ならば，「２つ目の点」をSecondClickIdに記録
+            Point.AddOnePointSelected(MOP);//クリックした点のみを選択
+            SecondClickId = MOP;
+            ModeStep = 2;
+        }
+        else if (ModeStep == 2 && 0 <= MOP && MOP < 1000)
+        {//アングルモード,ステップ２ならば，「3つ目の線」をThirdClickIdに記録
+            Point.AddOnePointSelected(MOP);//クリックした点を選択
+            ThirdClickId = MOP;
+            // 新しいモジュールの追加
+            Module MD = Util.AddModule(MENU.ANGLE, FirstClickId, SecondClickId, ThirdClickId, ModuleId++);
+            MD.Constant = Mathf.PI / 3f;// 定数をプリセット
+            Mode = MENU.ANGLE;
+            ModeStep = 0;
+        }
+    }
+
+        private void MakeCircleTangentLine(int MOP)
     {
         if (ModeStep == 0 && 2000 <= MOP && MOP < 3000)
         {//モード９ステップ０ならば，「一つ目の円」をFirstClickIdに記録

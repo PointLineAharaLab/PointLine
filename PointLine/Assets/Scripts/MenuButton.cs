@@ -18,7 +18,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
 #if JAPANESE
         " メニューから出る " , " 点追加 ",  " 中点追加(AM) ", " 直線追加(AL) ", " 円追加(AC) ", // 0 - 4
         " ほかの頂点に点を載せる(PP) ", " 直線に点を載せる(PL) ", " 円に点を載せる(PC) ","交点を追加",// 5 - 7
-        " 2直線を等長に(LI) ", " 2直線を垂直に(LP) ", " 2直線を平行に(LQ) ", // 8 - 10
+        " 2直線を等長に(LI) ", " 2直線を垂直に(LP) ", " 2直線を平行に(LQ) ","角度", // 8 - 10
         " 円を直線に接させる(TL) ", " 円を他の円に接させる(TC) ",//11 - 12
         " 頂点を固定する(FP) ", " 頂点を消去する(DP) ", " すべて消去する(DA) ", //13 - 15
         " 戻る(Z) ", " 進む(Y) ",// 16, 17
@@ -207,6 +207,17 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
     {
         Debug.Log("Let two lines parallel(mouse)");
         AppMgr.Mode = MENU.LINES_PARALLEL;
+        AppMgr.ModeStep = 0;
+        AppMgr.MenuOn = false;
+        DestroyMenuOnUI();
+        CreateMenuOffUI();
+        AppMgr.DrawOn = true;
+    }
+
+    public void OnClickAngle()
+    {
+        Debug.Log("Set an angle(mouse)");
+        AppMgr.Mode = MENU.ANGLE;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
         DestroyMenuOnUI();
