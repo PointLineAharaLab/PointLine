@@ -1308,6 +1308,10 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 {// 点を一つ消去する
                     DeleteAPoint(MOP);
                 }
+                else if (Mode == MENU.ANGLE)
+                {//角度を決める三点を選ぶのに、点を選ぶ
+                    MakeThreePointAngle(MOP);
+                }
             }
             else if (1000 <= MOP && MOP < 2000)
             {// ラインの上をクリック

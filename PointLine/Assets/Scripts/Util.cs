@@ -241,6 +241,8 @@ public class Util
                 return "円 - 円";
             case MENU.ADD_MIDPOINT:
                 return "中点";//"内分点"
+            case MENU.ANGLE:
+                return "角度";
         }
         return "";
     }

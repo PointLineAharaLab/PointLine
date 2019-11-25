@@ -718,6 +718,93 @@ public class Module : MonoBehaviour {
 
     }
 
+    private void ModuleANGLE()
+    {
+        gameObject.SetActive(Active);
+        if (Object1 == null || Object2 == null || Object3 == null)
+        {
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Point PT = OBJs[i].GetComponent<Point>();
+                if (PT != null)
+                {
+                    if (PT.Id == Object1Id)
+                    {
+                        Object1 = OBJs[i];
+                    }
+                    if (PT.Id == Object2Id)
+                    {
+                        Object2 = OBJs[i];
+                    }
+                    if (PT.Id == Object3Id)
+                    {
+                        Object3 = OBJs[i];
+                    }
+                }
+            }
+            if (Object1 == null || Object2 == null || Object3 == null) Active = false;
+        }
+        Point PA = Object1.GetComponent<Point>();
+        Point PB = Object2.GetComponent<Point>();
+        Point PC = Object3.GetComponent<Point>();
+        if (PA == null || PB == null || PC == null)
+        {
+            Active = false;
+            return;
+        }
+        {
+            float Ax = PA.Vec.x, Ay = PA.Vec.y;
+            float Bx = PB.Vec.x, By = PB.Vec.y;
+            float Cx = PC.Vec.x, Cy = PC.Vec.y;
+            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
+            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+            float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+            if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
+            if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
+            float Angle = DeclineBC - DeclineBA;
+            float AngleError = (Angle - Constant) * 0.1f;
+            if (Angle < 0f)
+            {
+                AngleError = (Angle + Constant) * 0.1f;
+            }
+            float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
+            float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
+            float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
+            float NewBy = (Bx - MidABx) * Mathf.Sin(AngleError) + (By - MidABy) * Mathf.Cos(AngleError) + MidABy;
+            Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
+            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+            PA.Vec = newPAVec;
+            PB.Vec = newPBVec;
+        }
+        {
+            float Ax = PA.Vec.x, Ay = PA.Vec.y;
+            float Bx = PB.Vec.x, By = PB.Vec.y;
+            float Cx = PC.Vec.x, Cy = PC.Vec.y;
+            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
+            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+            float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+            if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
+            if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
+            float Angle = DeclineBC - DeclineBA;
+            float AngleError = (Angle - Constant) * 0.1f;
+            if (Angle < 0f)
+            {
+                AngleError = (Angle + Constant) * 0.1f;
+            }
+            float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+            float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+            float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+            float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+            Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
+            PB.Vec = newPBVec;
+            PC.Vec = newPCVec;
+        }
+    }
+
     public void ExecuteModule()
     {
         if (!Active) return;
@@ -748,6 +835,9 @@ public class Module : MonoBehaviour {
                 break;
             case MENU.ADD_MIDPOINT:
                 ModuleADD_MIDPOINT();
+                break;
+            case MENU.ANGLE:
+                ModuleANGLE();
                 break;
         }
     }

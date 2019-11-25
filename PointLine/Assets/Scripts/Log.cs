@@ -201,6 +201,12 @@ public class Log : MonoBehaviour
                     Text2 = GetPNameByParentObject(Object3) + "は" + GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "の内分点";
                 }
             }
+            else if (PName == "角度" && Object3 != null)
+            {
+                float angle = Mathf.FloorToInt(Constant * 180f / Mathf.PI * 10) * 0.1f;
+                Text1 += (angle + "度");
+                Text2 = "角" + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
+            }
             else
             { 
                 Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2);
