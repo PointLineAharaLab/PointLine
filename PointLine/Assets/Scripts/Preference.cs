@@ -19,6 +19,7 @@ public class Preference : MonoBehaviour
     public string ObjectType = "";
     public string ObjectName = "";
     public string CoordX="", CoordY="";
+    string AngleConstant = "";
     public bool Fixed = false;
     public bool Delete = false;
     public Log LogParent = null;
@@ -54,6 +55,10 @@ public class Preference : MonoBehaviour
                 CoordX = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio1) / 10f;
                 CoordY = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio2) / 10f;
             }
+            else if (ObjectName == "角度")
+            {
+                AngleConstant = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Constant *180f/Mathf.PI) / 10f;
+            }
         }
     }
 
@@ -77,6 +82,10 @@ public class Preference : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 設定ダイアログの内容設定
+    /// </summary>
+    /// <param name="id"></param>
     private void WindowProc(int id)
     {
         Vector3 Pos = Position;
@@ -215,6 +224,14 @@ public class Preference : MonoBehaviour
                     CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
                     Top += Step;
                 }
+                else if (ObjectName == "角度")
+                {
+                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "角度", LabelStyle);
+                    AngleConstant = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
+                    Top += Step;
+                }
+
+
                 if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
                 {
                     Module md = LogParent.parent.GetComponent<Module>();
@@ -234,6 +251,11 @@ public class Preference : MonoBehaviour
                         Module md = LogParent.parent.GetComponent<Module>();
                         md.Ratio1 = float.Parse(CoordX);
                         md.Ratio2 = float.Parse(CoordY);
+                    }
+                    else if (ObjectName == "角度")
+                    {
+                        Module md = LogParent.parent.GetComponent<Module>();
+                        md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
                     }
                 }
             }
