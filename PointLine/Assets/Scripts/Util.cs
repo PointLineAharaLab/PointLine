@@ -295,6 +295,22 @@ public class Util
             obj.Object1Id = first;
             obj.Object2Id = second;
             obj.parent = g;
+            obj.RightAngle = true;
+        }
+        return obj;
+    }
+    public static AngleMark AddAngleMark(int first, int second, int third)// omit 'Id'
+    {//
+        Prefab = Resources.Load<GameObject>("Prefabs/AngleMark");
+        GameObject g = AngleMark.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity);
+        AngleMark obj = g.GetComponent<AngleMark>();
+        if (obj != null)
+        {
+            obj.Object1Id = first;
+            obj.Object2Id = second;
+            obj.Object3Id = third;
+            obj.parent = g;
+            obj.RightAngle = false;
         }
         return obj;
     }

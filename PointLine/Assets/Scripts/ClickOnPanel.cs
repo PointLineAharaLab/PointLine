@@ -898,6 +898,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             // 新しいモジュールの追加
             Module MD = Util.AddModule(MENU.ANGLE, FirstClickId, SecondClickId, ThirdClickId, ModuleId++);
             MD.Constant = Mathf.PI / 3f;// 定数をプリセット
+            //新たな直角マークの追加
+            Util.AddAngleMark(FirstClickId, SecondClickId, ThirdClickId);
             Mode = MENU.ANGLE;
             ModeStep = 0;
         }

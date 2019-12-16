@@ -10,10 +10,12 @@ public class AngleMark : MonoBehaviour {
 
     public int Object1Id = -1;
     public int Object2Id = -1;
-    public GameObject Object1, Object2;
-
+    public int Object3Id = -1;
+    public GameObject Object1, Object2, Object3;
     public GameObject parent = null;
     public bool Active = true;
+
+    public bool RightAngle = true;
 
 	// Use this for initialization
 	void Start () {
@@ -23,14 +25,46 @@ public class AngleMark : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         gameObject.SetActive(Active);
-        GetOrigine();
+        GetOrigine();//Origin, UnitX, UnitYを決める
         LineRenderer lr = GetComponent<LineRenderer>();
-        //lr.positionCount = 4;
-        lr.SetPosition(0, Origine);
-        lr.SetPosition(1, Origine+UnitX);
-        lr.SetPosition(2, Origine+UnitX+UnitY);
-        lr.SetPosition(3, Origine+UnitY);
-        lr.loop = true;
+        if (RightAngle)
+        {
+            //lr.positionCount = 4;
+            lr.SetPosition(0, Origine);
+            lr.SetPosition(1, Origine + UnitX);
+            lr.SetPosition(2, Origine + UnitX + UnitY);
+            lr.SetPosition(3, Origine + UnitY);
+            lr.loop = true;
+        }
+        else // 円弧による角度のマークを描画
+             // 180度より小さいほうにマークをつける
+        {
+            float DeclineX = Mathf.Atan2(UnitX.y, UnitX.x);// UnitXの偏角
+            float DeclineY = Mathf.Atan2(UnitY.y, UnitY.x);// UnitYの偏角
+            if (DeclineX <= DeclineY && DeclineY < DeclineX + Mathf.PI)
+            {
+            }
+            else if (DeclineX + Mathf.PI <= DeclineY)
+            {
+                DeclineX += Mathf.PI * 2f;
+            }
+            else if (DeclineX - Mathf.PI <= DeclineY && DeclineY < DeclineX)
+            {
+            }
+            else if (DeclineY < DeclineX - Mathf.PI)
+            {
+                DeclineY += Mathf.PI * 2f;
+            }
+            lr.positionCount = Mathf.CeilToInt(Mathf.Abs(DeclineX - DeclineY) / 0.1f);// 0.1 radian = 6 degree
+            for (int i = 0; i < lr.positionCount; i++)
+            {
+                float t = 1f * i / (lr.positionCount - 1);
+                float theta = DeclineX * (1f - t) + DeclineY * (t);
+                Vector3 pos = 0.5f * new Vector3(Mathf.Cos(theta), Mathf.Sin(theta), 0f);
+                lr.SetPosition(i, Origine + pos);
+            }
+            lr.loop = false;//ループにしない
+        }
 
     }
 
@@ -77,49 +111,90 @@ public class AngleMark : MonoBehaviour {
 
     void GetOrigine()
     {
-        if(Object1 != null && Object2 != null)
+        if (RightAngle)
         {
-            Line LN1 = Object1.GetComponent<Line>();
-            Line LN2 = Object2.GetComponent<Line>();
-            if(LN1 == null || LN2 == null)
+            if (Object1 != null && Object2 != null)
             {
-                Active = false;
-                return;
+                Line LN1 = Object1.GetComponent<Line>();
+                Line LN2 = Object2.GetComponent<Line>();
+                if (LN1 == null || LN2 == null)
+                {
+                    Active = false;
+                    return;
+                }
+                Point p11 = LN1.Point1.GetComponent<Point>();
+                Point p12 = LN1.Point2.GetComponent<Point>();
+                Point p21 = LN2.Point1.GetComponent<Point>();
+                Point p22 = LN2.Point2.GetComponent<Point>();
+                if (p11 == null || p12 == null || p21 == null || p22 == null)
+                {
+                    Active = false;
+                    return;
+                }
+                GetIntersection(
+                    p11.Vec.x, p11.Vec.y,
+                    p12.Vec.x, p12.Vec.y,
+                    p21.Vec.x, p21.Vec.y,
+                    p22.Vec.x, p22.Vec.y);
             }
-            Point p11 = LN1.Point1.GetComponent<Point>();
-            Point p12 = LN1.Point2.GetComponent<Point>();
-            Point p21 = LN2.Point1.GetComponent<Point>();
-            Point p22 = LN2.Point2.GetComponent<Point>();
-            if (p11 == null || p12 == null || p21 == null || p22 == null)
+            else
             {
-                Active = false;
-                return;
+                GameObject[] OBJs = FindObjectsOfType<GameObject>();
+                for (int i = 0; i < OBJs.Length; i++)
+                {
+                    Line LN = OBJs[i].GetComponent<Line>();
+                    if (LN != null)
+                    {
+                        if (LN.Id == Object1Id)
+                        {
+                            Object1 = OBJs[i];
+                        }
+                        if (LN.Id == Object2Id)
+                        {
+                            Object2 = OBJs[i];
+                        }
+                    }
+                }
+                if (Object1 == null || Object2 == null) Active = false;
             }
-            GetIntersection(
-                p11.Vec.x, p11.Vec.y, 
-                p12.Vec.x, p12.Vec.y, 
-                p21.Vec.x, p21.Vec.y, 
-                p22.Vec.x, p22.Vec.y);
         }
         else
         {
-            GameObject[] OBJs = FindObjectsOfType<GameObject>();
-            for (int i = 0; i < OBJs.Length; i++)
+            if (Object1 != null && Object2 != null && Object3 != null)
             {
-                Line LN = OBJs[i].GetComponent<Line>();
-                if (LN != null)
+                Point Point1 = Object1.GetComponent<Point>();
+                Point Point2 = Object2.GetComponent<Point>();
+                Point Point3 = Object3.GetComponent<Point>();
+                Origine = Point2.Vec;
+                UnitX = Point1.Vec - Origine;
+                UnitX.Normalize();// 長さ１（不要か？）
+                UnitY = Point3.Vec - Origine;
+                UnitY.Normalize();// 長さ１（不要か？）
+            }
+            else
+            {
+                GameObject[] OBJs = FindObjectsOfType<GameObject>();
+                for (int i = 0; i < OBJs.Length; i++)
                 {
-                    if (LN.Id == Object1Id)
+                    Point PT = OBJs[i].GetComponent<Point>();
+                    if (PT != null)
                     {
-                        Object1 = OBJs[i];
-                    }
-                    if (LN.Id == Object2Id)
-                    {
-                        Object2 = OBJs[i];
+                        if (PT.Id == Object1Id)
+                        {
+                            Object1 = OBJs[i];
+                        }
+                        if (PT.Id == Object2Id)
+                        {
+                            Object2 = OBJs[i];
+                        }
+                        if (PT.Id == Object3Id)
+                        {
+                            Object3 = OBJs[i];
+                        }
                     }
                 }
+                if (Object1 == null || Object2 == null || Object3 == null) Active = false;
             }
-            if (Object1 == null || Object2 == null) Active = false;
         }
     }
 }
