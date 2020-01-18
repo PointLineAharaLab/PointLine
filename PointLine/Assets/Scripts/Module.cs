@@ -775,8 +775,10 @@ public class Module : MonoBehaviour {
             float NewBy = (Bx - MidABx) * Mathf.Sin(AngleError) + (By - MidABy) * Mathf.Cos(AngleError) + MidABy;
             Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
             Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
-            PA.Vec = newPAVec;
-            PB.Vec = newPBVec;
+            if (!PA.Fixed)
+                PA.Vec = newPAVec;
+            if (!PB.Fixed)
+                PB.Vec = newPBVec;
         }
         {
             float Ax = PA.Vec.x, Ay = PA.Vec.y;
@@ -800,8 +802,10 @@ public class Module : MonoBehaviour {
             float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
             Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
             Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
-            PB.Vec = newPBVec;
-            PC.Vec = newPCVec;
+            if (!PB.Fixed)
+                PB.Vec = newPBVec;
+            if (!PC.Fixed)
+                PC.Vec = newPCVec;
         }
     }
 
