@@ -27,6 +27,11 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     public static float WorldHeight;
 
+    // OnMouseDrag
+    float DraggedGameLogStartTop = 0f;
+    Vector3 DraggedPreferencePosition;
+    Vector3 PreviousMouseDragPosition;
+
     // Use this for initialization
     void Start()
     {
@@ -75,6 +80,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {
             OnMouseDrag();
         }
+        OnKeyCommand();
         //else if (Input.GetMouseButtonUp(0))
         //{
         //    print("mousebuttonup 0");
@@ -263,7 +269,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {
             OnKeyDelete();
         }
-
     }
 
     void OnKeyFirst() {
@@ -420,6 +425,60 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
     }
 
+    void OnKeyCommand()
+    {
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetAxis("Mouse ScrollWheel")>0)
+        {//拡大
+            Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pts = FindObjectsOfType<Point>();
+            for(int i=0; i<pts.Length; i++)
+            {
+                Point pt = pts[i];
+                Vector3 NewVec = 1.05f * (pt.Vec - MousePosition) + MousePosition;
+                pt.Vec = NewVec;
+            }
+        }
+        if (Input.GetKey(KeyCode.DownArrow) || Input.GetAxis("Mouse ScrollWheel") < 0)
+        {//縮小 
+            Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pts = FindObjectsOfType<Point>();
+            for (int i = 0; i < pts.Length; i++)
+            {
+                Point pt = pts[i];
+                Vector3 NewVec = 0.96f * (pt.Vec - MousePosition) + MousePosition;
+                pt.Vec = NewVec;
+            }
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {//右へ回す
+            Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pts = FindObjectsOfType<Point>();
+            float angle = -0.025f;
+            for (int i = 0; i < pts.Length; i++)
+            {
+                Point pt = pts[i];
+                float x = pt.Vec.x - MousePosition.x;
+                float y = pt.Vec.y - MousePosition.y;
+                Vector3 NewVec = new Vector3(Mathf.Cos(angle) * x - Mathf.Sin(angle) * y , Mathf.Sin(angle) * x + Mathf.Cos(angle) * y) ;
+                pt.Vec = NewVec + MousePosition;
+            }
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {//左へ回す
+            Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pts = FindObjectsOfType<Point>();
+            float angle = 0.025f;
+            for (int i = 0; i < pts.Length; i++)
+            {
+                Point pt = pts[i];
+                float x = pt.Vec.x - MousePosition.x;
+                float y = pt.Vec.y - MousePosition.y;
+                Vector3 NewVec = new Vector3(Mathf.Cos(angle) * x - Mathf.Sin(angle) * y, Mathf.Sin(angle) * x + Mathf.Cos(angle) * y);
+                pt.Vec = NewVec + MousePosition;
+            }
+        }
+
+    }
     void OnKeyPoint()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -531,8 +590,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     }
 
 
-    float DraggedGameLogStartTop = 0f;
-    Vector3 DraggedPreferencePosition;
     public void OnMouseDown()
     {
         if (!DrawOn) return;
@@ -543,10 +600,14 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         //print(DraggedPointId);
         DraggedGameLogStartTop = Util.StartTop;
         DraggedPreferencePosition = PreferenceDialog.GetComponent<Preference>().Position;
+        PreviousMouseDragPosition = MouseDownVec;
     }
+
 
     public void OnMouseDrag()
     {
+        Vector3 MouseDragPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        MouseDragPosition.z = 0f;
         if (pts == null) return;
         if (!DrawOn) return;
         if (DraggedPointId != -1)
@@ -557,7 +618,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             {//プリファレンスダイアログをドラッグ
                 PreferenceDialog.GetComponent<Preference>().Position = DraggedPreferencePosition + v3 - MouseDownVec;
                 PreferenceDialog.GetComponent<Preference>().SetScreenPosition();
-
             }
             if (DraggedPointId >= 4000 && DraggedPointId<5000)
             {// ログをドラッグ
@@ -583,6 +643,17 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     }
                 }
             }
+        }
+        else
+        {//空ドラッグ→画面全体の平行移動
+            pts = FindObjectsOfType<Point>();
+            for(int i=0; i<pts.Length; i++)
+            {
+                Point pt = pts[i];
+                pt.Vec += (MouseDragPosition - PreviousMouseDragPosition);
+            }
+            PreviousMouseDragPosition = MouseDragPosition;
+
         }
     }
 
