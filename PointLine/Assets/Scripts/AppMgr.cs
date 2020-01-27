@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AppMgr : MonoBehaviour {
+    /// <summary>
+    /// Language
+    /// </summary>
+    public static int Japanese = 0;
+    /// 
 
     public static int Mode = 0;
     public static int ModeStep = 0;
@@ -23,6 +28,7 @@ public class AppMgr : MonoBehaviour {
     public static Vector3 LeftBottom, RightUp;
 
     public GameObject LogFolder;
+
 
     // Use this for initialization
     void Start () {

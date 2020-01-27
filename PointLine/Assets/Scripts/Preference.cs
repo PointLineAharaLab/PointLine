@@ -100,42 +100,48 @@ public class Preference : MonoBehaviour
             float height = 28f;
             if(ObjectType == "Point")//点に関するプリファレンス
             {
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "点 "+ObjectName, LabelStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称 ", LabelStyle);
-                ObjectName = GUI.TextField(new Rect(Left+50, Top, DialogWidth-50, height), ObjectName, FieldStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "("+CoordX+","+CoordY+")", LabelStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
-                CoordX = GUI.TextField(new Rect(Left+40, Top, DialogWidth-40, height), CoordX, FieldStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "Y: ", LabelStyle);
-                CoordY = GUI.TextField(new Rect(Left+40, Top, DialogWidth-40, height), CoordY, FieldStyle);
-                Top += Step;
-                if (Fixed)
-                {
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
-                    if(GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "可動にする", ButtonStyle))
-                    {
-                        Fixed = false;
-                    }
-                    Top += Step;
+                if (AppMgr.Japanese==1) {// Japanese
+                    PointPreferenceJapanese(Left, Top, Step, height);
                 }
-                else
+                else//English
                 {
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
-                    if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "固定にする", ButtonStyle))
-                    {
-                        Fixed = true;
-                    }
+                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "Point " + ObjectName, LabelStyle);
                     Top += Step;
-                }
-                if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
-                {
-                    Point pt = LogParent.parent.GetComponent<Point>();
-                    DeleteAPoint(pt.Id);
-                    show = false;
+                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "Name ", LabelStyle);
+                    ObjectName = GUI.TextField(new Rect(Left + 60, Top, DialogWidth - 60, height), ObjectName, FieldStyle);
+                    Top += Step;
+                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "(" + CoordX + "," + CoordY + ")", LabelStyle);
+                    Top += Step;
+                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
+                    CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
+                    Top += Step;
+                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "Y: ", LabelStyle);
+                    CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
+                    Top += Step;
+                    if (Fixed)
+                    {
+                        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LabelStyle);
+                        if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Free", ButtonStyle))
+                        {
+                            Fixed = false;
+                        }
+                        Top += Step;
+                    }
+                    else
+                    {
+                        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Free", LabelStyle);
+                        if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "Fixed", ButtonStyle))
+                        {
+                            Fixed = true;
+                        }
+                        Top += Step;
+                    }
+                    if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+                    {
+                        Point pt = LogParent.parent.GetComponent<Point>();
+                        DeleteAPoint(pt.Id);
+                        show = false;
+                    }
                 }
                 Top += Step;
                 if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
@@ -262,6 +268,8 @@ public class Preference : MonoBehaviour
 
         }
     }
+
+
 
     public void EnterKeyDownProc()
     {
@@ -593,4 +601,44 @@ public class Preference : MonoBehaviour
         AppMgr.ModeStep = 0;
     }
 
+
+    void    PointPreferenceJapanese(float Left, float Top, float Step, float height) {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "点 " + ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称 ", LabelStyle);
+        ObjectName = GUI.TextField(new Rect(Left + 50, Top, DialogWidth - 50, height), ObjectName, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "(" + CoordX + "," + CoordY + ")", LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Y: ", LabelStyle);
+        CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
+        Top += Step;
+        if (Fixed)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "可動にする", ButtonStyle))
+            {
+                Fixed = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "固定にする", ButtonStyle))
+            {
+                Fixed = true;
+            }
+            Top += Step;
+        }
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        {
+            Point pt = LogParent.parent.GetComponent<Point>();
+            DeleteAPoint(pt.Id);
+            show = false;
+        }
+    }
 }
