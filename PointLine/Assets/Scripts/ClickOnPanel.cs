@@ -212,7 +212,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         int MOL = MouseOnGameLog(v);// マウスがログの上にあるかどうかのチェック
         if(MOL != -1)
         {
-            Debug.Log("MOL = "+MOL);
+            //Debug.Log("MOL = "+MOL);
             return MOL;//ログの上にある時が優先
         }
         int MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック

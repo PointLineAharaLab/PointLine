@@ -18,7 +18,9 @@ public class Preference : MonoBehaviour
     float DialogWidth;
     public string ObjectType = "";
     public string ObjectName = "";
-    public string CoordX="", CoordY="";
+    public string ObjectEnglishName = "";
+    public string LogEnglishComment = "";
+    public string CoordX = "", CoordY = "";
     string AngleConstant = "";
     public bool Fixed = false;
     public bool Delete = false;
@@ -28,7 +30,7 @@ public class Preference : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        float PreferenceX = - (WorldHeight / Screen.height * Screen.width) + 1.5f;
+        float PreferenceX = -(WorldHeight / Screen.height * Screen.width) + 1.5f;
 
         Position = new Vector3(PreferenceX, 1.77f, -2f);
         GetScreenPosition(Position, out ScreenPosition);
@@ -44,8 +46,14 @@ public class Preference : MonoBehaviour
             CoordX = "" + Mathf.Round(1000f * lg.parent.GetComponent<Point>().Vec.x) / 1000f;
             CoordY = "" + Mathf.Round(1000f * lg.parent.GetComponent<Point>().Vec.y) / 1000f;
             Fixed = lg.parent.GetComponent<Point>().Fixed;
+            ObjectEnglishName = "Point";
         }
-        else if(ObjectType == "Circle"){
+        else if (ObjectType == "Line")
+        {
+
+        }
+        else if (ObjectType == "Circle")
+        {
             CoordX = "" + Mathf.Round(1000f * lg.parent.GetComponent<Circle>().Radius) / 1000f;
         }
         else if (ObjectType == "Module")
@@ -57,7 +65,7 @@ public class Preference : MonoBehaviour
             }
             else if (ObjectName == "角度")
             {
-                AngleConstant = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Constant *180f/Mathf.PI) / 10f;
+                AngleConstant = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Constant * 180f / Mathf.PI) / 10f;
             }
         }
     }
@@ -67,9 +75,9 @@ public class Preference : MonoBehaviour
     {
         rate = Screen.height / WorldHeight / 2f;
         //print(ClickOnPanel.WorldHeight);
-        float WorldWidth = Screen.width / rate / 2; 
-        q.x = ((p.x - 1.5f)+ WorldWidth ) * rate;
-        q.y = (-(p.y+2.25f)+WorldHeight ) * rate;
+        float WorldWidth = Screen.width / rate / 2;
+        q.x = ((p.x - 1.5f) + WorldWidth) * rate;
+        q.y = (-(p.y + 2.25f) + WorldHeight) * rate;
         q.z = 0f;
         DialogWidth = 3f * rate - 40;
     }
@@ -78,7 +86,7 @@ public class Preference : MonoBehaviour
     {
         if (show)
         {
-            GUI.Window(0, new Rect(ScreenPosition.x, ScreenPosition.y, 3f * rate, 300), WindowProc, "" ,WindowStyle);
+            GUI.Window(0, new Rect(ScreenPosition.x, ScreenPosition.y, 3f * rate, 300), WindowProc, "", WindowStyle);
         }
     }
 
@@ -94,182 +102,82 @@ public class Preference : MonoBehaviour
         transform.position = Pos;
         if (show)
         {
-            float Left =20f;
+            float Left = 20f;
             float Top = 15f;
             float Step = 30f;
             float height = 28f;
-            if(ObjectType == "Point")//点に関するプリファレンス
+            if (ObjectType == "Point")//点に関するプリファレンス
             {
-                if (AppMgr.Japanese==1) {// Japanese
+                if (AppMgr.Japanese == 1)
+                {// Japanese
                     PointPreferenceJapanese(Left, Top, Step, height);
                 }
                 else//English
                 {
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "Point " + ObjectName, LabelStyle);
-                    Top += Step;
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "Name ", LabelStyle);
-                    ObjectName = GUI.TextField(new Rect(Left + 60, Top, DialogWidth - 60, height), ObjectName, FieldStyle);
-                    Top += Step;
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "(" + CoordX + "," + CoordY + ")", LabelStyle);
-                    Top += Step;
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
-                    CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
-                    Top += Step;
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "Y: ", LabelStyle);
-                    CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
-                    Top += Step;
-                    if (Fixed)
-                    {
-                        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LabelStyle);
-                        if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Free", ButtonStyle))
-                        {
-                            Fixed = false;
-                        }
-                        Top += Step;
-                    }
-                    else
-                    {
-                        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Free", LabelStyle);
-                        if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "Fixed", ButtonStyle))
-                        {
-                            Fixed = true;
-                        }
-                        Top += Step;
-                    }
-                    if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
-                    {
-                        Point pt = LogParent.parent.GetComponent<Point>();
-                        DeleteAPoint(pt.Id);
-                        show = false;
-                    }
-                }
-                Top += Step;
-                if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
-                {
-                    show = false;
-                }
-                if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
-                {
-                    show = false;
-                    Point pt = LogParent.parent.GetComponent<Point>();
-                    pt.Fixed = Fixed;
-                    pt.Vec = new Vector3(float.Parse(CoordX),float.Parse(CoordY),0f);
-                    pt.PointName = ObjectName;
+                    PointPreferenceEnglish(Left, Top, Step, height);
                 }
             }
-            else if(ObjectType == "Line")
+            else if (ObjectType == "Line")
             {
-                Point pt1 = LogParent.GetComponent<Log>().Object1.GetComponent<Point>();
-                Point pt2 = LogParent.GetComponent<Log>().Object2.GetComponent<Point>();
-                float dist = (pt1.Vec - pt2.Vec).magnitude;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "線 " + ObjectName, LabelStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "辺長 "+Mathf.Round(dist*1000f)/1000f, LabelStyle);
-                Top += Step;
-                if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
-                {
-                    Line ln = LogParent.parent.GetComponent<Line>();
-                    DeleteALine(ln.Id);
-                    show = false;
+                if (AppMgr.Japanese == 1)
+                {// Japanese
+                    LinePreferenceJapanese(Left, Top, Step, height);
                 }
-                Top += Step;
-                if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+                else//English
                 {
-                    show = false;
+                    LinePreferenceEnglish(Left, Top, Step, height);
                 }
-                if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
-                {
-                    show = false;
-                }
-
             }
             else if (ObjectType == "Circle")
             {
-
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "円 " + ObjectName, LabelStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), "半径", LabelStyle);
-                CoordX = GUI.TextField(new Rect(Left +50, Top, DialogWidth - 50, height), CoordX, FieldStyle);
-                Top += Step;
-                if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
-                {
-                    Circle ci = LogParent.parent.GetComponent<Circle>();
-                    DeleteACircle(ci.Id);
-                    show = false;
+                if (AppMgr.Japanese == 1)
+                {// Japanese
+                    CirclePreferenceJapanese(Left, Top, Step, height);
                 }
-                Top += Step;
-                if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+                else//English
                 {
-                    show = false;
-                }
-                if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
-                {
-                    Circle ci = LogParent.parent.GetComponent<Circle>();
-                    ci.Radius = float.Parse(CoordX);
-                    show = false;
+                    CirclePreferenceEnglish(Left, Top, Step, height);
                 }
             }
             else if (ObjectType == "Module")
             {
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
-                Top += Step;
-                GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
-                Top += Step;
                 if (ObjectName == "中点")
                 {
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分比("+CoordX+","+CoordY+")", LabelStyle);
-                    Top += Step;
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
-                    CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
-                    Top += Step;
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
-                    CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
-                    Top += Step;
+                    if (AppMgr.Japanese == 1)
+                    {
+                        ModuleMidpointPreferenceJapanese(Left, Top, Step, height);
+                    }
+                    else
+                    {
+                        ModuleMidpointPreferenceEnglish(Left, Top, Step, height);
+                    }
                 }
                 else if (ObjectName == "角度")
                 {
-                    GUI.Label(new Rect(Left, Top, DialogWidth, height), "角度", LabelStyle);
-                    AngleConstant = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
-                    Top += Step;
-                }
-
-
-                if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
-                {
-                    Module md = LogParent.parent.GetComponent<Module>();
-                    DeleteAModule(md.Id);
-                    show = false;
-                }
-                Top += Step;
-                if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
-                {
-                    show = false;
-                }
-                if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
-                {
-                    show = false;
-                    if (ObjectName == "中点")
+                    if (AppMgr.Japanese == 1)
                     {
-                        Module md = LogParent.parent.GetComponent<Module>();
-                        md.Ratio1 = float.Parse(CoordX);
-                        md.Ratio2 = float.Parse(CoordY);
+                        ModuleAnglePreferenceJapanese(Left, Top, Step, height);
                     }
-                    else if (ObjectName == "角度")
+                    else
                     {
-                        Module md = LogParent.parent.GetComponent<Module>();
-                        md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+                        ModuleAnglePreferenceEnglish(Left, Top, Step, height);
+                    }
+                }
+                else 
+                {
+                    if (AppMgr.Japanese == 1)
+                    {
+                        ModulePreferenceJapanese(Left, Top, Step, height);
+                    }
+                    else
+                    {
+                        ModulePreferenceEnglish(Left, Top, Step, height);
                     }
                 }
             }
 
         }
     }
-
-
 
     public void EnterKeyDownProc()
     {
@@ -282,7 +190,7 @@ public class Preference : MonoBehaviour
             pt.PointName = ObjectName;
 
         }
-        else if(ObjectType == "Module")
+        else if (ObjectType == "Module")
         {
             show = false;
             if (ObjectName == "中点")
@@ -546,7 +454,7 @@ public class Preference : MonoBehaviour
         GameObject[] OBJs = FindObjectsOfType<GameObject>();
         if (OBJs != null)
         {
-            for (int i = 0; i <OBJs.Length; ++i)
+            for (int i = 0; i < OBJs.Length; ++i)
             {
                 Module md = OBJs[i].GetComponent<Module>();
                 if (md != null)
@@ -560,7 +468,7 @@ public class Preference : MonoBehaviour
                             ThinLine[] TLs = FindObjectsOfType<ThinLine>();
                             for (int j = 0; j < TLs.Length; j++)
                             {
-                                Debug.Log(TLs[j].PointId +","+ md.Object1Id +","+ TLs[j].LineId +","+ md.Object2Id);
+                                Debug.Log(TLs[j].PointId + "," + md.Object1Id + "," + TLs[j].LineId + "," + md.Object2Id);
                                 if (TLs[j].PointId == md.Object1Id && TLs[j].LineId == md.Object2Id)
                                 {
                                     Destroy(TLs[j].gameObject);
@@ -583,9 +491,9 @@ public class Preference : MonoBehaviour
                         else if (md.Type == MENU.LINES_ISOMETRY)
                         {
                             Line[] LNs = FindObjectsOfType<Line>();
-                            for(int j=0; j<LNs.Length; j++)
+                            for (int j = 0; j < LNs.Length; j++)
                             {
-                                if(LNs[j].Id == md.Object1Id || LNs[j].Id == md.Object2Id)
+                                if (LNs[j].Id == md.Object1Id || LNs[j].Id == md.Object2Id)
                                 {
                                     LNs[j].Isometry = -1;
                                 }
@@ -602,7 +510,8 @@ public class Preference : MonoBehaviour
     }
 
 
-    void    PointPreferenceJapanese(float Left, float Top, float Step, float height) {
+    void PointPreferenceJapanese(float Left, float Top, float Step, float height)
+    {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "点 " + ObjectName, LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称 ", LabelStyle);
@@ -640,5 +549,353 @@ public class Preference : MonoBehaviour
             DeleteAPoint(pt.Id);
             show = false;
         }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+            Point pt = LogParent.parent.GetComponent<Point>();
+            pt.Fixed = Fixed;
+            pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
+            pt.PointName = ObjectName;
+        }
     }
+
+    void PointPreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Point " + ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Name ", LabelStyle);
+        ObjectName = GUI.TextField(new Rect(Left + 60, Top, DialogWidth - 60, height), ObjectName, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "(" + CoordX + "," + CoordY + ")", LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Y: ", LabelStyle);
+        CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
+        Top += Step;
+        if (Fixed)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LabelStyle);
+            if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Free", ButtonStyle))
+            {
+                Fixed = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Free", LabelStyle);
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "Fixed", ButtonStyle))
+            {
+                Fixed = true;
+            }
+            Top += Step;
+        }
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        {
+            Point pt = LogParent.parent.GetComponent<Point>();
+            DeleteAPoint(pt.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+            Point pt = LogParent.parent.GetComponent<Point>();
+            pt.Fixed = Fixed;
+            pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
+            pt.PointName = ObjectName;
+        }
+    }
+
+    void LinePreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        Point pt1 = LogParent.GetComponent<Log>().Object1.GetComponent<Point>();
+        Point pt2 = LogParent.GetComponent<Log>().Object2.GetComponent<Point>();
+        float dist = (pt1.Vec - pt2.Vec).magnitude;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "線 " + ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "辺長 " + Mathf.Round(dist * 1000f) / 1000f, LabelStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        {
+            Line ln = LogParent.parent.GetComponent<Line>();
+            DeleteALine(ln.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+        }
+    }
+
+    void LinePreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        Point pt1 = LogParent.GetComponent<Log>().Object1.GetComponent<Point>();
+        Point pt2 = LogParent.GetComponent<Log>().Object2.GetComponent<Point>();
+        float dist = (pt1.Vec - pt2.Vec).magnitude;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Line " + ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Length " + Mathf.Round(dist * 1000f) / 1000f, LabelStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        {
+            Line ln = LogParent.parent.GetComponent<Line>();
+            DeleteALine(ln.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+        }
+    }
+    void CirclePreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "円 " + ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "半径", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + 50, Top, DialogWidth - 50, height), CoordX, FieldStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        {
+            Circle ci = LogParent.parent.GetComponent<Circle>();
+            DeleteACircle(ci.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            Circle ci = LogParent.parent.GetComponent<Circle>();
+            ci.Radius = float.Parse(CoordX);
+            show = false;
+        }
+    }
+
+    void CirclePreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Circle " + ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Radius ", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordX, FieldStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        {
+            Circle ci = LogParent.parent.GetComponent<Circle>();
+            DeleteACircle(ci.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            Circle ci = LogParent.parent.GetComponent<Circle>();
+            ci.Radius = float.Parse(CoordX);
+            show = false;
+        }
+    }
+
+    void ModuleMidpointPreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分比(" + CoordX + " : " + CoordY + ")", LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
+        CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            md.Ratio1 = float.Parse(CoordX);
+            md.Ratio2 = float.Parse(CoordY);
+        }
+    }
+    void ModuleMidpointPreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectEnglishName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio(" + CoordX + ":" + CoordY + ")", LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 1", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordX, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 2", LabelStyle);
+        CoordY = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordY, FieldStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            md.Ratio1 = float.Parse(CoordX);
+            md.Ratio2 = float.Parse(CoordY);
+        }
+    }
+
+    void ModuleAnglePreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "角度", LabelStyle);
+        AngleConstant = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+        }
+
+    }
+    void ModuleAnglePreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectEnglishName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Degree ", LabelStyle);
+        AngleConstant = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+        }
+
+    }
+    void ModulePreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+        }
+    }
+
+    void ModulePreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectEnglishName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        {
+            show = false;
+        }
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        {
+            show = false;
+        }
+    }
+
 }
