@@ -53,67 +53,38 @@ public class Menu : MonoBehaviour
 
 
     };
+    private  string TextADD_POINT0 = "メニュー ";
+    private  string TextADD_POINT1 = " クリックすれば点を追加できます． ";
+    private  string TextADD_MIDPOINT0 = " 中点を追加: 頂点を選択.";
+    private  string TextADD_MIDPOINT1 = " 中点を追加: もう一つ頂点を選択.";
+    private  string TextADD_LINE0 = " 直線を追加: 頂点を選択.";
+    private  string TextADD_LINE1 = " 直線を追加: もう一つ頂点を選択.";
+    private string TextADD_CIRCLE0 = " 円を追加: 頂点を選択.";
+    private string TextADD_CIRCLE1 = " 円を追加: 任意の場所をクリック";
+    private string TextPOINT_ON_POINT0 = " 点を点の上に載せる: 頂点を選択.";
+    private string TextPOINT_ON_POINT1 = " 点を点の上に載せる: もう一つ頂点を選択.";
+    private string TextPOINT_ON_LINE0 = " 点を直線の上に載せる: 頂点を選択.";
+    private string TextPOINT_ON_LINE1 = " 点を直線の上に載せる: 直線を選択.";
+    private string TextPOINT_ON_CIRCLE0 = " 点を円の上に載せる: 頂点を選択.";
+    private string TextPOINT_ON_CIRCLE1 = " 点を円の上に載せる: 円を選択.";
+    private string TextINTERSECTION0 = "交点を追加：一つ選択";
+    private string TextINTERSECTION1 = "交点を追加：もう一つ選択";
+    private string TextLINES_ISOMETRY0 = " ２直線を同じ長さにする: 直線を選択.";
+    private string TextLINES_ISOMETRY1 = " ２直線を同じ長さにする: もう一つ直線を選択.";
+    private  string TextLINES_PERPENDICULAR0 = " ２直線を直交させる: 直線を選択.";
+    private  string TextLINES_PERPENDICULAR1 = " ２直線を直交させる: もう一つ直線を選択.";
+    private  string TextLINES_PARALLEL0 = " ２直線を平行にする: 直線を選択.";
+    private  string TextLINES_PARALLEL1 = " ２直線を平行にする: もう一つ直線を選択.";
+    private  string TextANGLE0 = " 角度を指定する: 頂点を選択.";
+    private  string TextANGLE1 = " 角度を指定する: もう一つ頂点を選択.";
+    private  string TextANGLE2 = " 角度を指定する: さらに頂点を選択.";
+    private  string TextCIRLCE_TANGENT_LINE0 = " 円を直線に接させる: 円を選択.";
+    private  string TextCIRLCE_TANGENT_LINE1 = " 円を直線に接させる: 直線を選択.";
+    private  string TextCIRLCE_TANGENT_CIRCLE0 = " 円を円に接させる: 円を選択.";
+    private  string TextCIRLCE_TANGENT_CIRCLE1 = " 円を円に接させる: もう一つ円を選択.";
+    private  string TextFIX_POINT1 = " 点を固定する : 頂点を選択.";
+    private  string TextDELETE_POINT0 = " 点を消去する: 頂点を選択.";
 
-#if JAPANESE
-    private const string TextADD_POINT0 = "メニュー ";
-    private const string TextADD_POINT1 = " クリックすれば点を追加できます． ";
-    private const string TextADD_MIDPOINT0 = " 中点を追加: 頂点を選択.";
-    private const string TextADD_MIDPOINT1 = " 中点を追加: もう一つ頂点を選択.";
-    private const string TextADD_LINE0 = " 直線を追加: 頂点を選択.";
-    private const string TextADD_LINE1 = " 直線を追加: もう一つ頂点を選択.";
-    private const string TextADD_CIRCLE0 = " 円を追加: 頂点を選択.";
-    private const string TextADD_CIRCLE1 = " 円を追加: 任意の場所をクリック";
-    private const string TextPOINT_ON_POINT0 = " 点を点の上に載せる: 頂点を選択.";
-    private const string TextPOINT_ON_POINT1 = " 点を点の上に載せる: もう一つ頂点を選択.";
-    private const string TextPOINT_ON_LINE0 = " 点を直線の上に載せる: 頂点を選択.";
-    private const string TextPOINT_ON_LINE1 = " 点を直線の上に載せる: 直線を選択.";
-    private const string TextPOINT_ON_CIRCLE0 = " 点を円の上に載せる: 頂点を選択.";
-    private const string TextPOINT_ON_CIRCLE1 = " 点を円の上に載せる: 円を選択.";
-    private const string TextINTERSECTION0 = "交点を追加：一つ選択";
-    private const string TextINTERSECTION1 = "交点を追加：もう一つ選択";
-    private const string TextLINES_ISOMETRY0 = " ２直線を同じ長さにする: 直線を選択.";
-    private const string TextLINES_ISOMETRY1 = " ２直線を同じ長さにする: もう一つ直線を選択.";
-    private const string TextLINES_PERPENDICULAR0 = " ２直線を直交させる: 直線を選択.";
-    private const string TextLINES_PERPENDICULAR1 = " ２直線を直交させる: もう一つ直線を選択.";
-    private const string TextLINES_PARALLEL0 = " ２直線を平行にする: 直線を選択.";
-    private const string TextLINES_PARALLEL1 = " ２直線を平行にする: もう一つ直線を選択.";
-    private const string TextANGLE0 = " 角度を指定する: 頂点を選択.";
-    private const string TextANGLE1 = " 角度を指定する: もう一つ頂点を選択.";
-    private const string TextANGLE2 = " 角度を指定する: さらに頂点を選択.";
-    private const string TextCIRLCE_TANGENT_LINE0 = " 円を直線に接させる: 円を選択.";
-    private const string TextCIRLCE_TANGENT_LINE1 = " 円を直線に接させる: 直線を選択.";
-    private const string TextCIRLCE_TANGENT_CIRCLE0 = " 円を円に接させる: 円を選択.";
-    private const string TextCIRLCE_TANGENT_CIRCLE1 = " 円を円に接させる: もう一つ円を選択.";
-    private const string TextFIX_POINT1 = " 点を固定する : 頂点を選択.";
-    private const string TextDELETE_POINT0 = " 点を消去する: 頂点を選択.";
-#else
-    private const string TextADD_POINT0 = "Menu";
-    private const string TextADD_POINT1 = " Click once to make a new point. ";
-    private const string TextADD_MIDPOINT0 = "Draw a midpoint : Select a point.";
-    private const string TextADD_MIDPOINT1 = "Draw a midpoint : Select another point.";
-    private const string TextADD_LINE0 = "Add a line : Select a point.";
-    private const string TextADD_LINE1 = "Add a line : Select another point.";
-    private const string TextADD_CIRCLE0 = "Add a circle: Select a point.";
-    private const string TextADD_CIRCLE1 = "Add a circle: Click anywhere once.";
-    private const string TextPOINT_ON_POINT0 = "Set a point on another point: Select a point.";
-    private const string TextPOINT_ON_POINT1 = "Set a point on another point: Select an object.";
-    private const string TextPOINT_ON_LINE0 = "Set a point on a line: Select a point.";
-    private const string TextPOINT_ON_LINE1 = "Set a point on a line: Select a line.";
-    private const string TextPOINT_ON_CIRCLE0 = "Set a point on a circle: Select a point.";
-    private const string TextPOINT_ON_CIRCLE1 = "Set a point on a circle: Select a circle.";
-    private const string TextLINES_ISOMETRY0 = "Make two lines isometry: Select a line.";
-    private const string TextLINES_ISOMETRY1 = "Make two lines isometry: Select another line.";
-    private const string TextLINES_PERPENDICULAR0 = "Make two lines perpendicular: Select a line.";
-    private const string TextLINES_PERPENDICULAR1 = "Make two lines perpendicular: Select another line.";
-    private const string TextLINES_PARALLEL0 = "Make two lines parallel: Select a line.";
-    private const string TextLINES_PARALLEL1 = "Make two lines parallel: Select another line.";
-    private const string TextCIRLCE_TANGENT_LINE0 = "Make a circle tangent to a line: Select a circle.";
-    private const string TextCIRLCE_TANGENT_LINE1 = "Make a circle tangent to a line: Select a line.";
-    private const string TextCIRLCE_TANGENT_CIRCLE0 = "Make a circle tangent to a circle: Select a circle.";
-    private const string TextCIRLCE_TANGENT_CIRCLE1 = "Make a circle tangent to a circle: Select another circle.";
-    private const string TextFIX_POINT1 = "Fix/Unfix a point : Select a point.";
-    private const string TextDELETE_POINT0 = "Delete a point : Select a point.";
-#endif
 
     public GUIStyle MyStyle;
     public static Canvas canvas;
@@ -128,6 +99,34 @@ public class Menu : MonoBehaviour
 
     //  initialization
     void Start() {
+        if (AppMgr.Japanese != 1) {// English 
+            TextADD_POINT0 = "Menu";
+            TextADD_POINT1 = " Click once to make a new point. ";
+            TextADD_MIDPOINT0 = " Draw a midpoint : Select a point.";
+            TextADD_MIDPOINT1 = " Draw a midpoint : Select another point.";
+            TextADD_LINE0 = " Add a line : Select a point.";
+            TextADD_LINE1 = " Add a line : Select another point.";
+            TextADD_CIRCLE0 = " Add a circle: Select a point.";
+            TextADD_CIRCLE1 = " Add a circle: Click anywhere once.";
+            TextPOINT_ON_POINT0 = " Set a point on another point: Select a point.";
+            TextPOINT_ON_POINT1 = " Set a point on another point: Select an object.";
+            TextPOINT_ON_LINE0 = " Set a point on a line: Select a point.";
+            TextPOINT_ON_LINE1 = " Set a point on a line: Select a line.";
+            TextPOINT_ON_CIRCLE0 = " Set a point on a circle: Select a point.";
+            TextPOINT_ON_CIRCLE1 = " Set a point on a circle: Select a circle.";
+            TextLINES_ISOMETRY0 = " Make two lines isometry: Select a line.";
+            TextLINES_ISOMETRY1 = " Make two lines isometry: Select another line.";
+            TextLINES_PERPENDICULAR0 = " Make two lines perpendicular: Select a line.";
+            TextLINES_PERPENDICULAR1 = " Make two lines perpendicular: Select another line.";
+            TextLINES_PARALLEL0 = " Make two lines parallel: Select a line.";
+            TextLINES_PARALLEL1 = " Make two lines parallel: Select another line.";
+            TextCIRLCE_TANGENT_LINE0 = " Make a circle tangent to a line: Select a circle.";
+            TextCIRLCE_TANGENT_LINE1 = " Make a circle tangent to a line: Select a line.";
+            TextCIRLCE_TANGENT_CIRCLE0 = " Make a circle tangent to a circle: Select a circle.";
+            TextCIRLCE_TANGENT_CIRCLE1 = " Make a circle tangent to a circle: Select another circle.";
+            TextFIX_POINT1 = " Fix/Unfix a point : Select a point.";
+            TextDELETE_POINT0 = " Delete a point : Select a point.";
+        }
 
         gst = new GUIStyle(MyStyle);
         FontSize = (int)Mathf.Floor(Screen.width / 39);

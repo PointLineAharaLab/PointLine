@@ -71,11 +71,18 @@ public class Log : MonoBehaviour
         if (ObjectType == "Point")
         {
             PName = parent.GetComponent<Point>().PointName;
-            Text1 = "点 " + PName;
             Fixed = parent.GetComponent<Point>().Fixed;
-            if (Fixed)
+            if (AppMgr.Japanese == 1)
             {
-                Text1 += "(固定)";
+                Text1 = "点 " + PName;
+                if (Fixed)
+                    Text1 += "(固定)";
+            }
+            else
+            {
+                Text1 = "Point " + PName;
+                if (Fixed)
+                    Text1 += "(Fixed)";
             }
             Text2 = "(" + Mathf.Round(Vec.x * 1000f) / 1000f + "," + Mathf.Round(Vec.y * 1000f) / 1000f + ")";
             Selected = parent.GetComponent<Point>().Selected;
@@ -109,7 +116,10 @@ public class Log : MonoBehaviour
                     }
                 }
             }
-            Text1 = "直線 " + PName;
+            if (AppMgr.Japanese == 1)
+                Text1 = "直線 " + PName;
+            else
+                Text1 = "Line " + PName;
             Text2 = Object1.GetComponent<Point>().PointName + "-" + Object2.GetComponent<Point>().PointName;
             Selected = parent.GetComponent<Line>().Selected;
             if (Selected)
@@ -139,8 +149,16 @@ public class Log : MonoBehaviour
                 }
             }
             Radius = parent.GetComponent<Circle>().Radius;// Circle.csで実施
-            Text1 = "円 " + PName;
-            Text2 = "中心"+Object1.GetComponent<Point>().PointName + ":半径" + Mathf.Round(Radius * 1000f) / 1000f;
+            if (AppMgr.Japanese == 1)
+            {
+                Text1 = "円 " + PName;
+                Text2 = "中心" + Object1.GetComponent<Point>().PointName + ":半径" + Mathf.Round(Radius * 1000f) / 1000f;
+            }
+            else
+            {
+                Text1 = "Circle " + PName;
+                Text2 = "Center " + Object1.GetComponent<Point>().PointName + ":Radius " + Mathf.Round(Radius * 1000f) / 1000f;
+            }
             Selected = parent.GetComponent<Circle>().Selected;
             if (Selected)
             {
@@ -157,60 +175,181 @@ public class Log : MonoBehaviour
             {
                 FindObjects4Module();
             }
-            Text1 = "作図 ：" + PName;
-            if(PName == "点 - 点")
+            if (PName == "点 - 点")
             {
-                Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "を重ねる";
-            }
-            else if (PName == "点 - 直線")
-            {
-                Text2 = GetPNameByParentObject(Object1) + "は直線" + GetPNameByParentObject(Object2) + "上";
-            }
-            else if (PName == "点 - 円")
-            {
-                Text2 = GetPNameByParentObject(Object1) + "は円" + GetPNameByParentObject(Object2) + "上";
-            }
-            else if (PName == "等長")
-            {
-                Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
-            }
-            else if (PName == "垂直")
-            {
-                Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は垂直";
-            }
-            else if (PName == "平行")
-            {
-                Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は平行";
-            }
-            else if (PName == "円 - 直線")
-            {
-                Text2 = ""+GetPNameByParentObject(Object1) + "は" + GetPNameByParentObject(Object2) + "と接する";
-            }
-            else if (PName == "円 - 円")
-            {
-                Text2 = "" + GetPNameByParentObject(Object1) + "は" + GetPNameByParentObject(Object2) + "と接する";
-            }
-            else if (PName == "中点")
-            {
-                if(Ratio1 == Ratio2) { 
-                    Text2 = GetPNameByParentObject(Object3) + "は" + GetPNameByParentObject(Object1) + "と"+ GetPNameByParentObject(Object2)+"の中点";
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "を重ねる";
                 }
                 else
                 {
-                    Text1 = "作図 : 内分(" + Mathf.RoundToInt(Ratio1)+ ","+Mathf.RoundToInt(Ratio2)+")";
-                    Text2 = GetPNameByParentObject(Object3) + "は" + GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "の内分点";
+                    Text1 = "Point on point";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " = " + GetPNameByParentObject(Object2) + "";
+                }
+            }
+            else if (PName == "点 - 直線")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) + "は直線" + GetPNameByParentObject(Object2) + "上";
+                }
+                else
+                {
+                    Text1 = "Point on Line";
+                    Text2 = GetPNameByParentObject(Object1) + " is on " + GetPNameByParentObject(Object2) + "";
+                }
+            }
+            else if (PName == "点 - 円")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) + "は円" + GetPNameByParentObject(Object2) + "上";
+                }
+                else
+                {
+                    Text1 = "Point on CIrcle";
+                    Text2 = GetPNameByParentObject(Object1) + " is on " + GetPNameByParentObject(Object2) + "";
+                }
+            }
+            else if (PName == "等長")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
+                }
+                else
+                {
+                    Text1 = "Isometry";
+                    Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + " are isometry";
+                }
+            }
+            else if (PName == "垂直")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は垂直";
+                }
+                else
+                {
+                    Text1 = "Perpendicular";
+                    Text2 = GetPNameByParentObject(Object1) + " perp. " + GetPNameByParentObject(Object2) + "";
+                }
+            }
+            else if (PName == "平行")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は平行";
+                }
+                else
+                {
+                    Text1 = "Parallel";
+                    Text2 = GetPNameByParentObject(Object1) + " || " + GetPNameByParentObject(Object2) + "";
+                }
+            }
+            else if (PName == "円 - 直線")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = "" + GetPNameByParentObject(Object1) + "は" + GetPNameByParentObject(Object2) + "と接する";
+                }
+                else
+                {
+                    Text1 = "Tangent";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " tangents to " + GetPNameByParentObject(Object2) + "";
+                }
+            }
+            else if (PName == "円 - 円")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = "" + GetPNameByParentObject(Object1) + "は" + GetPNameByParentObject(Object2) + "と接する";
+                }
+                else
+                {
+                    Text1 = "Tangent";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " tangents to " + GetPNameByParentObject(Object2) + "";
+                }
+            }
+            else if (PName == "中点")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    if (Ratio1 == Ratio2)
+                    {
+                        Text1 = "" + PName;
+                        Text2 = GetPNameByParentObject(Object3) + "は" + GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "の中点";
+                    }
+                    else
+                    {
+                        Text1 = "作図 : 内分(" + Mathf.RoundToInt(Ratio1) + "," + Mathf.RoundToInt(Ratio2) + ")";
+                        Text2 = GetPNameByParentObject(Object3) + "は" + GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "の内分点";
+                    }
+                }
+                else
+                {
+                    if (Ratio1 == Ratio2)
+                    {
+                        Text1 = "Midpoint";
+                        Text2 = GetPNameByParentObject(Object3) + "= midpoint " + GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + "";
+                    }
+                    else
+                    {
+                        Text1 = "Dividing(" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
+                        Text2 = GetPNameByParentObject(Object3) + "= divding pt " + GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + "";
+                    }
                 }
             }
             else if (PName == "角度" && Object3 != null)
             {
-                float angle = Mathf.FloorToInt(Constant * 180f / Mathf.PI * 10) * 0.1f;
-                Text1 += (angle + "度");
-                Text2 = "角" + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "作図 ：" + PName;
+                    float angle = Mathf.FloorToInt(Constant * 180f / Mathf.PI * 10) * 0.1f;
+                    Text1 += (angle + "度");
+                    Text2 = "角" + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
+                }
+                else
+                {
+                    Text1 = "Fixed angle ";
+                    float angle = Mathf.FloorToInt(Constant * 180f / Mathf.PI * 10) * 0.1f;
+                    Text1 += (angle + " degree");
+                    Text2 = "Angle " + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
+                }
             }
             else
-            { 
-                Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2);
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2);
+                }
+                else
+                {
+                    Text1 = PName;
+                    Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2);
+                }
             }
+        }
+        if (Text1.Length > 16)
+        {
+            int textSize = TextObj1.GetComponent<TextMesh>().fontSize;
+            textSize = Mathf.FloorToInt(textSize * 16 / Text1.Length);
+            TextObj1.GetComponent<TextMesh>().fontSize = textSize;
+        }
+        if (Text2.Length > 16)
+        {
+            int textSize = TextObj2.GetComponent<TextMesh>().fontSize;
+            textSize = Mathf.FloorToInt(textSize * 16 / Text2.Length);
+            TextObj2.GetComponent<TextMesh>().fontSize = textSize;
         }
         TextObj1.GetComponent<TextMesh>().text = Text1;
         TextObj2.GetComponent<TextMesh>().text = Text2;
