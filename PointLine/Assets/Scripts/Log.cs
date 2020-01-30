@@ -179,25 +179,25 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "を重ねる";
                 }
                 else
                 {
-                    Text1 = "Module ： Point on point";
-                    Text2 = "" + GetPNameByParentObject(Object1) + " is on " + GetPNameByParentObject(Object2) + ".";
+                    Text1 = "Point on point";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " = " + GetPNameByParentObject(Object2) + "";
                 }
             }
             else if (PName == "点 - 直線")
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = GetPNameByParentObject(Object1) + "は直線" + GetPNameByParentObject(Object2) + "上";
                 }
                 else
                 {
-                    Text1 = "Module ： Point on Line";
+                    Text1 = "Point on Line";
                     Text2 = GetPNameByParentObject(Object1) + " is on " + GetPNameByParentObject(Object2) + "";
                 }
             }
@@ -205,12 +205,12 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = GetPNameByParentObject(Object1) + "は円" + GetPNameByParentObject(Object2) + "上";
                 }
                 else
                 {
-                    Text1 = "Module ： Point on CIrcle";
+                    Text1 = "Point on CIrcle";
                     Text2 = GetPNameByParentObject(Object1) + " is on " + GetPNameByParentObject(Object2) + "";
                 }
             }
@@ -218,65 +218,65 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
                 }
                 else
                 {
-                    Text1 = "Module ： Isometry";
-                    Text2 = GetPNameByParentObject(Object1) + " and " + GetPNameByParentObject(Object2) + " are isometry";
+                    Text1 = "Isometry";
+                    Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + " are isometry";
                 }
             }
             else if (PName == "垂直")
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は垂直";
                 }
                 else
                 {
-                    Text1 = "Module ： Perpendicular";
-                    Text2 = GetPNameByParentObject(Object1) + " and " + GetPNameByParentObject(Object2) + " are perpendicular";
+                    Text1 = "Perpendicular";
+                    Text2 = GetPNameByParentObject(Object1) + " perp. " + GetPNameByParentObject(Object2) + "";
                 }
             }
             else if (PName == "平行")
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は平行";
                 }
                 else
                 {
-                    Text1 = "Module ： Parallel";
-                    Text2 = GetPNameByParentObject(Object1) + " and " + GetPNameByParentObject(Object2) + " are parallel";
+                    Text1 = "Parallel";
+                    Text2 = GetPNameByParentObject(Object1) + " || " + GetPNameByParentObject(Object2) + "";
                 }
             }
             else if (PName == "円 - 直線")
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = "" + GetPNameByParentObject(Object1) + "は" + GetPNameByParentObject(Object2) + "と接する";
                 }
                 else
                 {
-                    Text1 = "Module ： Tangent";
-                    Text2 = "" + GetPNameByParentObject(Object1) + " is tangent to " + GetPNameByParentObject(Object2) + "";
+                    Text1 = "Tangent";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " tangents to " + GetPNameByParentObject(Object2) + "";
                 }
             }
             else if (PName == "円 - 円")
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = "" + GetPNameByParentObject(Object1) + "は" + GetPNameByParentObject(Object2) + "と接する";
                 }
                 else
                 {
-                    Text1 = "Module ： Tangent";
-                    Text2 = "" + GetPNameByParentObject(Object1) + " is tangent to " + GetPNameByParentObject(Object2) + "";
+                    Text1 = "Tangent";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " tangents to " + GetPNameByParentObject(Object2) + "";
                 }
             }
             else if (PName == "中点")
@@ -285,7 +285,7 @@ public class Log : MonoBehaviour
                 {
                     if (Ratio1 == Ratio2)
                     {
-                        Text1 = "作図 ：" + PName;
+                        Text1 = "" + PName;
                         Text2 = GetPNameByParentObject(Object3) + "は" + GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "の中点";
                     }
                     else
@@ -299,12 +299,12 @@ public class Log : MonoBehaviour
                     if (Ratio1 == Ratio2)
                     {
                         Text1 = "Midpoint";
-                        Text2 = GetPNameByParentObject(Object3) + "は" + GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "の中点";
+                        Text2 = GetPNameByParentObject(Object3) + "= midpoint " + GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + "";
                     }
                     else
                     {
-                        Text1 = "Module : Dividing(" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
-                        Text2 = GetPNameByParentObject(Object3) + "is a divding point of " + GetPNameByParentObject(Object1) + " and " + GetPNameByParentObject(Object2) + "";
+                        Text1 = "Dividing(" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
+                        Text2 = GetPNameByParentObject(Object3) + "= divding pt " + GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + "";
                     }
                 }
             }
@@ -319,7 +319,7 @@ public class Log : MonoBehaviour
                 }
                 else
                 {
-                    Text1 = "Fixed angle";
+                    Text1 = "Fixed angle ";
                     float angle = Mathf.FloorToInt(Constant * 180f / Mathf.PI * 10) * 0.1f;
                     Text1 += (angle + " degree");
                     Text2 = "Angle " + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
@@ -329,7 +329,7 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    Text1 = "" + PName;
                     Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2);
                 }
                 else

@@ -18,7 +18,6 @@ public class Preference : MonoBehaviour
     float DialogWidth;
     public string ObjectType = "";
     public string ObjectName = "";
-    public string ObjectEnglishName = "";
     public string LogEnglishComment = "";
     public string CoordX = "", CoordY = "";
     string AngleConstant = "";
@@ -46,11 +45,9 @@ public class Preference : MonoBehaviour
             CoordX = "" + Mathf.Round(1000f * lg.parent.GetComponent<Point>().Vec.x) / 1000f;
             CoordY = "" + Mathf.Round(1000f * lg.parent.GetComponent<Point>().Vec.y) / 1000f;
             Fixed = lg.parent.GetComponent<Point>().Fixed;
-            ObjectEnglishName = "Point";
         }
         else if (ObjectType == "Line")
         {
-
         }
         else if (ObjectType == "Circle")
         {
@@ -705,7 +702,7 @@ public class Preference : MonoBehaviour
     {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Circle " + ObjectName, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Center " + LogParent.Object1.GetComponent<Point>().PointName, LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Radius ", LabelStyle);
         CoordX = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordX, FieldStyle);
@@ -764,7 +761,10 @@ public class Preference : MonoBehaviour
     }
     void ModuleMidpointPreferenceEnglish(float Left, float Top, float Step, float height)
     {
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectEnglishName, LabelStyle);
+        if(CoordX == CoordY)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Midpoint", LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Div point", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
@@ -826,12 +826,12 @@ public class Preference : MonoBehaviour
     }
     void ModuleAnglePreferenceEnglish(float Left, float Top, float Step, float height)
     {
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectEnglishName, LabelStyle);
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), " Angle ", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Degree ", LabelStyle);
-        AngleConstant = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
+        AngleConstant = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), AngleConstant, FieldStyle);
         Top += Step;
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
         {
@@ -877,7 +877,7 @@ public class Preference : MonoBehaviour
 
     void ModulePreferenceEnglish(float Left, float Top, float Step, float height)
     {
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectEnglishName, LabelStyle);
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text1, LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
