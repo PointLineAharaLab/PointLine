@@ -14,11 +14,13 @@ public class AngleMark : MonoBehaviour {
     public GameObject Object1, Object2, Object3;
     public GameObject parent = null;
     public bool Active = true;
-
+    public bool ShowValue = false;
+    public float Value = 60f;
     public bool RightAngle = true;
 
 	// Use this for initialization
 	void Start () {
+        ShowValue = false;
 		
 	}
 	
