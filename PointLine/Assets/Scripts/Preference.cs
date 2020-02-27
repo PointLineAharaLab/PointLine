@@ -23,6 +23,7 @@ public class Preference : MonoBehaviour
     string AngleConstant = "";
     public bool Fixed = false;
     public bool Delete = false;
+    public bool ShowConstant = false;
     public Log LogParent = null;
     public GameObject Parent = null;
 
@@ -824,6 +825,23 @@ public class Preference : MonoBehaviour
             }
             Top += Step;
         }
+        if (ShowConstant)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "表示", LabelStyle);
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "非表示にする", ButtonStyle))
+            {
+                ShowConstant = false;
+            }
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "非表示", LabelStyle);
+            if (GUI.Button(new Rect(Left + 75, Top, DialogWidth - 75, height), "表示にする", ButtonStyle))
+            {
+                ShowConstant = true;
+            }
+        }
+        Top += Step;
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
         {
             Module md = LogParent.parent.GetComponent<Module>();
@@ -841,6 +859,7 @@ public class Preference : MonoBehaviour
             Module md = LogParent.parent.GetComponent<Module>();
             md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
             md.FixAngle = Fixed;
+            md.ShowConstant = ShowConstant;
         }
 
     }
@@ -871,6 +890,23 @@ public class Preference : MonoBehaviour
             }
             Top += Step;
         }
+        if (ShowConstant)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show", LabelStyle);
+            if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Hide", ButtonStyle))
+            {
+                ShowConstant = false;
+            }
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide", LabelStyle);
+            if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Show", ButtonStyle))
+            {
+                ShowConstant = true;
+            }
+        }
+        Top += Step;
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
         {
             Module md = LogParent.parent.GetComponent<Module>();

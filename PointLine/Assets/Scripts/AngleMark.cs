@@ -74,6 +74,7 @@ public class AngleMark : MonoBehaviour {
         {
             Value = Mathf.FloorToInt(parent.GetComponent<Module>().Constant*180f/Mathf.PI);
             TextObject.GetComponent<TextMesh>().text = Value.ToString();
+            ShowValue = parent.GetComponent<Module>().ShowConstant;
         }
     }
 
