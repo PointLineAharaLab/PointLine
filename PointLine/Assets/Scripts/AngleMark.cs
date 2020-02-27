@@ -70,7 +70,11 @@ public class AngleMark : MonoBehaviour {
         }         
         TextObject.transform.localPosition = Origine + 0.9f * (UnitX+UnitY).normalized;
         TextObject.SetActive(ShowValue);
-
+        if (parent != null)
+        {
+            Value = Mathf.FloorToInt(parent.GetComponent<Module>().Constant*180f/Mathf.PI);
+            TextObject.GetComponent<TextMesh>().text = Value.ToString();
+        }
     }
 
     void  GetIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)

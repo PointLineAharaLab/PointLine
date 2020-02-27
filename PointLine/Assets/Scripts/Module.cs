@@ -14,6 +14,7 @@ public class Module : MonoBehaviour {
     public float Ratio2 = 1f;
     public float Constant = Mathf.PI/2f;// radian 
     public bool FixAngle = false;
+    public bool ShowConstant = false;
 
     public GameObject parent = null;
     public GameObject GameLog = null;
