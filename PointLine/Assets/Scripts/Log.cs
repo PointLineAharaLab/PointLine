@@ -602,6 +602,10 @@ public class Log : MonoBehaviour
             {
                 Util.AddAngleMark(_l.Object1Id, _l.Object2Id, MD.gameObject);
             }
+            else if (_l.ModuleType == MENU.ANGLE)
+            {
+                Util.AddAngleMark(_l.Object1Id, _l.Object2Id, _l.Object3Id, MD.gameObject);
+            }
         }
     }
 
