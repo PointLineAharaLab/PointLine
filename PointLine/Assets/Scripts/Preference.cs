@@ -221,6 +221,26 @@ public class Preference : MonoBehaviour
                 {
                     if (md.Object1Id == MOP || md.Object2Id == MOP || md.Object3Id == MOP)
                     {
+                        // モジュールを消去する際に，「角度マーク」が関連していたらそれも消去する。
+                        if (md.Type == MENU.ANGLE)//角度モジュールの場合
+                        {
+                            GameObject[] gp3 = FindObjectsOfType<GameObject>();
+                            if (gp3 != null)
+                            {
+                                for (int k = 0; k < gp3.Length; k++)
+                                {
+                                    AngleMark am = (AngleMark)gp3[k].GetComponent("AngleMark");
+                                    if (am != null)
+                                    {
+                                        if (am.Object1Id == MOP || am.Object2Id == MOP || am.Object3Id == MOP)
+                                        {
+                                            Destroy(gp3[k]);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         Util.DeleteLogAtID(md.Id);//ログの消去
                         Destroy(gp[i]);//モジュールの消去
 
@@ -481,6 +501,18 @@ public class Preference : MonoBehaviour
                             for (int j = 0; j < AMs.Length; j++)
                             {
                                 if (AMs[j].Object1Id == md.Object1Id && AMs[j].Object2Id == md.Object2Id)// 逆かも。
+                                {
+                                    Destroy(AMs[j].gameObject);
+                                }
+                            }
+                        }
+                        // モジュールを消去する際に，「角」が関連していたらそれも消去する。
+                        else if (md.Type == MENU.ANGLE)//角度モジュールの場合
+                        {
+                            AngleMark[] AMs = FindObjectsOfType<AngleMark>();
+                            for (int j = 0; j < AMs.Length; j++)
+                            {
+                                if (AMs[j].Object1Id == md.Object1Id && AMs[j].Object2Id == md.Object2Id && AMs[j].Object3Id == md.Object3Id)//順番が違うかも。
                                 {
                                     Destroy(AMs[j].gameObject);
                                 }
