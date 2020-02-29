@@ -39,6 +39,10 @@ public class Module : MonoBehaviour {
             Vector3 v2 = p2.Vec;
             Vector3 v1New = 0.7f * v1 + 0.3f * v2;
             Vector3 v2New = 0.3f * v1 + 0.7f * v2;
+            // debug
+            float err = (p1.Vec - v1New).magnitude + (p2.Vec - v2New).magnitude;
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             if (!p1.Fixed)
             {
                 p1.Vec = v1New;
@@ -127,7 +131,10 @@ public class Module : MonoBehaviour {
             DVec.Normalize();
             PVec = p1.Vec - p21.Vec;
             Distance = Vector3.Dot(DVec, PVec);
-
+            // debug
+            float err = Mathf.Abs(Distance) * 0.25f;
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             if (!p1.Fixed)
             {// 点を直線に近づける
                 p1.Vec -= (Distance * 0.25f) * DVec;
@@ -193,6 +200,10 @@ public class Module : MonoBehaviour {
             c2.Radius = radNew;
             Vector3 v2 = p1.Vec - p21.Vec;
             v2.Normalize();
+            // debug
+            float err = Mathf.Abs(delta);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             if (!p1.Fixed)
             {
                 p1.Vec = p1.Vec - delta * v2;
@@ -263,7 +274,10 @@ public class Module : MonoBehaviour {
             VecA.Normalize();
             VecB.Normalize();
             Delta = (NormB - NormA) * 0.125f;
-
+            // debug
+            float err = Mathf.Abs(Delta);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             //  線分の長さを等しくする
             if (!p11.Fixed)
                 p11.Vec -= Delta * VecA;
@@ -336,13 +350,17 @@ public class Module : MonoBehaviour {
                 Delta += Mathf.PI / 2;
             else if (Delta >= -Mathf.PI * 2)
                 Delta += Mathf.PI * 3 / 2;
-            Delta *= 0.125f;
+            Delta *= 0.05f;
             float CosDelta = Mathf.Cos(Delta);
             float SinDelta = Mathf.Sin(Delta);
             float x1c = (x11 + x12) * 0.5f;
             float y1c = (y11 + y12) * 0.5f;
             float x2c = (x21 + x22) * 0.5f;
             float y2c = (y21 + y22) * 0.5f;
+            // debug
+            float err = Mathf.Abs(SinDelta);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             Vector3 NewVec = Vector3.zero;
             NewVec.x = (x11 - x1c) * CosDelta - (y11 - y1c) * SinDelta + x1c;
             NewVec.y = +(x11 - x1c) * SinDelta + (y11 - y1c) * CosDelta + y1c;
@@ -432,6 +450,10 @@ public class Module : MonoBehaviour {
             float y1c = (y11 + y12) * 0.5f;
             float x2c = (x21 + x22) * 0.5f;
             float y2c = (y21 + y22) * 0.5f;
+            // debug
+            float err = Mathf.Abs(SinDelta);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             Vector3 NewVec = Vector3.zero;
             NewVec.x = (x11 - x1c) * CosDelta - (y11 - y1c) * SinDelta + x1c;
             NewVec.y = +(x11 - x1c) * SinDelta + (y11 - y1c) * CosDelta + y1c;
@@ -506,6 +528,10 @@ public class Module : MonoBehaviour {
                 Distance *= -1f;
             }
             float Delta = (Distance - Radius) * 0.16f;
+            // debug
+            float err = Mathf.Abs(Delta);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             // 円の中心を直線に近づける
             if (!p11.Fixed)
                 p11.Vec -= Delta * DVec;
@@ -580,6 +606,10 @@ public class Module : MonoBehaviour {
             if (Mathf.Abs(DeltaIn) > Mathf.Abs(DeltaOut))
             {// 外接していると思われる
                 Delta = DeltaOut * 0.125f;
+                // debug
+                float err = Mathf.Abs(Delta);
+                if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+                // debug
                 //円１の中心を動かす
                 if (!p11.Fixed)
                     p11.Vec += Delta * DVec12;
@@ -604,6 +634,10 @@ public class Module : MonoBehaviour {
                     C1out = true;
                 }
                 Delta = DeltaIn * 0.125f;
+                // debug
+                float err = Mathf.Abs(Delta);
+                if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+                // debug
                 //円１の中心を動かす
                 if (!p11.Fixed)
                     p11.Vec += Delta * DVec12;
@@ -687,6 +721,10 @@ public class Module : MonoBehaviour {
                 NewV1 = Delta * NewV1 + Epsilon * v1;
                 NewV2 = Delta * NewV2 + Epsilon * v2;
                 NewV3 = Delta * NewV3 + Epsilon * v3;
+                // debug
+                float err = (v1-NewV1).magnitude + (v2 - NewV2).magnitude + (v3 - NewV3).magnitude;
+                if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+                // debug
                 if (!AppMgr.pts[i1].Fixed)
                     AppMgr.pts[i1].Vec = NewV1;
                 if (!AppMgr.pts[i2].Fixed)
@@ -707,6 +745,10 @@ public class Module : MonoBehaviour {
                 NewV1 = Delta * NewV1 + Epsilon * v1;
                 NewV2 = Delta * NewV2 + Epsilon * v2;
                 NewV3 = Delta * NewV3 + Epsilon * v3;
+                // debug
+                float err = (v1 - NewV1).magnitude + (v2 - NewV2).magnitude + (v3 - NewV3).magnitude;
+                if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+                // debug
                 if (!AppMgr.pts[i1].Fixed)
                     AppMgr.pts[i1].Vec = NewV1;
                 if (!AppMgr.pts[i2].Fixed)
@@ -765,10 +807,22 @@ public class Module : MonoBehaviour {
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
             float AngleError = (Angle - Constant) * 0.1f;
-            if (Angle < 0f)
+            float MaxError = 0.02f;
+            if (Angle >= 0)
+            {
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            else 
             {
                 AngleError = (Angle + Constant) * 0.1f;
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
             }
+            // debug
+            float err = Mathf.Abs(AngleError);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
             float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
             float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
@@ -792,10 +846,22 @@ public class Module : MonoBehaviour {
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
             float AngleError = (Angle - Constant) * 0.1f;
-            if (Angle < 0f)
+            float MaxError = 0.02f;
+            if (Angle >= 0)
+            {
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            else
             {
                 AngleError = (Angle + Constant) * 0.1f;
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
             }
+            // debug
+            float err = Mathf.Abs(AngleError);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
             float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
             float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
             float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;

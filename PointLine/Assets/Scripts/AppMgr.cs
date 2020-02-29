@@ -29,6 +29,9 @@ public class AppMgr : MonoBehaviour {
 
     public GameObject LogFolder;
 
+    public static int ConvergencyCount=0;
+    public GameObject ConvergencyCountText;
+    public static float ConvergencyError = 0.0001f;
 
     // Use this for initialization
     void Start () {
@@ -45,6 +48,7 @@ public class AppMgr : MonoBehaviour {
 
     }
 
+
     public static int GetMode()
     {
         return Mode;
@@ -54,7 +58,7 @@ public class AppMgr : MonoBehaviour {
 	void Update () {
         //ExecuteAllModules();
         Rescaling();
-
+        ConvergencyCountText.GetComponent<TextMesh>().text = ConvergencyCount.ToString();
     }
 
 
