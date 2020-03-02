@@ -29,6 +29,11 @@ public class AppMgr : MonoBehaviour {
 
     public GameObject LogFolder;
 
+    public static int ConvergencyCount=0;
+    public GameObject ConvergencyAlertText;
+    public static float ConvergencyError = 0.0001f;
+    public static bool ModuleOn = true;
+
 
     // Use this for initialization
     void Start () {
@@ -45,6 +50,7 @@ public class AppMgr : MonoBehaviour {
 
     }
 
+
     public static int GetMode()
     {
         return Mode;
@@ -54,7 +60,18 @@ public class AppMgr : MonoBehaviour {
 	void Update () {
         //ExecuteAllModules();
         Rescaling();
-
+        if (ConvergencyCount > 1000)
+        {
+            if(Japanese==1)
+                ConvergencyAlertText.GetComponent<TextMesh>().text = "競合(press Z)";
+            else 
+                ConvergencyAlertText.GetComponent<TextMesh>().text = "Conflict(press Z)";
+            ModuleOn = false;
+        }
+        else
+        {
+            ConvergencyAlertText.GetComponent<TextMesh>().text = "";// ConvergencyCount.ToString();
+        }
     }
 
 

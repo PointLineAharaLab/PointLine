@@ -304,6 +304,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Mode = 0;
             ModeStep = 0;
             MenuOn = false;
+            ModuleOn = true;
         }
         else if (Input.GetKeyDown(KeyCode.Y))
         {
@@ -636,6 +637,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             {//点のドラッグ
                 if (pts[i].Id == DraggedPointId)
                 {
+                    //debug
+                    AppMgr.ConvergencyCount = 0;
+                    //debug
                     if (MouseDownVec - v3 != Vector3.zero)//0.768
                     {
                         pts[i].Vec = v3;

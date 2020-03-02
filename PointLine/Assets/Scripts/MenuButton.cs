@@ -293,6 +293,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
     public void OnClickRedo()
     {
