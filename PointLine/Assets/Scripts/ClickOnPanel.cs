@@ -304,6 +304,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Mode = 0;
             ModeStep = 0;
             MenuOn = false;
+            ModuleOn = true;
         }
         else if (Input.GetKeyDown(KeyCode.Y))
         {

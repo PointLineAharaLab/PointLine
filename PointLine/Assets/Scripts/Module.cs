@@ -914,11 +914,13 @@ public class Module : MonoBehaviour {
 
     void Update()
     {
-        for (int a = 0; a < 100; a++)
-        {
-            ExecuteModule();
+        if (AppMgr.ModuleOn) { // いつでもモジュールを切れるようにしておく。
+            for (int a = 0; a < 100; a++)
+            {
+                ExecuteModule();
+            }
         }
-        if(GameLog != null)
+        if (GameLog != null)
         {
             GameLog.GetComponent<Log>().Ratio1 = Ratio1;
             GameLog.GetComponent<Log>().Ratio2 = Ratio2;

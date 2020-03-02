@@ -1,10 +1,7 @@
-Point,-0.3851365,2.989886,0,0,False,True,A
-Point,-4.812221,-0.8024318,0,1,False,True,B
+Point,-3.930664,2.124023,0,0,False,True,A
+Point,-1.489258,0.4801434,0,1,False,True,B
 Line,0,1,1000,True
-Point,0.5126953,-1.375326,0,2,False,True,C
-Line,1,2,1001,True
-Line,2,0,1002,True
-Point,-1.047155,-0.04392279,0,3,False,True,D
-Circle,3,1.873353,2000,True
-Module,9,2000,1000,0,3000,True,1,1,1.570796
-Module,9,2000,1001,0,3001,True,1,1,1.570796
+Point,-1.472982,2.254231,0,2,False,True,C
+Point,-4.72819,0.9358722,0,3,False,True,D
+Line,2,3,1001,True
+Module,8,1001,1000,0,3000,True,1,1,1.570796
