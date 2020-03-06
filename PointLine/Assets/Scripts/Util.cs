@@ -783,8 +783,13 @@ public class Util
                                 }
                             }
                             writer.WriteLine("\\draw[fill=black](" + pt.Vec.x + "," + pt.Vec.y + ") circle  (1.5pt);");
+                            if (pt.PTobject != null)                            // 文字を添えるかどうか
+                            // 文字を表示するかどうかのフラグもほしい。
+                            {
+                                Vector3 textPos= pt.PTobject.transform.position;
+                                writer.WriteLine("\\draw[fill=black](" + textPos.x + "," + textPos.y + ") node  {" + pt.PointName + "};");
+                            }
                             writer.Flush();
-                            // 文字を添えるかどうか
                         }
                     }
                     writer.WriteLine("\\end{tikzpicture}");
