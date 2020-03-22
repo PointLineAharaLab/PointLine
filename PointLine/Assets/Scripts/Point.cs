@@ -16,6 +16,7 @@ public class Point : MonoBehaviour
     public GameObject PTobject = null;//テキスト
 
     public string PointName;
+    public bool ShowPointName = true;
 
     private Vector3 vec;
     public Vector3 Vec
@@ -80,6 +81,8 @@ public class Point : MonoBehaviour
             TextVec *= 2f;
             PTobject.transform.localPosition = TextVec;
             PTobject.GetComponent<TextMesh>().text = PointName;
+            // 文字を表示しないときにはオブジェクトを非アクティブにする
+            PTobject.SetActive(ShowPointName);
         }
         if (GameLog != null) 
         {
