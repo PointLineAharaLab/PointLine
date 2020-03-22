@@ -23,6 +23,7 @@ public class Preference : MonoBehaviour
     string AngleConstant = "";
     public bool Fixed = false;
     public bool Delete = false;
+    public bool ShowName = true;
     public Log LogParent = null;
     public GameObject Parent = null;
 
@@ -45,6 +46,7 @@ public class Preference : MonoBehaviour
             CoordX = "" + Mathf.Round(1000f * lg.parent.GetComponent<Point>().Vec.x) / 1000f;
             CoordY = "" + Mathf.Round(1000f * lg.parent.GetComponent<Point>().Vec.y) / 1000f;
             Fixed = lg.parent.GetComponent<Point>().Fixed;
+            ShowName = lg.parent.GetComponent<Point>().ShowPointName;
         }
         else if (ObjectType == "Line")
         {
@@ -514,6 +516,24 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称 ", LabelStyle);
         ObjectName = GUI.TextField(new Rect(Left + 50, Top, DialogWidth - 50, height), ObjectName, FieldStyle);
         Top += Step;
+        if (ShowName)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称表示", LabelStyle);
+            if (GUI.Button(new Rect(Left + 100, Top, DialogWidth - 100, height), "非表示", ButtonStyle))
+            {
+                ShowName = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称非表示", LabelStyle);
+            if (GUI.Button(new Rect(Left + 120, Top, DialogWidth - 120, height), "表示", ButtonStyle))
+            {
+                ShowName = true;
+            }
+            Top += Step;
+        }
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "(" + CoordX + "," + CoordY + ")", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
@@ -558,6 +578,7 @@ public class Preference : MonoBehaviour
             pt.Fixed = Fixed;
             pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
             pt.PointName = ObjectName;
+            pt.ShowPointName = ShowName;
         }
     }
 
@@ -568,6 +589,24 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Name ", LabelStyle);
         ObjectName = GUI.TextField(new Rect(Left + 60, Top, DialogWidth - 60, height), ObjectName, FieldStyle);
         Top += Step;
+        if (ShowName)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show Name", LabelStyle);
+            if (GUI.Button(new Rect(Left + 110, Top, DialogWidth - 110, height), "Hide", ButtonStyle))
+            {
+                ShowName = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide Name", LabelStyle);
+            if (GUI.Button(new Rect(Left + 110, Top, DialogWidth - 110, height), "Show", ButtonStyle))
+            {
+                ShowName = true;
+            }
+            Top += Step;
+        }
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "(" + CoordX + "," + CoordY + ")", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
@@ -612,6 +651,7 @@ public class Preference : MonoBehaviour
             pt.Fixed = Fixed;
             pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
             pt.PointName = ObjectName;
+            pt.ShowPointName = ShowName;
         }
     }
 
