@@ -64,6 +64,7 @@ public class Preference : MonoBehaviour
             }
             else if (ObjectName == "角度")
             {
+                Fixed = lg.parent.GetComponent<Module>().FixAngle;
                 AngleConstant = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Constant * 180f / Mathf.PI) / 10f;
             }
         }
@@ -842,9 +843,27 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "角度", LabelStyle);
-        AngleConstant = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
+        AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
+        GUI.Label(new Rect(DialogWidth - 20, Top, DialogWidth, height), "度", LabelStyle);
         Top += Step;
+        if (Fixed)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "可動にする", ButtonStyle))
+            {
+                Fixed = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "固定にする", ButtonStyle))
+            {
+                Fixed = true;
+            }
+            Top += Step;
+        }
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
         {
             Module md = LogParent.parent.GetComponent<Module>();
@@ -861,6 +880,7 @@ public class Preference : MonoBehaviour
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
             md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+            md.FixAngle = Fixed;
         }
 
     }
@@ -870,9 +890,27 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Degree ", LabelStyle);
-        AngleConstant = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), AngleConstant, FieldStyle);
+        AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 70, height), AngleConstant, FieldStyle);
+        GUI.Label(new Rect(DialogWidth - 30, Top, DialogWidth, height), "Degree ", LabelStyle);
         Top += Step;
+        if (Fixed)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LabelStyle);
+            if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Unfixed", ButtonStyle))
+            {
+                Fixed = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Unfixed", LabelStyle);
+            if (GUI.Button(new Rect(Left + 80, Top, DialogWidth - 80, height), "Fixed", ButtonStyle))
+            {
+                Fixed = true;
+            }
+            Top += Step;
+        }
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
         {
             Module md = LogParent.parent.GetComponent<Module>();
@@ -889,6 +927,7 @@ public class Preference : MonoBehaviour
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
             md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+            md.FixAngle = Fixed;
         }
 
     }

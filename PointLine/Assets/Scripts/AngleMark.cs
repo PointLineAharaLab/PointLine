@@ -16,9 +16,13 @@ public class AngleMark : MonoBehaviour {
     public bool Active = true;
 
     public bool RightAngle = true;
+    //画面上に角度の数値を入れる準備
+    public bool ShowValue = false;
+    public float Value = 60f;
+    public GameObject TextObject;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -64,6 +68,8 @@ public class AngleMark : MonoBehaviour {
                 lr.SetPosition(i, Origine + pos);
             }
             lr.loop = false;//ループにしない
+            TextObject.transform.localPosition = Origine + 0.9f * (UnitX + UnitY).normalized;
+            TextObject.SetActive(ShowValue);
         }
 
     }

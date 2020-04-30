@@ -312,14 +312,28 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "作図 ：" + PName;
+                    if (parent.GetComponent<Module>().FixAngle)
+                    {
+                        Text1 = "固定角 ：";
+                    }
+                    else
+                    {
+                        Text1 = "角 ：";
+                    }
                     float angle = Mathf.FloorToInt(Constant * 180f / Mathf.PI * 10) * 0.1f;
                     Text1 += (angle + "度");
                     Text2 = "角" + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
                 }
                 else
                 {
-                    Text1 = "Fixed angle ";
+                    if (parent.GetComponent<Module>().FixAngle)
+                    {
+                        Text1 = "Fixed angle ";
+                    }
+                    else
+                    {
+                        Text1 = "Angle ";
+                    }
                     float angle = Mathf.FloorToInt(Constant * 180f / Mathf.PI * 10) * 0.1f;
                     Text1 += (angle + " degree");
                     Text2 = "Angle " + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);

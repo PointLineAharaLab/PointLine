@@ -18,10 +18,12 @@ public class Module : MonoBehaviour {
     public GameObject GameLog = null;
     public string ModuleName = "";
     public bool Active = true;
+    public bool FixAngle;//角度を固定するかどうかのフラグ
 
     // Use this for initialization
     void Start () {
         Active = true;
+        FixAngle = false;
     }
 
     private void ModulePOINT_ON_POINT()
@@ -823,16 +825,24 @@ public class Module : MonoBehaviour {
             float err = Mathf.Abs(AngleError);
             if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
             // debug
-            float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
-            float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
-            float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
-            float NewBy = (Bx - MidABx) * Mathf.Sin(AngleError) + (By - MidABy) * Mathf.Cos(AngleError) + MidABy;
-            Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
-            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
-            if (!PA.Fixed)
-                PA.Vec = newPAVec;
-            if (!PB.Fixed)
-                PB.Vec = newPBVec;
+            if (FixAngle)
+                //角を固定するときは点を動かす
+            {
+                float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
+                float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
+                float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
+                float NewBy = (Bx - MidABx) * Mathf.Sin(AngleError) + (By - MidABy) * Mathf.Cos(AngleError) + MidABy;
+                Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
+                Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+                if (!PA.Fixed)
+                    PA.Vec = newPAVec;
+                if (!PB.Fixed)
+                    PB.Vec = newPBVec;
+            }
+            else　//角を固定しないときは表示を変える
+            {
+                Constant = Mathf.Abs(Angle);
+            }
         }
         {
             float Ax = PA.Vec.x, Ay = PA.Vec.y;
@@ -862,16 +872,23 @@ public class Module : MonoBehaviour {
             float err = Mathf.Abs(AngleError);
             if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
             // debug
-            float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
-            float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
-            float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
-            float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
-            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
-            Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
-            if (!PB.Fixed)
-                PB.Vec = newPBVec;
-            if (!PC.Fixed)
-                PC.Vec = newPCVec;
+            if (FixAngle)
+            {
+                float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+                float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+                float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+                float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+                Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+                Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
+                if (!PB.Fixed)
+                    PB.Vec = newPBVec;
+                if (!PC.Fixed)
+                    PC.Vec = newPCVec;
+            }
+            else
+            {
+                Constant = Mathf.Abs(Angle);
+            }
         }
     }
 
