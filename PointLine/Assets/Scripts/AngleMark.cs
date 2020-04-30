@@ -70,6 +70,12 @@ public class AngleMark : MonoBehaviour {
             lr.loop = false;//ループにしない
             TextObject.transform.localPosition = Origine + 0.9f * (UnitX + UnitY).normalized;
             TextObject.SetActive(ShowValue);
+            if (parent != null)
+            {
+                Value = Mathf.FloorToInt(parent.GetComponent<Module>().Constant * 180f / Mathf.PI);
+                TextObject.GetComponent<TextMesh>().text = Value.ToString();
+                ShowValue = parent.GetComponent<Module>().ShowConstant;
+            }
         }
 
     }

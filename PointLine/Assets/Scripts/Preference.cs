@@ -24,6 +24,7 @@ public class Preference : MonoBehaviour
     public bool Fixed = false;
     public bool Delete = false;
     public bool ShowName = true;
+    public bool ShowConstant = false;
     public Log LogParent = null;
     public GameObject Parent = null;
 
@@ -846,6 +847,23 @@ public class Preference : MonoBehaviour
         AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
         GUI.Label(new Rect(DialogWidth - 20, Top, DialogWidth, height), "度", LabelStyle);
         Top += Step;
+        if (ShowConstant)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "表示", LabelStyle);
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "非表示にする", ButtonStyle))
+            {
+                ShowConstant = false;
+            }
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "非表示", LabelStyle);
+            if (GUI.Button(new Rect(Left + 75, Top, DialogWidth - 75, height), "表示にする", ButtonStyle))
+            {
+                ShowConstant = true;
+            }
+        }
+        Top += Step;
         if (Fixed)
         {
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
@@ -881,6 +899,7 @@ public class Preference : MonoBehaviour
             Module md = LogParent.parent.GetComponent<Module>();
             md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
             md.FixAngle = Fixed;
+            md.ShowConstant = ShowConstant;
         }
 
     }
@@ -892,6 +911,23 @@ public class Preference : MonoBehaviour
         Top += Step;
         AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 70, height), AngleConstant, FieldStyle);
         GUI.Label(new Rect(DialogWidth - 30, Top, DialogWidth, height), "Degree ", LabelStyle);
+        Top += Step;
+        if (ShowConstant)
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show", LabelStyle);
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "Hide", ButtonStyle))
+            {
+                ShowConstant = false;
+            }
+        }
+        else
+        {
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide", LabelStyle);
+            if (GUI.Button(new Rect(Left + 75, Top, DialogWidth - 75, height), "Show", ButtonStyle))
+            {
+                ShowConstant = true;
+            }
+        }
         Top += Step;
         if (Fixed)
         {
@@ -928,6 +964,7 @@ public class Preference : MonoBehaviour
             Module md = LogParent.parent.GetComponent<Module>();
             md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
             md.FixAngle = Fixed;
+            md.ShowConstant = ShowConstant;
         }
 
     }

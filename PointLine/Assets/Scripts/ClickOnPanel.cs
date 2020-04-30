@@ -920,9 +920,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             if (FirstClickId != SecondClickId)
             {
                 // 新しいモジュールの追加
-                Util.AddModule(MENU.LINES_PERPENDICULAR, FirstClickId, SecondClickId, 0, ModuleId++);
+                Module MD = Util.AddModule(MENU.LINES_PERPENDICULAR, FirstClickId, SecondClickId, 0, ModuleId++);
                 // 新しい直角記号の追加
-                Util.AddAngleMark(FirstClickId, SecondClickId);
+                Util.AddAngleMark(FirstClickId, SecondClickId, MD.gameObject);
             }
             Mode = MENU.LINES_PERPENDICULAR;
             //Mode = 0;
@@ -974,7 +974,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Module MD = Util.AddModule(MENU.ANGLE, FirstClickId, SecondClickId, ThirdClickId, ModuleId++);
             MD.Constant = Mathf.PI / 3f;// 定数をプリセット
             //新たな直角マークの追加
-            Util.AddAngleMark(FirstClickId, SecondClickId, ThirdClickId);
+            Util.AddAngleMark(FirstClickId, SecondClickId, ThirdClickId, MD.gameObject);
             Mode = MENU.ANGLE;
             ModeStep = 0;
         }

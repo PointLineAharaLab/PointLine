@@ -285,7 +285,7 @@ public class Util
         return obj;
     }
 
-    public static AngleMark AddAngleMark(int first, int second)// omit 'Id'
+    public static AngleMark AddAngleMark(int first, int second, GameObject parentModule = null)// omit 'Id'
     {//
         Prefab = Resources.Load<GameObject>("Prefabs/AngleMark");
         GameObject g = AngleMark.Instantiate(Prefab, Vector3.zero, Quaternion.identity) as GameObject;
@@ -294,12 +294,12 @@ public class Util
         {
             obj.Object1Id = first;
             obj.Object2Id = second;
-            obj.parent = g;
+            obj.parent = parentModule;
             obj.RightAngle = true;
         }
         return obj;
     }
-    public static AngleMark AddAngleMark(int first, int second, int third)// omit 'Id'
+    public static AngleMark AddAngleMark(int first, int second, int third, GameObject parentModule = null)// omit 'Id'
     {//
         Prefab = Resources.Load<GameObject>("Prefabs/AngleMark");
         GameObject g = AngleMark.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity);
@@ -309,7 +309,7 @@ public class Util
             obj.Object1Id = first;
             obj.Object2Id = second;
             obj.Object3Id = third;
-            obj.parent = g;
+            obj.parent = parentModule;
             obj.RightAngle = false;
         }
         return obj;
@@ -682,16 +682,16 @@ public class Util
 
             }
             //オブジェクト作成
-            Module md = Util.AddModule(mt, o1, o2, o3, id);
-            md.Ratio1 = ra1;
-            md.Ratio2 = ra2;
-            md.Constant = cst;
+            Module MD = Util.AddModule(mt, o1, o2, o3, id);
+            MD.Ratio1 = ra1;
+            MD.Ratio2 = ra2;
+            MD.Constant = cst;
             //ログ作成
-            Log lg = md.GameLog.GetComponent<Log>();
-            lg.MakeModuleLog(id, mt, o1, o2, o3, md.parent, act, md.ModuleName);
+            Log lg = MD.GameLog.GetComponent<Log>();
+            lg.MakeModuleLog(id, mt, o1, o2, o3, MD.parent, act, MD.ModuleName);
             if (mt == MENU.LINES_PERPENDICULAR)
             {// 直交モジュールの時には直角マークを付ける。
-                AddAngleMark(o1, o2);
+                AddAngleMark(o1, o2, MD.gameObject);
             }
             if (mt == MENU.POINT_ON_LINE)
             {// 点を直線上に、のときには補助線を付ける。

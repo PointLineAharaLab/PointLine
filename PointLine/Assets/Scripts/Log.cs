@@ -597,10 +597,10 @@ public class Log : MonoBehaviour
         }
         else if(_l.ObjectType == "Module")
         {
-            Util.AddModule(_l.ModuleType, _l.Object1Id, _l.Object2Id, _l.Object3Id, _l.Id);
+            Module MD = Util.AddModule(_l.ModuleType, _l.Object1Id, _l.Object2Id, _l.Object3Id, _l.Id);
             if(_l.ModuleType == MENU.LINES_PERPENDICULAR)
             {
-                Util.AddAngleMark(_l.Object1Id, _l.Object2Id);
+                Util.AddAngleMark(_l.Object1Id, _l.Object2Id, MD.gameObject);
             }
         }
     }

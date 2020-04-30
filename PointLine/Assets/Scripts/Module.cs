@@ -13,6 +13,7 @@ public class Module : MonoBehaviour {
     public float Ratio1 = 1f;
     public float Ratio2 = 1f;
     public float Constant = Mathf.PI/2f;
+    public bool ShowConstant = false;
 
     public GameObject parent = null;
     public GameObject GameLog = null;
