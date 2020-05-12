@@ -1278,7 +1278,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         MouseUpVec.z = 0.0f;
         if (Hypot(MouseDownVec.x - MouseUpVec.x, MouseDownVec.y - MouseUpVec.y) < 0.1)
         {// クリックののちマウスアップ
-            //ログを右クリック
+            //ログの右上をクリック
             int MOL = MouseOnGameLog(MouseUpVec); 
             if(4500 <= MOL && MOL<5000){
                 PreferenceDialog.GetComponent<Preference>().SetData(Util.logs[MOL - 4500]);

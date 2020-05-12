@@ -32,7 +32,9 @@ public class Preference : MonoBehaviour
     void Start()
     {
         float PreferenceX = -(WorldHeight / Screen.height * Screen.width) + 1.5f;
-
+        LabelStyle.fontSize = 16;
+        ButtonStyle.fontSize = 16;
+        　　//ここでフォントサイズを決められる
         Position = new Vector3(PreferenceX, 1.77f, -2f);
         GetScreenPosition(Position, out ScreenPosition);
     }
@@ -80,14 +82,14 @@ public class Preference : MonoBehaviour
         q.x = ((p.x - 1.5f) + WorldWidth) * rate;
         q.y = (-(p.y + 2.25f) + WorldHeight) * rate;
         q.z = 0f;
-        DialogWidth = 3f * rate - 40;
+        DialogWidth = 3f * rate;
     }
 
     private void OnGUI()
     {
         if (show)
         {
-            GUI.Window(0, new Rect(ScreenPosition.x, ScreenPosition.y, 3f * rate, 300), WindowProc, "", WindowStyle);
+            GUI.Window(0, new Rect(ScreenPosition.x, ScreenPosition.y, DialogWidth + 40, 300), WindowProc, "", WindowStyle);
         }
     }
 
