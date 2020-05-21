@@ -32,8 +32,8 @@ public class Preference : MonoBehaviour
     void Start()
     {
         float PreferenceX = -(WorldHeight / Screen.height * Screen.width) + 1.5f;
-        LabelStyle.fontSize = 16;
-        ButtonStyle.fontSize = 16;
+        LabelStyle.fontSize = 20;
+        ButtonStyle.fontSize = 20;
         　　//ここでフォントサイズを決められる
         Position = new Vector3(PreferenceX, 1.77f, -2f);
         GetScreenPosition(Position, out ScreenPosition);
@@ -851,16 +851,22 @@ public class Preference : MonoBehaviour
         Top += Step;
         if (ShowConstant)
         {
+            GUIStyle BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 14);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "表示", LabelStyle);
-            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "非表示にする", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "非表示にする", BS))
             {
                 ShowConstant = false;
             }
         }
         else
         {
+            GUIStyle BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "非表示", LabelStyle);
-            if (GUI.Button(new Rect(Left + 75, Top, DialogWidth - 75, height), "表示にする", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "表示にする", BS))
             {
                 ShowConstant = true;
             }
@@ -868,8 +874,11 @@ public class Preference : MonoBehaviour
         Top += Step;
         if (Fixed)
         {
+            GUIStyle BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
-            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "可動にする", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "可動にする", BS))
             {
                 Fixed = false;
             }
@@ -877,8 +886,11 @@ public class Preference : MonoBehaviour
         }
         else
         {
+            GUIStyle BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
-            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "固定にする", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "固定にする", BS))
             {
                 Fixed = true;
             }
