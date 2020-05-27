@@ -693,6 +693,10 @@ public class Util
             {// 直交モジュールの時には直角マークを付ける。
                 AddAngleMark(o1, o2, MD.gameObject);
             }
+            else if (mt == MENU.ANGLE)
+            {// 角度モジュールの時には角度マークを付ける。
+                AddAngleMark(o1, o2, o3, MD.gameObject);
+            }
             if (mt == MENU.POINT_ON_LINE)
             {// 点を直線上に、のときには補助線を付ける。
                 AddThinLine(o1, o2);
