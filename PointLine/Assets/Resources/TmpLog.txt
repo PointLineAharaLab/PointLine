@@ -1,6 +1,6 @@
-Point,-0.057252,2.958015,0,0,False,True,A
-Point,-3.835877,-1.545801,0,1,False,True,B
+Point,0.3244273,1.927481,0,0,False,True,A
+Point,-4.026718,-2.30916,0,1,False,True,B
 Line,0,1,1000,True
-Point,1.965648,-1.965649,0,2,False,True,C
+Point,3.98855,-2.347328,0,2,False,True,C
 Line,1,2,1001,True
 Module,23,0,1,2,3000,True,1,1,1.570796

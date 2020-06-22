@@ -552,10 +552,13 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称 ", LabelStyle);
         ObjectName = GUI.TextField(new Rect(Left + 50, Top, DialogWidth - 50, height), ObjectName, FieldStyle);
         Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
         if (ShowName)
         {
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称表示", LabelStyle);
-            if (GUI.Button(new Rect(Left + 100, Top, DialogWidth - 100, height), "非表示", ButtonStyle))
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+            if (BS.fontSize > 20) BS.fontSize = 20;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "表示", LabelStyle);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "非表示", BS))
             {
                 ShowName = false;
             }
@@ -563,8 +566,10 @@ public class Preference : MonoBehaviour
         }
         else
         {
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称非表示", LabelStyle);
-            if (GUI.Button(new Rect(Left + 120, Top, DialogWidth - 120, height), "表示", ButtonStyle))
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+            if (BS.fontSize > 20) BS.fontSize = 20;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "非表示", LabelStyle);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "表示", BS))
             {
                 ShowName = true;
             }
@@ -580,8 +585,11 @@ public class Preference : MonoBehaviour
         Top += Step;
         if (Fixed)
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
-            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "可動にする", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "可動にする", BS))
             {
                 Fixed = false;
             }
@@ -589,25 +597,37 @@ public class Preference : MonoBehaviour
         }
         else
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
-            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "固定にする", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "固定にする", BS))
             {
                 Fixed = true;
             }
             Top += Step;
         }
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
         {
             Point pt = LogParent.parent.GetComponent<Point>();
             DeleteAPoint(pt.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
@@ -625,10 +645,14 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Name ", LabelStyle);
         ObjectName = GUI.TextField(new Rect(Left + 60, Top, DialogWidth - 60, height), ObjectName, FieldStyle);
         Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
         if (ShowName)
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show Name", LabelStyle);
-            if (GUI.Button(new Rect(Left + 110, Top, DialogWidth - 110, height), "Hide", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Hide", BS))
             {
                 ShowName = false;
             }
@@ -636,8 +660,11 @@ public class Preference : MonoBehaviour
         }
         else
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide Name", LabelStyle);
-            if (GUI.Button(new Rect(Left + 110, Top, DialogWidth - 110, height), "Show", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Show", BS))
             {
                 ShowName = true;
             }
@@ -653,8 +680,11 @@ public class Preference : MonoBehaviour
         Top += Step;
         if (Fixed)
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LabelStyle);
-            if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Free", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Free", BS))
             {
                 Fixed = false;
             }
@@ -662,25 +692,37 @@ public class Preference : MonoBehaviour
         }
         else
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Free", LabelStyle);
-            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "Fixed", ButtonStyle))
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Fixed", BS))
             {
                 Fixed = true;
             }
             Top += Step;
         }
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
         {
             Point pt = LogParent.parent.GetComponent<Point>();
             DeleteAPoint(pt.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
@@ -702,18 +744,27 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "辺長 " + Mathf.Round(dist * 1000f) / 1000f, LabelStyle);
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
         {
             Line ln = LogParent.parent.GetComponent<Line>();
             DeleteALine(ln.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
         }
@@ -730,18 +781,27 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Length " + Mathf.Round(dist * 1000f) / 1000f, LabelStyle);
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
         {
             Line ln = LogParent.parent.GetComponent<Line>();
             DeleteALine(ln.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
         }
@@ -755,18 +815,27 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "半径", LabelStyle);
         CoordX = GUI.TextField(new Rect(Left + 50, Top, DialogWidth - 50, height), CoordX, FieldStyle);
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
         {
             Circle ci = LogParent.parent.GetComponent<Circle>();
             DeleteACircle(ci.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             Circle ci = LogParent.parent.GetComponent<Circle>();
             ci.Radius = float.Parse(CoordX);
@@ -783,18 +852,27 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Radius ", LabelStyle);
         CoordX = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordX, FieldStyle);
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
         {
             Circle ci = LogParent.parent.GetComponent<Circle>();
             DeleteACircle(ci.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             Circle ci = LogParent.parent.GetComponent<Circle>();
             ci.Radius = float.Parse(CoordX);
@@ -816,18 +894,27 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
         CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
         {
             Module md = LogParent.parent.GetComponent<Module>();
             DeleteAModule(md.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
@@ -852,18 +939,27 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 2", LabelStyle);
         CoordY = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordY, FieldStyle);
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
         {
             Module md = LogParent.parent.GetComponent<Module>();
             DeleteAModule(md.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
@@ -881,9 +977,9 @@ public class Preference : MonoBehaviour
         AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
         GUI.Label(new Rect(DialogWidth - 20, Top, DialogWidth, height), "度", LabelStyle);
         Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
         if (ShowConstant)
         {
-            GUIStyle BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 14);
             if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "表示", LabelStyle);
@@ -894,7 +990,7 @@ public class Preference : MonoBehaviour
         }
         else
         {
-            GUIStyle BS = new GUIStyle(ButtonStyle);
+            BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
             if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "非表示", LabelStyle);
@@ -906,7 +1002,7 @@ public class Preference : MonoBehaviour
         Top += Step;
         if (Fixed)
         {
-            GUIStyle BS = new GUIStyle(ButtonStyle);
+            BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
             if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
@@ -918,7 +1014,7 @@ public class Preference : MonoBehaviour
         }
         else
         {
-            GUIStyle BS = new GUIStyle(ButtonStyle);
+            BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
             if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
@@ -928,18 +1024,27 @@ public class Preference : MonoBehaviour
             }
             Top += Step;
         }
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
         {
             Module md = LogParent.parent.GetComponent<Module>();
             DeleteAModule(md.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
@@ -958,18 +1063,24 @@ public class Preference : MonoBehaviour
         AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 70, height), AngleConstant, FieldStyle);
         GUI.Label(new Rect(DialogWidth - 30, Top, DialogWidth, height), "Degree ", LabelStyle);
         Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
         if (ShowConstant)
         {
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show", LabelStyle);
-            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "Hide", ButtonStyle))
+            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "Hide", BS))
             {
                 ShowConstant = false;
             }
         }
         else
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide", LabelStyle);
-            if (GUI.Button(new Rect(Left + 75, Top, DialogWidth - 75, height), "Show", ButtonStyle))
+            if (GUI.Button(new Rect(Left + 75, Top, DialogWidth - 75, height), "Show", BS))
             {
                 ShowConstant = true;
             }
@@ -977,8 +1088,11 @@ public class Preference : MonoBehaviour
         Top += Step;
         if (Fixed)
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 9);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LabelStyle);
-            if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Unfixed", ButtonStyle))
+            if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Unfixed", BS))
             {
                 Fixed = false;
             }
@@ -986,25 +1100,37 @@ public class Preference : MonoBehaviour
         }
         else
         {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
+            if (BS.fontSize > 20) BS.fontSize = 20;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Unfixed", LabelStyle);
-            if (GUI.Button(new Rect(Left + 80, Top, DialogWidth - 80, height), "Fixed", ButtonStyle))
+            if (GUI.Button(new Rect(Left + 80, Top, DialogWidth - 80, height), "Fixed", BS))
             {
                 Fixed = true;
             }
             Top += Step;
         }
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
         {
             Module md = LogParent.parent.GetComponent<Module>();
             DeleteAModule(md.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
@@ -1020,18 +1146,27 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
         {
             Module md = LogParent.parent.GetComponent<Module>();
             DeleteAModule(md.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
         }
@@ -1043,18 +1178,27 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", ButtonStyle))
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
         {
             Module md = LogParent.parent.GetComponent<Module>();
             DeleteAModule(md.Id);
             show = false;
         }
         Top += Step;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", ButtonStyle))
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > 20) BS.fontSize = 20;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
         }
