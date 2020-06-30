@@ -640,6 +640,7 @@ public class Preference : MonoBehaviour
 
     void PointPreferenceEnglish(float Left, float Top, float Step, float height)
     {
+        GUIStyle LS = new GUIStyle(LabelStyle);
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Point " + ObjectName, LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Name ", LabelStyle);
@@ -651,7 +652,9 @@ public class Preference : MonoBehaviour
             BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
             if (BS.fontSize > 20) BS.fontSize = 20;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show Name", LabelStyle);
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
+            if (LS.fontSize > 20) LS.fontSize = 20;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show Name", LS);
             if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Hide", BS))
             {
                 ShowName = false;
@@ -663,7 +666,9 @@ public class Preference : MonoBehaviour
             BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
             if (BS.fontSize > 20) BS.fontSize = 20;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide Name", LabelStyle);
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
+            if (LS.fontSize > 20) LS.fontSize = 20;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide Name", LS);
             if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Show", BS))
             {
                 ShowName = true;
@@ -849,8 +854,14 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Center " + LogParent.Object1.GetComponent<Point>().PointName, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Radius ", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordX, FieldStyle);
+        GUIStyle LS = new GUIStyle(LabelStyle);
+        LS.fontSize = Mathf.FloorToInt(DialogWidth / 3 / 3.5f);
+        if (LS.fontSize > 20) LS.fontSize = 20;
+        GUIStyle FS = new GUIStyle(FieldStyle);
+        FS.fontSize = Mathf.FloorToInt(DialogWidth * 2 / 3 / 4);
+        if (FS.fontSize > 20) FS.fontSize = 20;
+        GUI.Label(new Rect(Left, Top, DialogWidth / 3, height), "Radius", LS);
+        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth * 2 / 3, height), CoordX, FS);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
@@ -1056,20 +1067,28 @@ public class Preference : MonoBehaviour
     }
     void ModuleAnglePreferenceEnglish(float Left, float Top, float Step, float height)
     {
+        GUIStyle LS = new GUIStyle(LabelStyle);
         GUI.Label(new Rect(Left, Top, DialogWidth, height), " Angle ", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 70, height), AngleConstant, FieldStyle);
-        GUI.Label(new Rect(DialogWidth - 30, Top, DialogWidth, height), "Degree ", LabelStyle);
+        GUIStyle FS = new GUIStyle(FieldStyle);
+        FS.fontSize = Mathf.FloorToInt(DialogWidth * 2 / 3 / 4);
+        if (FS.fontSize > 20) FS.fontSize = 20;
+        LS.fontSize = Mathf.FloorToInt(DialogWidth / 3 / 4);
+        if (LS.fontSize > 20) LS.fontSize = 20;
+        AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth * 2 / 3, height), AngleConstant, FS);
+        GUI.Label(new Rect(Left + DialogWidth * 2 / 3, Top, DialogWidth / 3, height), "Degree", LS);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
         if (ShowConstant)
         {
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
             if (BS.fontSize > 20) BS.fontSize = 20;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show", LabelStyle);
-            if (GUI.Button(new Rect(Left + 50, Top, DialogWidth - 50, height), "Hide", BS))
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+            if (LS.fontSize > 20) LS.fontSize = 20;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Hide", BS))
             {
                 ShowConstant = false;
             }
@@ -1079,8 +1098,10 @@ public class Preference : MonoBehaviour
             BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
             if (BS.fontSize > 20) BS.fontSize = 20;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide", LabelStyle);
-            if (GUI.Button(new Rect(Left + 75, Top, DialogWidth - 75, height), "Show", BS))
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+            if (LS.fontSize > 20) LS.fontSize = 20;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Show", BS))
             {
                 ShowConstant = true;
             }
@@ -1091,8 +1112,11 @@ public class Preference : MonoBehaviour
             BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 9);
             if (BS.fontSize > 20) BS.fontSize = 20;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LabelStyle);
-            if (GUI.Button(new Rect(Left + 60, Top, DialogWidth - 60, height), "Unfixed", BS))
+            LS = new GUIStyle(LabelStyle);
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
+            if (LS.fontSize > 20) LS.fontSize = 20;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Unfixed", BS))
             {
                 Fixed = false;
             }
@@ -1103,8 +1127,11 @@ public class Preference : MonoBehaviour
             BS = new GUIStyle(ButtonStyle);
             BS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
             if (BS.fontSize > 20) BS.fontSize = 20;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Unfixed", LabelStyle);
-            if (GUI.Button(new Rect(Left + 80, Top, DialogWidth - 80, height), "Fixed", BS))
+            LS = new GUIStyle(LabelStyle);
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 9);
+            if (LS.fontSize > 20) LS.fontSize = 20;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Unfixed", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Fixed", BS))
             {
                 Fixed = true;
             }

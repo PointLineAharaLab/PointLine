@@ -120,6 +120,9 @@ public class Menu : MonoBehaviour
             TextLINES_PERPENDICULAR1 = " Make two lines perpendicular: Select another line.";
             TextLINES_PARALLEL0 = " Make two lines parallel: Select a line.";
             TextLINES_PARALLEL1 = " Make two lines parallel: Select another line.";
+            TextANGLE0 = " Angle: Select a point.";
+    　　　  TextANGLE1 = " Angle: Select another point.";
+            TextANGLE2 = " Angle: Select the third point.";
             TextCIRLCE_TANGENT_LINE0 = " Make a circle tangent to a line: Select a circle.";
             TextCIRLCE_TANGENT_LINE1 = " Make a circle tangent to a line: Select a line.";
             TextCIRLCE_TANGENT_CIRCLE0 = " Make a circle tangent to a circle: Select a circle.";
