@@ -817,8 +817,11 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
+        GUIStyle FS = new GUIStyle(FieldStyle);
+        FS.fontSize = Mathf.FloorToInt(DialogWidth / 2 / 4);
+        if (FS.fontSize > 20) FS.fontSize = 20;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "半径", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + 50, Top, DialogWidth - 50, height), CoordX, FieldStyle);
+        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), CoordX, FS);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);

@@ -1,1 +1,7 @@
-Point,-2.041985,1.622137,0,0,False,True,A
+Point,-4.408397,-0.4389313,0,0,False,True,A
+Circle,0,1.488549,2000,True
+Point,2.385496,1.736641,0,1,False,True,B
+Point,0.28626,-0.9351146,0,2,False,True,C
+Line,1,2,1000,True
+Point,3.98855,-1.01145,0,3,False,True,D
+Line,2,3,1001,True
