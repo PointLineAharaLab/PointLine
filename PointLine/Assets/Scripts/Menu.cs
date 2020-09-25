@@ -407,7 +407,7 @@ public class Menu : MonoBehaviour
         CreatePerpButton();
         CreateParaButton();
         CreateAngleButton();
-        //CreateBisectorButton();
+        CreateBisectorButton();
         CreateTangentL2CButton();
         CreateTangentC2CButton();
         CreateFixPointButton();
