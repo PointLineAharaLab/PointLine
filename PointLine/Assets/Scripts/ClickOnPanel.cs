@@ -162,6 +162,12 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         return -1;
     }
 
+    private int MouseOnAngle(Vector3 v)
+    {
+
+        return -1;
+    }
+
 
     int MouseOnGameLog(Vector3 v)
     {

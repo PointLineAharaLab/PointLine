@@ -47,6 +47,7 @@ public class Menu : MonoBehaviour
         "ButtonMenuOff(Clone)", "ButtonAddPoint(Clone)", "ButtonAddMidPoint(Clone)","ButtonAddLine(Clone)","ButtonAddCircle(Clone)",
         "ButtonPointOnPoint(Clone)" ,"ButtonPointOnLine(Clone)","ButtonPointOnCircle(Clone)","ButtonIntersection(Clone)", 
         "ButtonIsom(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)","ButtonAngle(Clone)" ,"ButtonBisector(Clone)" ,
+        "ButtonTangentL2C(Clone)", "ButtonTangentC2C(Clone)",
         "ButtonFixPoint(Clone)", "ButtonDeletePoint(Clone)", "ButtonDeleteAll(Clone)", 
         "ButtonUndo(Clone)", "ButtonRedo(Clone)", "ButtonShowLogs(Clone)",
         "ButtonSave(Clone)", "ButtonOpen(Clone)", "ButtonSave2TeX(Clone)", "ButtonQuit(Clone)"
