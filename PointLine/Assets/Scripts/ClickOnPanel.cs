@@ -164,7 +164,41 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     private int MouseOnAngle(Vector3 v)
     {
-
+        AngleMark[] am = FindObjectsOfType<AngleMark>();
+        if (am != null)
+        {
+            for (int i = 0; i < am.Length; i++)
+            {
+                float dist = (am[i].Origine - v).magnitude;
+                //float dist = Hypot(am[i].Origine.x - v.x, am[i].Origine.y - v.y);
+                float DeclineX = Mathf.Atan2(am[i].UnitX.y, am[i].UnitX.x);// UnitXの偏角
+                float DeclineY = Mathf.Atan2(am[i].UnitY.y, am[i].UnitY.x);// UnitYの偏角
+                if (DeclineX <= DeclineY && DeclineY < DeclineX + Mathf.PI)
+                {
+                }
+                else if (DeclineX + Mathf.PI <= DeclineY)
+                {
+                    DeclineX += Mathf.PI * 2f;
+                }
+                else if (DeclineX - Mathf.PI <= DeclineY && DeclineY < DeclineX)
+                {
+                }
+                else if (DeclineY < DeclineX - Mathf.PI)
+                {
+                    DeclineY += Mathf.PI * 2f;
+                }
+                float DeclineV = Mathf.Atan2(v.y - am[i].Origine.y, v.x - am[i].Origine.x);
+                if((DeclineX - DeclineV)*(DeclineY - DeclineV) <= 0)
+                {
+                    if (0.25 < dist && dist < 0.75)
+                    {
+                        //Debug.Log("MouseOnCircle " + am[i].Id);
+                        return am[i].parent.GetComponent<Module>().Id;
+                    }
+                }
+                
+            }
+        }
         return -1;
     }
 
