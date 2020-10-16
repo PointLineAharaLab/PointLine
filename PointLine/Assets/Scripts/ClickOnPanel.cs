@@ -192,7 +192,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 {
                     if (0.25 < dist && dist < 0.75)
                     {
-                        //Debug.Log("MouseOnCircle " + am[i].Id);
+                        //Debug.Log("MouseOnAngle " + am[i].parent.GetComponent<Module>().Id);
                         return am[i].parent.GetComponent<Module>().Id;
                     }
                 }
@@ -263,9 +263,13 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             if (MOP == -1)
             {
                 MOP = MouseOnCircle(v);//サークルをクリックしたかどうかのチェック
+                if(MOP == -1)
+                {
+                    MOP = MouseOnAngle(v);//角度をクリックしたかどうかのチェック
+                }
             }
         }
-        if (MOP >= 0 && MOP < 3000)
+        if (MOP >= 0 && MOP < 4000)
         {// MOP番のオブジェクト
             return MOP;
         }
@@ -1332,7 +1336,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             //Point obj = g.GetComponent<Point>();
             Destroy(g, 1.2f);//モジュールの消去
 
-
             int MOP = MousePosition();
             //Debug.Log("MOP (OnMouseUp) = " + MOP);
             if (MOP == -2)
@@ -1514,6 +1517,13 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 else if (Mode == MENU.CIRCLE_TANGENT_CIRCLE)
                 {
                     MakeCircleTangentCircle(MOP);
+                }
+            }
+            else if (3000 <= MOP && MOP < 4000)
+            {//モジュール(角度)をクリック
+                if (Mode == MENU.BISECTOR && ModeStep == 0)
+                {
+                    //MakeBisector(MOP);
                 }
             }
         }
