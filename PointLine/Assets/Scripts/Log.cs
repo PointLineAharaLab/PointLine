@@ -339,6 +339,29 @@ public class Log : MonoBehaviour
                     Text2 = "Angle " + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
                 }
             }
+            else if (PName == "角度 - 角度" && Object3 != null)
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "等角 ：";
+                    Module md1 = Object1.GetComponent<Module>();
+                    Text2 = "角" + GetPNameByParentObject(md1.Object1) + "" + GetPNameByParentObject(md1.Object2) + "" + GetPNameByParentObject(md1.Object3);
+                }
+                else
+                {
+                    if (parent.GetComponent<Module>().FixAngle)
+                    {
+                        Text1 = "Fixed angle ";
+                    }
+                    else
+                    {
+                        Text1 = "Angle ";
+                    }
+                    float angle = Mathf.FloorToInt(Constant * 180f / Mathf.PI * 10) * 0.1f;
+                    Text1 += (angle + " degree");
+                    Text2 = "Angle " + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
+                }
+            }
             else
             {
                 if (AppMgr.Japanese == 1)

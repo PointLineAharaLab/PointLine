@@ -893,6 +893,32 @@ public class Module : MonoBehaviour {
         }
     }
 
+    private void ModuleBISECTOR()
+    {
+        gameObject.SetActive(Active);
+        if (Object1 == null || Object2 == null || Object3 == null)
+        {
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                AngleMark AG = OBJs[i].GetComponent<AngleMark>();
+                if (AG != null)
+                {
+                    Module MD = AG.parent.GetComponent<Module>();
+                    if (MD.Id == Object1Id)
+                    {
+                        Object1 = OBJs[i];
+                    }
+                    if (MD.Id == Object2Id)
+                    {
+                        Object2 = OBJs[i];
+                    }
+                }
+            }
+            if (Object1 == null || Object2 == null || Object3 == null) Active = false;
+        }
+    }
+
     public void ExecuteModule()
     {
         if (!Active) return;
@@ -926,6 +952,9 @@ public class Module : MonoBehaviour {
                 break;
             case MENU.ANGLE:
                 ModuleANGLE();
+                break;
+            case MENU.BISECTOR:
+                ModuleBISECTOR();
                 break;
         }
     }

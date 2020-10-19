@@ -188,6 +188,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     DeclineY += Mathf.PI * 2f;
                 }
                 float DeclineV = Mathf.Atan2(v.y - am[i].Origine.y, v.x - am[i].Origine.x);
+                //Debug.Log("X:"+ DeclineX + "Y:" + DeclineY + "V:" + DeclineV);
                 if((DeclineX - DeclineV)*(DeclineY - DeclineV) <= 0)
                 {
                     if (0.25 < dist && dist < 0.75)
@@ -1024,7 +1025,30 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
     }
 
-        private void MakeCircleTangentLine(int MOP)
+    private void MakeBisector(int MOP)
+    {
+        if (ModeStep == 0 && 3000 <= MOP && MOP < 4000)//AngleMarkを選択した時、という条件を付け加えたい
+        {//アングルモード、ステップ０ならば，「一つ目の点」をFirstClickIdに記録
+            //Point.AllPointsUnselected();
+            //Point.AddOnePointSelected(MOP);//クリックした点を選択
+              //選んだ時に選択状態にしておく
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 3000 <= MOP && MOP < 4000)
+        {//アングルモード,ステップ２ならば，「3つ目の線」をSecondClickIdに記録
+            //Point.AddOnePointSelected(MOP);//クリックした点を選択
+            SecondClickId = MOP;
+            // 新しいモジュールの追加
+            Module MD = Util.AddModule(MENU.BISECTOR, FirstClickId, SecondClickId, 0, ModuleId++);
+            //新たな直角マークの追加
+            //Util.AddAngleMark(FirstClickId, SecondClickId, ThirdClickId, MD.gameObject);
+            Mode = MENU.BISECTOR;
+            ModeStep = 0;
+        }
+    }
+
+    private void MakeCircleTangentLine(int MOP)
     {
         if (ModeStep == 0 && 2000 <= MOP && MOP < 3000)
         {//モード９ステップ０ならば，「一つ目の円」をFirstClickIdに記録
@@ -1521,9 +1545,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             }
             else if (3000 <= MOP && MOP < 4000)
             {//モジュール(角度)をクリック
-                if (Mode == MENU.BISECTOR && ModeStep == 0)
+                if (Mode == MENU.BISECTOR)
                 {
-                    //MakeBisector(MOP);
+                    MakeBisector(MOP);
                 }
             }
         }
