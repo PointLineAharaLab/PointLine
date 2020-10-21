@@ -915,7 +915,78 @@ public class Module : MonoBehaviour {
                     }
                 }
             }
-            if (Object1 == null || Object2 == null || Object3 == null) Active = false;
+            if (Object1 == null || Object2 == null) Active = false;
+        }
+        Module md1 = Object1.GetComponent<Module>();
+        Module md2 = Object2.GetComponent<Module>();
+        Point M1PA = md1.Object1.GetComponent<Point>();
+        Point M1PB = md1.Object2.GetComponent<Point>();
+        Point M1PC = md1.Object3.GetComponent<Point>();
+        Point M2PA = md2.Object1.GetComponent<Point>();
+        Point M2PB = md2.Object2.GetComponent<Point>();
+        Point M2PC = md2.Object3.GetComponent<Point>();
+        if (M1PA == null || M1PB == null || M1PC == null || M2PA == null || M2PB == null || M2PC == null)
+        {
+            Active = false;
+            return;
+        }
+        float M1PAx = M1PA.Vec.x, M1PAy = M1PA.Vec.y;
+        float M1PBx = M1PB.Vec.x, M1PBy = M1PB.Vec.y;
+        float M1PCx = M1PC.Vec.x, M1PCy = M1PC.Vec.y;
+        float M2PAx = M2PA.Vec.x, M2PAy = M2PA.Vec.y;
+        float M2PBx = M2PB.Vec.x, M2PBy = M2PB.Vec.y;
+        float M2PCx = M2PC.Vec.x, M2PCy = M2PC.Vec.y;
+        float M1MidABx = M1PAx * 0.5f + M1PBx * 0.5f, M1MidABy = M1PAy * 0.5f + M1PBy * 0.5f;
+        float M1MidCBx = M1PCx * 0.5f + M1PBx * 0.5f, M1MidCBy = M1PCy * 0.5f + M1PBy * 0.5f;
+        float M2MidABx = M2PAx * 0.5f + M2PBx * 0.5f, M2MidABy = M2PAy * 0.5f + M2PBy * 0.5f;
+        float M2MidCBx = M2PCx * 0.5f + M2PBx * 0.5f, M2MidCBy = M2PCy * 0.5f + M2PBy * 0.5f;
+        float M1DeclineBA = Mathf.Atan2(M1PAy - M1PBy, M1PAx - M1PBx);
+        float M1DeclineBC = Mathf.Atan2(M1PCy - M1PBy, M1PCx - M1PBx);
+        float M2DeclineBA = Mathf.Atan2(M2PAy - M2PBy, M2PAx - M2PBx);
+        float M2DeclineBC = Mathf.Atan2(M2PCy - M2PBy, M2PCx - M2PBx);
+        if (M1DeclineBC < M1DeclineBA - Mathf.PI) M1DeclineBC += Mathf.PI * 2f;
+        if (M1DeclineBC > M1DeclineBA + Mathf.PI) M1DeclineBC -= Mathf.PI * 2f;
+        float M1Angle = M1DeclineBC - M1DeclineBA;
+        if (M2DeclineBC < M2DeclineBA - Mathf.PI) M2DeclineBC += Mathf.PI * 2f;
+        if (M2DeclineBC > M2DeclineBA + Mathf.PI) M2DeclineBC -= Mathf.PI * 2f;
+        float M2Angle = M2DeclineBC - M2DeclineBA;
+        {
+           
+            float AngleError = (M2Angle - M1Angle) * 0.05f;
+            float MaxError = 0.02f;
+            if (M1Angle >= 0)
+            {
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            else
+            {
+                AngleError = (M1Angle + M2Angle) * 0.05f;
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            // debug
+            float err = Mathf.Abs(AngleError);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
+            if (FixAngle)
+            //角を固定するときは点を動かす
+            {
+                float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
+                float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
+                float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
+                float NewBy = (Bx - MidABx) * Mathf.Sin(AngleError) + (By - MidABy) * Mathf.Cos(AngleError) + MidABy;
+                Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
+                Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+                if (!PA.Fixed)
+                    PA.Vec = newPAVec;
+                if (!PB.Fixed)
+                    PB.Vec = newPBVec;
+            }
+            else　//角を固定しないときは表示を変える
+            {
+                Constant = Mathf.Abs(Angle);
+            }
         }
     }
 
