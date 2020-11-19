@@ -191,7 +191,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 //Debug.Log("X:"+ DeclineX + "Y:" + DeclineY + "V:" + DeclineV);
                 if((DeclineX - DeclineV)*(DeclineY - DeclineV) <= 0)
                 {
-                    if (0.25 < dist && dist < 0.75)
+                    if (0.25 < dist && dist < 1)
                     {
                         //Debug.Log("MouseOnAngle " + am[i].parent.GetComponent<Module>().Id);
                         return am[i].parent.GetComponent<Module>().Id;
