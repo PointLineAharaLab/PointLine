@@ -22,6 +22,7 @@ public class MENU
     public const int LINES_PERPENDICULAR = 7;
     public const int LINES_PARALLEL = 8;
     public const int ANGLE = 23;
+    public const int BISECTOR = 24;
     public const int CIRCLE_TANGENT_LINE = 9;
     public const int CIRCLE_TANGENT_CIRCLE = 10;
     public const int FIX_POINT = 11;
@@ -45,20 +46,20 @@ public class Menu : MonoBehaviour
     {
         "ButtonMenuOff(Clone)", "ButtonAddPoint(Clone)", "ButtonAddMidPoint(Clone)","ButtonAddLine(Clone)","ButtonAddCircle(Clone)",
         "ButtonPointOnPoint(Clone)" ,"ButtonPointOnLine(Clone)","ButtonPointOnCircle(Clone)","ButtonIntersection(Clone)", 
-        "ButtonIsom(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)","ButtonAngle(Clone)" ,
-        "ButtonTangentL2C(Clone)", "ButtonTangentC2C(Clone)", 
+        "ButtonIsom(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)","ButtonAngle(Clone)" ,"ButtonBisector(Clone)" ,
+        "ButtonTangentL2C(Clone)", "ButtonTangentC2C(Clone)",
         "ButtonFixPoint(Clone)", "ButtonDeletePoint(Clone)", "ButtonDeleteAll(Clone)", 
         "ButtonUndo(Clone)", "ButtonRedo(Clone)", "ButtonShowLogs(Clone)",
         "ButtonSave(Clone)", "ButtonOpen(Clone)", "ButtonSave2TeX(Clone)", "ButtonQuit(Clone)"
 
 
     };
-    private  string TextADD_POINT0 = "メニュー ";
-    private  string TextADD_POINT1 = " クリックすれば点を追加できます． ";
-    private  string TextADD_MIDPOINT0 = " 中点を追加: 頂点を選択.";
-    private  string TextADD_MIDPOINT1 = " 中点を追加: もう一つ頂点を選択.";
-    private  string TextADD_LINE0 = " 直線を追加: 頂点を選択.";
-    private  string TextADD_LINE1 = " 直線を追加: もう一つ頂点を選択.";
+    private string TextADD_POINT0 = "メニュー ";
+    private string TextADD_POINT1 = " クリックすれば点を追加できます． ";
+    private string TextADD_MIDPOINT0 = " 中点を追加: 頂点を選択.";
+    private string TextADD_MIDPOINT1 = " 中点を追加: もう一つ頂点を選択.";
+    private string TextADD_LINE0 = " 直線を追加: 頂点を選択.";
+    private string TextADD_LINE1 = " 直線を追加: もう一つ頂点を選択.";
     private string TextADD_CIRCLE0 = " 円を追加: 頂点を選択.";
     private string TextADD_CIRCLE1 = " 円を追加: 任意の場所をクリック";
     private string TextPOINT_ON_POINT0 = " 点を点の上に載せる: 頂点を選択.";
@@ -71,19 +72,21 @@ public class Menu : MonoBehaviour
     private string TextINTERSECTION1 = "交点を追加：もう一つ選択";
     private string TextLINES_ISOMETRY0 = " ２直線を同じ長さにする: 直線を選択.";
     private string TextLINES_ISOMETRY1 = " ２直線を同じ長さにする: もう一つ直線を選択.";
-    private  string TextLINES_PERPENDICULAR0 = " ２直線を直交させる: 直線を選択.";
-    private  string TextLINES_PERPENDICULAR1 = " ２直線を直交させる: もう一つ直線を選択.";
-    private  string TextLINES_PARALLEL0 = " ２直線を平行にする: 直線を選択.";
-    private  string TextLINES_PARALLEL1 = " ２直線を平行にする: もう一つ直線を選択.";
-    private  string TextANGLE0 = " 角度を指定する: 頂点を選択.";
-    private  string TextANGLE1 = " 角度を指定する: もう一つ頂点を選択.";
-    private  string TextANGLE2 = " 角度を指定する: さらに頂点を選択.";
-    private  string TextCIRLCE_TANGENT_LINE0 = " 円を直線に接させる: 円を選択.";
-    private  string TextCIRLCE_TANGENT_LINE1 = " 円を直線に接させる: 直線を選択.";
-    private  string TextCIRLCE_TANGENT_CIRCLE0 = " 円を円に接させる: 円を選択.";
-    private  string TextCIRLCE_TANGENT_CIRCLE1 = " 円を円に接させる: もう一つ円を選択.";
-    private  string TextFIX_POINT1 = " 点を固定する : 頂点を選択.";
-    private  string TextDELETE_POINT0 = " 点を消去する: 頂点を選択.";
+    private string TextLINES_PERPENDICULAR0 = " ２直線を直交させる: 直線を選択.";
+    private string TextLINES_PERPENDICULAR1 = " ２直線を直交させる: もう一つ直線を選択.";
+    private string TextLINES_PARALLEL0 = " ２直線を平行にする: 直線を選択.";
+    private string TextLINES_PARALLEL1 = " ２直線を平行にする: もう一つ直線を選択.";
+    private string TextANGLE0 = " 角度を指定する: 頂点を選択.";
+    private string TextANGLE1 = " 角度を指定する: もう一つ頂点を選択.";
+    private string TextANGLE2 = " 角度を指定する: さらに頂点を選択.";
+    private string TextBISECTOR0 = " ２つの角度を等しくする: 角を選択.";
+    private string TextBISECTOR1 = " ２つの角度を等しくする: もう一つ角を選択.";
+    private string TextCIRLCE_TANGENT_LINE0 = " 円を直線に接させる: 円を選択.";
+    private string TextCIRLCE_TANGENT_LINE1 = " 円を直線に接させる: 直線を選択.";
+    private string TextCIRLCE_TANGENT_CIRCLE0 = " 円を円に接させる: 円を選択.";
+    private string TextCIRLCE_TANGENT_CIRCLE1 = " 円を円に接させる: もう一つ円を選択.";
+    private string TextFIX_POINT1 = " 点を固定する : 頂点を選択.";
+    private string TextDELETE_POINT0 = " 点を消去する: 頂点を選択.";
 
 
     public GUIStyle MyStyle;
@@ -123,6 +126,8 @@ public class Menu : MonoBehaviour
             TextANGLE0 = " Angle: Select a point.";
     　　　  TextANGLE1 = " Angle: Select another point.";
             TextANGLE2 = " Angle: Select the third point.";
+            TextBISECTOR0 = " Make two angles equal; Select an angle.";
+            TextBISECTOR1 = " Make two angles equal; Select another angle.";
             TextCIRLCE_TANGENT_LINE0 = " Make a circle tangent to a line: Select a circle.";
             TextCIRLCE_TANGENT_LINE1 = " Make a circle tangent to a line: Select a line.";
             TextCIRLCE_TANGENT_CIRCLE0 = " Make a circle tangent to a circle: Select a circle.";
@@ -297,6 +302,16 @@ public class Menu : MonoBehaviour
                     GUILabel(TextANGLE2);
                 }
                 break;
+            case MENU.BISECTOR:
+                if (AppMgr.ModeStep == 0)
+                {
+                    GUILabel(TextBISECTOR0);
+                }
+                else if (AppMgr.ModeStep == 1)
+                {
+                    GUILabel(TextBISECTOR1);
+                }
+                break;
             case MENU.CIRCLE_TANGENT_LINE:// make a circle tangent to a line
                 if (AppMgr.ModeStep == 0)
                 {
@@ -353,11 +368,12 @@ public class Menu : MonoBehaviour
                 go[i].name == "ButtonPointOnPoint(Clone)" ||
                 go[i].name == "ButtonPointOnLine(Clone)" ||
                 go[i].name == "ButtonPointOnCircle(Clone)" ||
-                go[i].name == "ButtonIntersection(Clone)"||
+                go[i].name == "ButtonIntersection(Clone)" ||
                 go[i].name == "ButtonIsom(Clone)" ||
                 go[i].name == "ButtonPerp(Clone)" ||
                 go[i].name == "ButtonPara(Clone)" ||
                 go[i].name == "ButtonAngle(Clone)" ||
+                go[i].name == "ButtonBisector(Clone)"||
                 go[i].name == "ButtonTangentL2C(Clone)" ||
                 go[i].name == "ButtonTangentC2C(Clone)" ||
                 go[i].name == "ButtonFixPoint(Clone)" ||
@@ -392,6 +408,7 @@ public class Menu : MonoBehaviour
         CreatePerpButton();
         CreateParaButton();
         CreateAngleButton();
+        CreateBisectorButton();
         CreateTangentL2CButton();
         CreateTangentC2CButton();
         CreateFixPointButton();
@@ -531,6 +548,14 @@ public class Menu : MonoBehaviour
         // angle button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAngle");
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+    }
+
+    public void CreateBisectorButton()
+    {
+        // bisector button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonBisector");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 4, -75f - 150f * 3, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 

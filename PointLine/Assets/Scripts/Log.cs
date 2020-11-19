@@ -339,6 +339,25 @@ public class Log : MonoBehaviour
                     Text2 = "Angle " + GetPNameByParentObject(Object1) + "" + GetPNameByParentObject(Object2) + "" + GetPNameByParentObject(Object3);
                 }
             }
+            else if (PName == "角度 - 角度" && Object1 != null && Object2 != null)
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "等角 ：";
+                    Module md1 = Object1.GetComponent<Module>();
+                    Text2 = "角" + GetPNameByParentObject(md1.Object1) + "" + GetPNameByParentObject(md1.Object2) + "" + GetPNameByParentObject(md1.Object3);
+                    Module md2 = Object2.GetComponent<Module>();
+                    Text2 += " = 角" + GetPNameByParentObject(md2.Object1) + "" + GetPNameByParentObject(md2.Object2) + "" + GetPNameByParentObject(md2.Object3);
+                }
+                else
+                {
+                    Text1 = "Equiangular ：";
+                    Module md1 = Object1.GetComponent<Module>();
+                    Text2 = "Angle " + GetPNameByParentObject(md1.Object1) + "" + GetPNameByParentObject(md1.Object2) + "" + GetPNameByParentObject(md1.Object3);
+                    Module md2 = Object2.GetComponent<Module>();
+                    Text2 += " = Angle" + GetPNameByParentObject(md2.Object1) + "" + GetPNameByParentObject(md2.Object2) + "" + GetPNameByParentObject(md2.Object3);
+                }
+            }
             else
             {
                 if (AppMgr.Japanese == 1)
@@ -525,6 +544,22 @@ public class Log : MonoBehaviour
                     Object2 = OBJs[i];
                 }
                 if (ci.Id == Object3Id)
+                {
+                    Object3 = OBJs[i];
+                }
+            }
+            Module md = OBJs[i].GetComponent<Module>();
+            if (md != null)
+            {
+                if (md.Id == Object1Id)
+                {
+                    Object1 = OBJs[i];
+                }
+                if (md.Id == Object2Id)
+                {
+                    Object2 = OBJs[i];
+                }
+                if (md.Id == Object3Id)
                 {
                     Object3 = OBJs[i];
                 }

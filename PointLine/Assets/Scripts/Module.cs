@@ -893,6 +893,223 @@ public class Module : MonoBehaviour {
         }
     }
 
+    private void ModuleBISECTOR()
+    {
+        gameObject.SetActive(Active);
+        if (Object1 == null || Object2 == null)
+        {
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Module MD = OBJs[i].GetComponent<Module>();
+                if (MD != null)
+                {
+                    if (MD.Id == Object1Id)
+                    {
+                        Object1 = OBJs[i];
+                    }
+                    if (MD.Id == Object2Id)
+                    {
+                        Object2 = OBJs[i];
+                    }
+                }
+            }
+            if (Object1 == null || Object2 == null) Active = false;
+        }
+        Module md1 = Object1.GetComponent<Module>();
+        Module md2 = Object2.GetComponent<Module>();
+        Point M1PA = md1.Object1.GetComponent<Point>();
+        Point M1PB = md1.Object2.GetComponent<Point>();
+        Point M1PC = md1.Object3.GetComponent<Point>();
+        Point M2PA = md2.Object1.GetComponent<Point>();
+        Point M2PB = md2.Object2.GetComponent<Point>();
+        Point M2PC = md2.Object3.GetComponent<Point>();
+        if (M1PA == null || M1PB == null || M1PC == null || M2PA == null || M2PB == null || M2PC == null)
+        {
+            Active = false;
+            return;
+        }
+        float M2PAx = M2PA.Vec.x, M2PAy = M2PA.Vec.y;
+        float M2PBx = M2PB.Vec.x, M2PBy = M2PB.Vec.y;
+        float M2PCx = M2PC.Vec.x, M2PCy = M2PC.Vec.y;
+        float M2MidABx = M2PAx * 0.5f + M2PBx * 0.5f, M2MidABy = M2PAy * 0.5f + M2PBy * 0.5f;
+        float M2MidCBx = M2PCx * 0.5f + M2PBx * 0.5f, M2MidCBy = M2PCy * 0.5f + M2PBy * 0.5f;
+        float M2DeclineBA = Mathf.Atan2(M2PAy - M2PBy, M2PAx - M2PBx);
+        float M2DeclineBC = Mathf.Atan2(M2PCy - M2PBy, M2PCx - M2PBx);
+        if (M2DeclineBC < M2DeclineBA - Mathf.PI) M2DeclineBC += Mathf.PI * 2f;
+        if (M2DeclineBC > M2DeclineBA + Mathf.PI) M2DeclineBC -= Mathf.PI * 2f;
+        float M2Angle = M2DeclineBC - M2DeclineBA;
+        float Constant = Mathf.Abs(M2Angle);
+        {
+            float Ax = M1PA.Vec.x, Ay = M1PA.Vec.y;
+            float Bx = M1PB.Vec.x, By = M1PB.Vec.y;
+            float Cx = M1PC.Vec.x, Cy = M1PC.Vec.y;
+            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
+            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+            float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+            if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
+            if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
+            float Angle = DeclineBC - DeclineBA;
+            float AngleError = (Angle - Constant) * 0.1f;
+            float MaxError = 0.02f;
+            if (Angle >= 0)
+            {
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            else
+            {
+                AngleError = (Angle + Constant) * 0.1f;
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            // debug
+            float err = Mathf.Abs(AngleError);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
+            float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
+            float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
+            float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
+            float NewBy = (Bx - MidABx) * Mathf.Sin(AngleError) + (By - MidABy) * Mathf.Cos(AngleError) + MidABy;
+            Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
+            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+            if (!M1PA.Fixed && !FixAngle)
+                M1PA.Vec = newPAVec;
+            if (!M1PB.Fixed && !FixAngle)
+                M1PB.Vec = newPBVec;
+        }
+        {
+            float Ax = M1PA.Vec.x, Ay = M1PA.Vec.y;
+            float Bx = M1PB.Vec.x, By = M1PB.Vec.y;
+            float Cx = M1PC.Vec.x, Cy = M1PC.Vec.y;
+            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
+            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+            float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+            if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
+            if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
+            float Angle = DeclineBC - DeclineBA;
+            float AngleError = (Angle - Constant) * 0.1f;
+            float MaxError = 0.02f;
+            if (Angle >= 0)
+            {
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            else
+            {
+                AngleError = (Angle + Constant) * 0.1f;
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            // debug
+            float err = Mathf.Abs(AngleError);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
+            float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+            float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+            float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+            float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+            Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
+            if (!M1PB.Fixed && !FixAngle)
+                M1PB.Vec = newPBVec;
+            if (!M1PC.Fixed && !FixAngle)
+                M1PC.Vec = newPCVec;
+        }
+        float M1PAx = M1PA.Vec.x, M1PAy = M1PA.Vec.y;
+        float M1PBx = M1PB.Vec.x, M1PBy = M1PB.Vec.y;
+        float M1PCx = M1PC.Vec.x, M1PCy = M1PC.Vec.y;
+        float M1MidABx = M1PAx * 0.5f + M1PBx * 0.5f, M1MidABy = M1PAy * 0.5f + M1PBy * 0.5f;
+        float M1MidCBx = M1PCx * 0.5f + M1PBx * 0.5f, M1MidCBy = M1PCy * 0.5f + M1PBy * 0.5f;
+        float M1DeclineBA = Mathf.Atan2(M1PAy - M1PBy, M1PAx - M1PBx);
+        float M1DeclineBC = Mathf.Atan2(M1PCy - M1PBy, M1PCx - M1PBx);
+        if (M1DeclineBC < M1DeclineBA - Mathf.PI) M1DeclineBC += Mathf.PI * 2f;
+        if (M1DeclineBC > M1DeclineBA + Mathf.PI) M1DeclineBC -= Mathf.PI * 2f;
+        float M1Angle = M1DeclineBC - M1DeclineBA;
+        Constant = Mathf.Abs(M1Angle);
+        {
+            float Ax = M2PA.Vec.x, Ay = M2PA.Vec.y;
+            float Bx = M2PB.Vec.x, By = M2PB.Vec.y;
+            float Cx = M2PC.Vec.x, Cy = M2PC.Vec.y;
+            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
+            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+            float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+            if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
+            if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
+            float Angle = DeclineBC - DeclineBA;
+            float AngleError = (Angle - Constant) * 0.1f;
+            float MaxError = 0.02f;
+            if (Angle >= 0)
+            {
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            else
+            {
+                AngleError = (Angle + Constant) * 0.1f;
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            // debug
+            float err = Mathf.Abs(AngleError);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
+            float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
+            float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
+            float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
+            float NewBy = (Bx - MidABx) * Mathf.Sin(AngleError) + (By - MidABy) * Mathf.Cos(AngleError) + MidABy;
+            Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
+            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+            if (!M2PA.Fixed && !FixAngle)
+                M2PA.Vec = newPAVec;
+            if (!M2PB.Fixed && !FixAngle)
+                M2PB.Vec = newPBVec;
+        }
+        {
+            float Ax = M2PA.Vec.x, Ay = M2PA.Vec.y;
+            float Bx = M2PB.Vec.x, By = M2PB.Vec.y;
+            float Cx = M2PC.Vec.x, Cy = M2PC.Vec.y;
+            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
+            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+            float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+            if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
+            if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
+            float Angle = DeclineBC - DeclineBA;
+            float AngleError = (Angle - Constant) * 0.1f;
+            float MaxError = 0.02f;
+            if (Angle >= 0)
+            {
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            else
+            {
+                AngleError = (Angle + Constant) * 0.1f;
+                if (AngleError > MaxError) AngleError = MaxError;
+                if (AngleError < -MaxError) AngleError = -MaxError;
+            }
+            // debug
+            float err = Mathf.Abs(AngleError);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            // debug
+            float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+            float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+            float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+            float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+            Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
+            if (!M2PB.Fixed && !FixAngle)
+                M2PB.Vec = newPBVec;
+            if (!M2PC.Fixed && !FixAngle)
+                M2PC.Vec = newPCVec;
+        }
+
+    }
+
     public void ExecuteModule()
     {
         if (!Active) return;
@@ -926,6 +1143,9 @@ public class Module : MonoBehaviour {
                 break;
             case MENU.ANGLE:
                 ModuleANGLE();
+                break;
+            case MENU.BISECTOR:
+                ModuleBISECTOR();
                 break;
         }
     }

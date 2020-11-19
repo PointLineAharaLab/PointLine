@@ -23,6 +23,7 @@ public class AppMgr : MonoBehaviour {
     public static Line[] lns = null;
     public static Circle[] cis = null;
     public static Module[] mds = null;
+    public static AngleMark[] ams = null; 
     public static string TmpFilename = null;
 
     public static Vector3 LeftBottom, RightUp;

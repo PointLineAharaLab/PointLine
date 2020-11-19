@@ -243,6 +243,8 @@ public class Util
                 return "中点";//"内分点"
             case MENU.ANGLE:
                 return "角度";
+            case MENU.BISECTOR:
+                return "角度 - 角度";
         }
         return "";
     }

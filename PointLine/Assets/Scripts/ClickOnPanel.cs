@@ -162,6 +162,47 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         return -1;
     }
 
+    private int MouseOnAngle(Vector3 v)
+    {
+        AngleMark[] am = FindObjectsOfType<AngleMark>();
+        if (am != null)
+        {
+            for (int i = 0; i < am.Length; i++)
+            {
+                float dist = (am[i].Origine - v).magnitude;
+                //float dist = Hypot(am[i].Origine.x - v.x, am[i].Origine.y - v.y);
+                float DeclineX = Mathf.Atan2(am[i].UnitX.y, am[i].UnitX.x);// UnitXの偏角
+                float DeclineY = Mathf.Atan2(am[i].UnitY.y, am[i].UnitY.x);// UnitYの偏角
+                if (DeclineX <= DeclineY && DeclineY < DeclineX + Mathf.PI)
+                {
+                }
+                else if (DeclineX + Mathf.PI <= DeclineY)
+                {
+                    DeclineX += Mathf.PI * 2f;
+                }
+                else if (DeclineX - Mathf.PI <= DeclineY && DeclineY < DeclineX)
+                {
+                }
+                else if (DeclineY < DeclineX - Mathf.PI)
+                {
+                    DeclineY += Mathf.PI * 2f;
+                }
+                float DeclineV = Mathf.Atan2(v.y - am[i].Origine.y, v.x - am[i].Origine.x);
+                //Debug.Log("X:"+ DeclineX + "Y:" + DeclineY + "V:" + DeclineV);
+                if((DeclineX - DeclineV)*(DeclineY - DeclineV) <= 0)
+                {
+                    if (0.25 < dist && dist < 1)
+                    {
+                        //Debug.Log("MouseOnAngle " + am[i].parent.GetComponent<Module>().Id);
+                        return am[i].parent.GetComponent<Module>().Id;
+                    }
+                }
+                
+            }
+        }
+        return -1;
+    }
+
 
     int MouseOnGameLog(Vector3 v)
     {
@@ -223,9 +264,13 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             if (MOP == -1)
             {
                 MOP = MouseOnCircle(v);//サークルをクリックしたかどうかのチェック
+                if(MOP == -1)
+                {
+                    MOP = MouseOnAngle(v);//角度をクリックしたかどうかのチェック
+                }
             }
         }
-        if (MOP >= 0 && MOP < 3000)
+        if (MOP >= 0 && MOP < 4000)
         {// MOP番のオブジェクト
             return MOP;
         }
@@ -980,7 +1025,30 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
     }
 
-        private void MakeCircleTangentLine(int MOP)
+    private void MakeBisector(int MOP)
+    {
+        if (ModeStep == 0 && 3000 <= MOP && MOP < 4000)//AngleMarkを選択した時、という条件を付け加えたい
+        {//アングルモード、ステップ０ならば，「一つ目の点」をFirstClickIdに記録
+            //Point.AllPointsUnselected();
+            //Point.AddOnePointSelected(MOP);//クリックした点を選択
+              //選んだ時に選択状態にしておく
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 3000 <= MOP && MOP < 4000)
+        {//アングルモード,ステップ２ならば，「3つ目の線」をSecondClickIdに記録
+            //Point.AddOnePointSelected(MOP);//クリックした点を選択
+            SecondClickId = MOP;
+            // 新しいモジュールの追加
+            Module MD = Util.AddModule(MENU.BISECTOR, FirstClickId, SecondClickId, 0, ModuleId++);
+            //新たな直角マークの追加
+            //Util.AddAngleMark(FirstClickId, SecondClickId, ThirdClickId, MD.gameObject);
+            Mode = MENU.BISECTOR;
+            ModeStep = 0;
+        }
+    }
+
+    private void MakeCircleTangentLine(int MOP)
     {
         if (ModeStep == 0 && 2000 <= MOP && MOP < 3000)
         {//モード９ステップ０ならば，「一つ目の円」をFirstClickIdに記録
@@ -1292,7 +1360,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             //Point obj = g.GetComponent<Point>();
             Destroy(g, 1.2f);//モジュールの消去
 
-
             int MOP = MousePosition();
             //Debug.Log("MOP (OnMouseUp) = " + MOP);
             if (MOP == -2)
@@ -1474,6 +1541,13 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 else if (Mode == MENU.CIRCLE_TANGENT_CIRCLE)
                 {
                     MakeCircleTangentCircle(MOP);
+                }
+            }
+            else if (3000 <= MOP && MOP < 4000)
+            {//モジュール(角度)をクリック
+                if (Mode == MENU.BISECTOR)
+                {
+                    MakeBisector(MOP);
                 }
             }
         }
