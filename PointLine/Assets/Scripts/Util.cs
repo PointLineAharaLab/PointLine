@@ -608,7 +608,8 @@ public class Util
         //fb.SetupFileBrowser(PortraitMode ? ViewMode.Portrait : ViewMode.Landscape);
         //fb.OpenFilePanel(ext);
         //fb.OnFileSelect += LoadFileUsingPath;
-        string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", "txt");
+        String[] ext={"txt", "jpg"};
+        string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", ext);
         LoadFileUsingPath(path);
         return false;
     }
