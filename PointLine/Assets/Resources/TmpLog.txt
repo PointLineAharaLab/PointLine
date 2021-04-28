@@ -4,5 +4,3 @@ Point,0.6400341,-2.532051,0,2,False,True,C
 Line,0,2,1000,True
 Line,2,1,1001,True
 Line,0,1,1002,True
-Point,0.06284867,-1.50641,0,3,False,True,D
-Module,3,3,1000,0,0,True,1,1,1.570796

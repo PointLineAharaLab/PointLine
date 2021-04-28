@@ -541,7 +541,10 @@ public class Util
     private static void LoadFileUsingPath(string path)
     {
         ClickOnPanel.DeleteAll();
-        if (path!=null && path.Length != 0)
+        int lenPath = path.Length;
+        string extPath = path.Substring(lenPath-4);
+        Debug.Log(extPath);
+        if (extPath==".txt" && path.Length != 0)
         {
             try
             {
