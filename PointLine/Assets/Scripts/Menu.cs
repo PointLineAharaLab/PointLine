@@ -173,7 +173,7 @@ public class Menu : MonoBehaviour
     /// ラベルの描画.
     public  void GUILabel(string text)
     {
-        GUI.Label(GuideTextRect, text, MyStyle);
+        GUI.Label(GuideTextRect, text, gst);
     }
 
     //ホバーの処理
