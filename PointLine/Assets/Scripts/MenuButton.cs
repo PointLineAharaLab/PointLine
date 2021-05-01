@@ -15,6 +15,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
     public static GameObject Go;
     private string[] MenuText;
     public string PrefabName;
+    public GUIStyle menuHoverStyle;
 
     // Use this for initialization
     void Start () {
@@ -46,6 +47,8 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         LeftTop = Camera.main.ScreenToWorldPoint(new Vector3(0f, Screen.height, 0f));
         RightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0f));
         HoverOn = false;
+        menuHoverStyle = new GUIStyle(MyStyle);
+        menuHoverStyle.fontSize = (int)Mathf.Floor(Screen.width / 39); ;// // 横幅のサイズからここを決めるべき。
     }
 
     // Update is called once per frame
@@ -63,7 +66,9 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
                     break;
                 }
             }
-            GUI.Label(new Rect(Input.mousePosition.x, Screen.height - Input.mousePosition.y, MyStyle.CalcSize(new GUIContent(message)).x, 40), message, MyStyle);
+            float rectX = menuHoverStyle.CalcSize(new GUIContent(message)).x;
+            float rectY = menuHoverStyle.CalcSize(new GUIContent(message)).y;
+            GUI.Label(new Rect(Input.mousePosition.x, Screen.height - Input.mousePosition.y, rectX, rectY), message, menuHoverStyle);
         }
     }
 

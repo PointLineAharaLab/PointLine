@@ -1,4 +1,1 @@
-Point,-8.350772,4.354758,0,0,False,True,A
-Point,-8.091679,4.593922,0,1,False,True,B
-Point,-0.05979114,2.740409,0,2,False,True,C
-Circle,2,3.764918,2000,True
+Point,-8.211261,4.354758,0,0,False,True,A
