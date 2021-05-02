@@ -48,7 +48,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         RightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0f));
         HoverOn = false;
         menuHoverStyle = new GUIStyle(MyStyle);
-        menuHoverStyle.fontSize = (int)Mathf.Floor(Screen.width / 39); ;// // 横幅のサイズからここを決めるべき。
+        menuHoverStyle.fontSize = (int)Mathf.Floor(Screen.width / 39);// // 横幅のサイズからここを決めるべき。
     }
 
     // Update is called once per frame
