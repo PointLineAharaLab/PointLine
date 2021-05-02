@@ -1,2 +1,2 @@
-Point,-3.475721,2.463186,0,0,False,True,A
-Point,-8.246319,3.962517,0,1,False,True,B
+Point,1.002798,-0.223926,0,0,False,True,A
+Point,-2.385299,0.8275527,0,1,False,True,B
