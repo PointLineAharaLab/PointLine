@@ -493,24 +493,34 @@ public class Util
         if (!String.IsNullOrEmpty(path)/* && !String.IsNullOrEmpty(_textToSave)*/)
         {
             Debug.Log("SaveFileUsingPath - " + path);
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(path, false))
-                {
-                    //Debug.Log("start savelog : logLength = " + LogLength);
-                    for (int i = 0; i < LogLength; i++)
-                    {
-                        if (logs[i].Active) { 
-                            writer.WriteLine(logs[i].ToString());
-                        }
-                    }
-                    writer.Flush();
-                    writer.Close();
-                }
+            string ext = path.Substring(path.Length - 4);
+            if(ext.Contains("png") || ext.Contains("PNG"))
+			{
+                BackGroundScreen BGS = MonoBehaviour.FindObjectOfType<BackGroundScreen>();
+                BGS.CaptureFromCamera(path);
             }
-            catch (Exception e)
-            {
-                Debug.Log(e.Message);
+            else
+			{
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(path, false))
+                    {
+                        //Debug.Log("start savelog : logLength = " + LogLength);
+                        for (int i = 0; i < LogLength; i++)
+                        {
+                            if (logs[i].Active)
+                            {
+                                writer.WriteLine(logs[i].ToString());
+                            }
+                        }
+                        writer.Flush();
+                        writer.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e.Message);
+                }
             }
         }
         else
@@ -533,7 +543,8 @@ public class Util
         //fb.SetupFileBrowser(PortraitMode ? ViewMode.Portrait : ViewMode.Landscape);
         //fb.SaveFilePanel("pointLineFigure", ext);
         //fb.OnFileSelect += SaveFileUsingPath;
-        string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine.txt","txt");
+        string[] exts = {"txt", "png"};
+        string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine",exts);
         SaveFileUsingPath(path);
         return false;
     }
