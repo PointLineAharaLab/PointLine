@@ -105,11 +105,15 @@ public class AppMgr : MonoBehaviour {
 
     public static bool ClickOnButton(Vector3 v)//おそらく不要
     {
-        //if (0 <= v.x && v.x <= Screen.width && Screen.height-50 <= v.y && v.y <= Screen.height)
-        //{
-        //    //Debug.Log("ClickOnButton  = true");
-        //    return true;
-        //}
+        //float WorldHeight = 5f;
+        float ButtonSizeX = 210f; //(WorldHeight / Screen.height * Screen.width);
+        float ButtonSizeY = 150f; //(WorldHeight / Screen.height * Screen.width);
+
+        if (0 <= v.x && v.x <= ButtonSizeX && Screen.height- ButtonSizeY <= v.y && v.y <= Screen.height)
+        {
+           //Debug.Log("ClickOnButton  = true");
+            return true;
+        }
         return false;
     }
 
