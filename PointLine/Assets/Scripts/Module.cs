@@ -276,7 +276,8 @@ public class Module : MonoBehaviour {
             NormB = VecB.magnitude;
             VecA.Normalize();
             VecB.Normalize();
-            Delta = (NormB - NormA) * 0.125f;
+            //Delta = (NormB - NormA) * 0.125f;//等長
+            Delta = (NormB * Ratio1 - NormA * Ratio2) / (Ratio1 + Ratio2) * 0.25f;//Ratioの値によって変わる
             // debug
             float err = Mathf.Abs(Delta);
             if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
