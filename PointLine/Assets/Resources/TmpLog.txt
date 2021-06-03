@@ -1,7 +1,0 @@
-Point,-6.542706,2.551776,0,4,False,True,E
-Point,-3.0839,-2.527589,0,5,False,True,F
-Line,4,5,1002,True
-Point,3.422524,2.406651,0,6,False,True,G
-Point,5.502645,-2.092215,0,7,False,True,H
-Line,6,7,1003,True
-Module,6,1002,1003,0,3001,True,1,1,1.570796

@@ -1,9 +1,0 @@
-Point,-4.187468,-2.59505,0,0,False,True,A
-Point,-2.367562,2.6119,0,1,False,True,B
-Line,0,1,1000,True
-Point,1.423907,1.62612,0,2,False,True,C
-Line,0,2,1001,True
-Point,3.597682,-1.912585,0,3,False,True,D
-Line,0,3,1002,True
-Module,23,1,0,2,3000,True,1,1,0.5896129
-Module,23,2,0,3,3001,True,1,1,0.5575022
