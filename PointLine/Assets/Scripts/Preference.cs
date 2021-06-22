@@ -64,7 +64,7 @@ public class Preference : MonoBehaviour
         }
         else if (ObjectType == "Module")
         {
-            if (ObjectName == "中点")
+            if (ObjectName == "中点" || ObjectName == "等長")
             {
                 CoordX = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio1) / 10f;
                 CoordY = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio2) / 10f;
@@ -157,6 +157,17 @@ public class Preference : MonoBehaviour
                     else
                     {
                         ModuleMidpointPreferenceEnglish(Left, Top, Step, height);
+                    }
+                }
+                else if (ObjectName == "等長")
+                {
+                    if (AppMgr.Japanese == 1)
+                    {
+                        ModuleIsometryPreferenceJapanese(Left, Top, Step, height);
+                    }
+                    else
+                    {
+                        ModuleIsometryPreferenceEnglish(Left, Top, Step, height);
                     }
                 }
                 else if (ObjectName == "角度")
@@ -948,6 +959,101 @@ public class Preference : MonoBehaviour
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Div point", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio(" + CoordX + ":" + CoordY + ")", LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 1", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordX, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 2", LabelStyle);
+        CoordY = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordY, FieldStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            md.Ratio1 = float.Parse(CoordX);
+            md.Ratio2 = float.Parse(CoordY);
+        }
+    }
+
+    void ModuleIsometryPreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "線分比(" + CoordX + " : " + CoordY + ")", LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
+        CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            md.Ratio1 = float.Parse(CoordX);
+            md.Ratio2 = float.Parse(CoordY);
+        }
+    }
+
+    void ModuleIsometryPreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUIStyle LS = new GUIStyle(LabelStyle);
+        LS.fontSize = Mathf.FloorToInt(DialogWidth / 9);
+        if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
+        if (CoordX == CoordY)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Isometric", LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Segments in ratio", LS);
+        Top += Step;
+        LS = new GUIStyle(LabelStyle);
+        LS.fontSize = Mathf.FloorToInt(DialogWidth / 10);
+        if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LS);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio(" + CoordX + ":" + CoordY + ")", LabelStyle);
         Top += Step;

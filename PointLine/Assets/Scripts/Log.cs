@@ -218,13 +218,31 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "" + PName;
-                    Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
+                    if (Ratio1 == Ratio2)
+                    {
+                        Text1 = "" + PName;
+                        Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
+                    }
+                    else
+                    {
+                        Text1 = "作図 : 線分比(" + Mathf.RoundToInt(Ratio1) + "," + Mathf.RoundToInt(Ratio2) + ")";
+                        Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2);
+                    }
+                    
                 }
                 else
                 {
-                    Text1 = "Isometry";
-                    Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + " are isometry";
+                    if (Ratio1 == Ratio2)
+                    {
+                        Text1 = "Isometry";
+                        Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + " are isometry";
+                    }
+                    else
+                    {
+                        Text1 = "Segments in Ratio(" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
+                        Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2);
+                    }
+                    
                 }
             }
             else if (PName == "垂直")
