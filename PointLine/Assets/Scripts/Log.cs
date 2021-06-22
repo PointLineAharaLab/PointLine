@@ -239,7 +239,7 @@ public class Log : MonoBehaviour
                     }
                     else
                     {
-                        Text1 = "Segment Ratio(" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
+                        Text1 = "Segments in Ratio(" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
                         Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2);
                     }
                     

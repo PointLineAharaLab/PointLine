@@ -1042,12 +1042,18 @@ public class Preference : MonoBehaviour
 
     void ModuleIsometryPreferenceEnglish(float Left, float Top, float Step, float height)
     {
+        GUIStyle LS = new GUIStyle(LabelStyle);
+        LS.fontSize = Mathf.FloorToInt(DialogWidth / 9);
+        if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
         if (CoordX == CoordY)
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Isometric", LabelStyle);
         else
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "segment ratio", LabelStyle);
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Segments in ratio", LS);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        LS = new GUIStyle(LabelStyle);
+        LS.fontSize = Mathf.FloorToInt(DialogWidth / 10);
+        if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LS);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio(" + CoordX + ":" + CoordY + ")", LabelStyle);
         Top += Step;
