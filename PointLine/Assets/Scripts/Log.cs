@@ -232,7 +232,7 @@ public class Log : MonoBehaviour
                         }
                     } else
 					{
-                        Text1 = "線分比(" + Mathf.Round(Ratio1*1000)/1000f + "," + Mathf.Round(Ratio2 * 1000) / 1000f + ")";
+                        Text1 = "線分比(1 : " + Mathf.Round(Ratio2/Ratio1 * 1000)/1000f + ")";
                         Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2);
                     }
                 }
