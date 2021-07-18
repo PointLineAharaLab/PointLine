@@ -218,17 +218,23 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    if (Ratio1 == Ratio2)
-                    {
-                        Text1 = "" + PName;
-                        Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
-                    }
-                    else
-                    {
-                        Text1 = "作図 : 線分比(" + Mathf.RoundToInt(Ratio1) + "," + Mathf.RoundToInt(Ratio2) + ")";
+                    Fixed = parent.GetComponent<Module>().FixRatio;
+                    if (Fixed) { 
+                        if (Ratio1 == Ratio2)
+                        {
+                            Text1 = "" + PName;
+                            Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
+                        }
+                        else
+                        {
+                            Text1 = "線分比(固定)(" + Mathf.RoundToInt(Ratio1) + "," + Mathf.RoundToInt(Ratio2) + ")";
+                            Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2);
+                        }
+                    } else
+					{
+                        Text1 = "線分比(" + Mathf.Round(Ratio1*1000)/1000f + "," + Mathf.Round(Ratio2 * 1000) / 1000f + ")";
                         Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2);
                     }
-                    
                 }
                 else
                 {
@@ -390,10 +396,10 @@ public class Log : MonoBehaviour
                 }
             }
         }
-        if (Text1.Length > 16)
+        if (Text1.Length > 14)
         {
             int textSize = TextObj1.GetComponent<TextMesh>().fontSize;
-            textSize = Mathf.FloorToInt(textSize * 16 / Text1.Length);
+            textSize = Mathf.FloorToInt(textSize * 14 / Text1.Length);
             TextObj1.GetComponent<TextMesh>().fontSize = textSize;
         }
         if (Text2.Length > 16)

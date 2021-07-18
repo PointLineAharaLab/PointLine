@@ -66,8 +66,9 @@ public class Preference : MonoBehaviour
         {
             if (ObjectName == "中点" || ObjectName == "等長")
             {
-                CoordX = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio1) / 10f;
-                CoordY = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio2) / 10f;
+                CoordX = "" + Mathf.Round(1000f * lg.parent.GetComponent<Module>().Ratio1) / 1000f;
+                CoordY = "" + Mathf.Round(1000f * lg.parent.GetComponent<Module>().Ratio2) / 1000f;
+                Fixed = lg.parent.GetComponent<Module>().FixRatio;
             }
             else if (ObjectName == "角度")
             {
@@ -918,10 +919,10 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分比(" + CoordX + " : " + CoordY + ")", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
+        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordX, FieldStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
-        CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
+        CoordY = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordY, FieldStyle);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
@@ -997,21 +998,79 @@ public class Preference : MonoBehaviour
         }
     }
 
+    string getRatioString(float a, float b)
+    {
+        if (a == 0f)
+        {
+            return "1:infinity";
+        }
+        else if (b == 0f)
+        {
+            return "infinity:1";
+        }
+        else if (b / a > 1000f)
+        {
+            return "1:Inf";
+        }
+        else if (a / b > 1000f)
+        {
+            return "Inf:1";
+        }
+        else
+        {
+            float ratio = b / a;
+            for (int n = 1; n < 30; n++)
+            {
+                float nRatio = n * ratio;
+                float floorNRatio = Mathf.Floor(nRatio + 0.025f);
+                if (Mathf.Abs(floorNRatio - nRatio) < 0.025f)
+                {
+                    return "" + n + ":" + Mathf.FloorToInt(floorNRatio);
+                }
+            }
+            return ""+ Mathf.Round(a * 1000f) / 1000f + ":"+ Mathf.Round(b * 1000f) / 1000f;
+        }
+    }
     void ModuleIsometryPreferenceJapanese(float Left, float Top, float Step, float height)
     {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "線分比(" + CoordX + " : " + CoordY + ")", LabelStyle);
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "線分比(" + getRatioString(float.Parse(CoordX), float.Parse(CoordY)) + ")", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
+        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordX, FieldStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
-        CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
+        CoordY = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordY, FieldStyle);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
+        if (Fixed)
+        {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "可動にする", BS))
+            {
+                Fixed = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "固定にする", BS))
+            {
+                Fixed = true;
+            }
+            Top += Step;
+        }
+        BS = new GUIStyle(ButtonStyle);
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
         if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
@@ -1037,6 +1096,7 @@ public class Preference : MonoBehaviour
             Module md = LogParent.parent.GetComponent<Module>();
             md.Ratio1 = float.Parse(CoordX);
             md.Ratio2 = float.Parse(CoordY);
+            md.FixRatio = Fixed;
         }
     }
 
@@ -1098,8 +1158,8 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
-        GUI.Label(new Rect(DialogWidth - 20, Top, DialogWidth, height), "度", LabelStyle);
+        AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - DialogWidth / 3, height), AngleConstant, FieldStyle);
+        GUI.Label(new Rect(DialogWidth - DialogWidth / 6, Top, DialogWidth, height), "度", LabelStyle);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
         if (ShowConstant)
