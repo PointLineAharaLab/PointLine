@@ -26,7 +26,7 @@ public class Module : MonoBehaviour {
     void Start () {
         Active = true;
         FixAngle = false;
-        FixRatio = true;
+        //FixRatio = true;
     }
 
     private void ModulePOINT_ON_POINT()

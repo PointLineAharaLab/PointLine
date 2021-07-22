@@ -950,6 +950,30 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
     }
 
+    private void MakeRatioLength(int MOP)
+    {
+        if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
+        {//ステップ０ならば，「一つ目の線」をFirstClickIdに記録
+            Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 1000 <= MOP && MOP < 2000)
+        {//ステップ１ならば，「二つ目の線」をSecondClickIdに記録
+            Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
+            SecondClickId = MOP;
+            if (FirstClickId != SecondClickId)
+            {
+                //追加するモジュールとしてはLINES_ISOMETRY
+                Module NewMd = Util.AddModule(MENU.LINES_ISOMETRY, FirstClickId, SecondClickId, 0, ModuleId++, false);
+                Util.SetIsometry();
+            }
+            Mode = MENU.LINES_ISOMETRY;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+    }
+
     private void MakeTwoLinesPerpendicular(int MOP)
     {
         if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
@@ -1490,6 +1514,10 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 else if (Mode == MENU.LINES_ISOMETRY)
                 {//２つの線の長さを同じにするのに、線をを選ぶ
                     MakeTwoLinesIsometry(MOP);
+                }
+                else if (Mode == MENU.RATIO_LENGTH)
+                {//２つの線の長さの比を表示するのに、線をを選ぶ
+                    MakeRatioLength(MOP);
                 }
                 else if (Mode == MENU.LINES_PERPENDICULAR)
                 {//２つの線を直交にするのに、線をを選ぶ
