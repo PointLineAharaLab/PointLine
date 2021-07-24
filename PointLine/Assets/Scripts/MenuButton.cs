@@ -25,7 +25,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
                 " ほかの頂点に点を載せる(PP) ", " 直線に点を載せる(PL) ", " 円に点を載せる(PC) ","交点を追加",// 5 - 7
                 " 2直線を等長に(LI) ", "2直線の長さの比", " 2直線を垂直に(LP) ", " 2直線を平行に(LQ) ", "角度", "角の二等分線", // 8 - 10
                 " 円を直線に接させる(TL) ", " 円を他の円に接させる(TC) ",//11 - 12
-                " 頂点を固定する(FP) ", " 頂点を消去する(DP) ", " すべて消去する(DA) ", //13 - 15
+                " 頂点を固定する(FP) ", " 軌跡追加 ", " 頂点を消去する(DP) ", " すべて消去する(DA) ", //13 - 15
                 " 戻る(Z) ", " 進む(Y) ",// 16, 17
                 " ログ表示・非表示(W) ",//18
                 " 保存(S) "," 開く(O) "," TeX保存 "," 終了(Q) " // 19 - 22
@@ -39,7 +39,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
                 " Set a point on another point(PP) ", " Set a point on a line(PL) ", " Set a point on a circle(PC) ", " Add an intersection ", //5 - 7
                 " Let two lines be isometry(LI) ", "Ratio of two lines", " Let two lines be perpendicular(LP) ", " Let two lines be parallel(LQ) ", " Angle ", "Angle bisector", // 8 - 10
                 " Make a circle tangent to a line(TL) ", " Make a circle tangent to another circle(TC) ", // 11 - 12
-                " Fix a point(FP)  ", " Delete a point(DP) ", " Delete all(DA) ", //13 - 15
+                " Fix a point(FP)  ", " add a locus ", " Delete a point(DP) ", " Delete all(DA) ", //13 - 15
                 " Undo(Z) ", " Redo(Y) "," Show Log ", // 16, 17
                 " Save(S) "," Open(O) "," Save as TeX "," Quit(Q) " // 18 - 21
             };
@@ -288,6 +288,18 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
     }
+
+    public void OnClickAddLocus()
+    {
+        Debug.Log("add a locus (mouse)");
+        AppMgr.Mode = MENU.ADD_LOCUS;
+        AppMgr.ModeStep = 0;
+        AppMgr.MenuOn = false;
+        DestroyMenuOnUI();
+        CreateMenuOffUI();
+        AppMgr.DrawOn = true;
+    }
+
     public void OnClickDeletePoint()
     {
         Debug.Log("delete a point (mouse)");
