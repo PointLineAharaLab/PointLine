@@ -1,3 +1,1 @@
-Point,0.3642178,-0.7284361,0,0,False,True,A
-Point,4.124523,0.8268732,0,1,False,True,B
-Module,26,1,0,0,3000,True,1,1,1.570796
+Point,1.860465,0.5709356,0,0,False,True,A
