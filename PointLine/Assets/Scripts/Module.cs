@@ -290,13 +290,13 @@ public class Module : MonoBehaviour {
             if (FixRatio)// 比が固定されていれば
             {
                 if (!p11.Fixed)
-                    p11.Vec -= Delta * VecA;
+                    p11.Vec -= (Delta * Ratio2 / (Ratio1 + Ratio2)) * VecA;
                 if (!p21.Fixed)
-                    p21.Vec += Delta * VecB;
+                    p21.Vec += (Delta * Ratio1 / (Ratio1 + Ratio2)) * VecB;
                 if (!p12.Fixed)
-                    p12.Vec += Delta * VecA;
+                    p12.Vec += (Delta * Ratio2 / (Ratio1 + Ratio2)) * VecA;
                 if (!p22.Fixed)
-                    p22.Vec -= Delta * VecB;
+                    p22.Vec -= (Delta * Ratio1 / (Ratio1 + Ratio2)) * VecB;
             } else
 			{
                 Ratio1 = NormA;
@@ -1140,9 +1140,9 @@ public class Module : MonoBehaviour {
         }
         Point pt = Object1.GetComponent<Point>();
         Vector3 ptVec = pt.Vec;
-		if ((PreVec - ptVec).magnitude > 0.5f)
+		if ((PreVec - ptVec).magnitude > 0.5f && AppMgr.ConvergencyCount==0)
 		{
-            //Debug.Log("triggered");
+            Debug.Log("triggered"+ AppMgr.ConvergencyCount);
             PreVec = ptVec;
             // LocusDotを追加する。
             GameObject prefab = Resources.Load<GameObject>("Prefabs/LocusDot");
