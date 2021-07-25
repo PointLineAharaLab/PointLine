@@ -182,7 +182,18 @@ public class Preference : MonoBehaviour
                         ModuleAnglePreferenceEnglish(Left, Top, Step, height);
                     }
                 }
-                else 
+                else if (ObjectName == "軌跡")
+                {
+                    if (AppMgr.Japanese == 1)
+                    {
+                        ModuleLocusPreferenceJapanese(Left, Top, Step, height);
+                    }
+                    else
+                    {
+                        //ModuleLocusPreferenceEnglish(Left, Top, Step, height);
+                    }
+                }
+                else
                 {
                     if (AppMgr.Japanese == 1)
                     {
@@ -995,6 +1006,51 @@ public class Preference : MonoBehaviour
             Module md = LogParent.parent.GetComponent<Module>();
             md.Ratio1 = float.Parse(CoordX);
             md.Ratio2 = float.Parse(CoordY);
+        }
+    }
+
+    void ModuleLocusPreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "クリア", BS))
+        {
+            //クリア(モジュールは残すが、軌跡は消す。)
+            ;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            // OK のときの処理
+            //Module md = LogParent.parent.GetComponent<Module>();
+            //md.Ratio1 = float.Parse(CoordX);
+            //md.Ratio2 = float.Parse(CoordY);
         }
     }
 

@@ -382,6 +382,19 @@ public class Log : MonoBehaviour
                     Text2 += " = Angle" + GetPNameByParentObject(md2.Object1) + "" + GetPNameByParentObject(md2.Object2) + "" + GetPNameByParentObject(md2.Object3);
                 }
             }
+            else if (PName == "軌跡" && Object1 != null)
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "軌跡 ：";
+                    Text2 = "頂点" + GetPNameByParentObject(Object1) + "の軌跡";
+                }
+                else
+                {
+                    Text1 = "locus ：";
+                    Text2 = "locus of " + GetPNameByParentObject(Object1);
+                }
+            }
             else
             {
                 if (AppMgr.Japanese == 1)
@@ -605,8 +618,8 @@ public class Log : MonoBehaviour
         Show = Util.ShowLog;
         PName = _pname;
         Text1 = "作図 ：" + PName;
-        Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2) ;
-        if(Object3 != null)
+        Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2);// 仮にこうしておく。実際はUpdate()の中で。
+        if (Object3 != null)
         {
             Text2 += ("-" + GetPNameByParentObject(Object3));
         }

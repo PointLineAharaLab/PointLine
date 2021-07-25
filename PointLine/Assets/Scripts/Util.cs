@@ -245,6 +245,8 @@ public class Util
                 return "角度";
             case MENU.BISECTOR:
                 return "角度 - 角度";
+            case MENU.ADD_LOCUS:
+                return "軌跡";
         }
         return "";
     }
