@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8957911843312960990}
   - component: {fileID: 9128933759360468926}
+  - component: {fileID: 6908090256321472919}
   m_Layer: 7
   m_Name: LocusDot
   m_TagString: Locus
@@ -83,3 +84,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6908090256321472919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8954606170635630136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d2f885150a50147a4390eb85e0aa42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

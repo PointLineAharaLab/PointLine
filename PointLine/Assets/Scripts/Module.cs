@@ -22,6 +22,8 @@ public class Module : MonoBehaviour {
     public bool FixAngle;//角度を固定するかどうかのフラグ
     public bool FixRatio;//比を固定するかどうかのフラグ
 
+    public Vector3 PreVec;// 軌跡を描くための変数
+
     // Use this for initialization
     void Start () {
         Active = true;
@@ -1120,6 +1122,35 @@ public class Module : MonoBehaviour {
 
     }
 
+    private void Module_LOCUS()
+    {
+        gameObject.SetActive(Active);
+		if (Object1 == null)
+		{
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Point PT = OBJs[i].GetComponent<Point>();
+                if (PT != null && PT.Id == Object1Id)
+                {
+                    Object1 = OBJs[i];
+                }
+            }
+            if (Object1 == null) Active = false;
+        }
+        Point pt = Object1.GetComponent<Point>();
+        Vector3 ptVec = pt.Vec;
+		if ((PreVec - ptVec).magnitude > 0.5f)
+		{
+            //Debug.Log("triggered");
+            PreVec = ptVec;
+            // LocusDotを追加する。
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/LocusDot");
+            GameObject obj = Instantiate<GameObject>(prefab, ptVec, Quaternion.identity);
+            obj.GetComponent<LocusDot>().parent = this;
+		}
+    }
+
     public void ExecuteModule()
     {
         if (!Active) return;
@@ -1157,6 +1188,9 @@ public class Module : MonoBehaviour {
             case MENU.BISECTOR:
                 ModuleBISECTOR();
                 break;
+            case MENU.ADD_LOCUS:
+                Module_LOCUS();
+                    break;
         }
     }
 

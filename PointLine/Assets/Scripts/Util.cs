@@ -271,6 +271,18 @@ public class Util
             obj.ModuleName = GetModuleNameByType(type);
             obj.FixRatio = fixRatio;
             AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
+            if (obj.Type == MENU.ADD_LOCUS)
+            {
+                Point[] PTS = MonoBehaviour.FindObjectsOfType<Point>();
+                for(int i=0; i<PTS.Length; i++)
+				{
+                    if (PTS[i].Id == obj.Object1Id)
+					{
+                        obj.PreVec = PTS[i].Vec;
+                        break;
+                    }
+                }
+            }
 
             //もし余分なログがある場合には   余分なログは消す．
             if (LastLog != LogLength)
