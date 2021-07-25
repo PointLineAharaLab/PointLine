@@ -1140,7 +1140,7 @@ public class Module : MonoBehaviour {
         }
         Point pt = Object1.GetComponent<Point>();
         Vector3 ptVec = pt.Vec;
-		if ((PreVec - ptVec).magnitude > 0.5f && AppMgr.ConvergencyCount==0)
+		if ((PreVec - ptVec).magnitude > 0.2f && AppMgr.ConvergencyCount==0)
 		{
             Debug.Log("triggered"+ AppMgr.ConvergencyCount);
             PreVec = ptVec;
