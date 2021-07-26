@@ -1142,7 +1142,7 @@ public class Module : MonoBehaviour {
         Vector3 ptVec = pt.Vec;
 		if ((PreVec - ptVec).magnitude > 0.2f && AppMgr.ConvergencyCount==0)
 		{
-            Debug.Log("triggered"+ AppMgr.ConvergencyCount);
+            //Debug.Log("triggered"+ AppMgr.ConvergencyCount);
             PreVec = ptVec;
             // LocusDotを追加する。
             GameObject prefab = Resources.Load<GameObject>("Prefabs/LocusDot");
