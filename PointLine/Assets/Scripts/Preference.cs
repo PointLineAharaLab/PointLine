@@ -1021,7 +1021,16 @@ public class Preference : MonoBehaviour
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "クリア", BS))
         {
             //クリア(モジュールは残すが、軌跡は消す。)
-            ;
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for(int n=LDS.Length-1; n>=0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if(ld.parent == LogParent.parent.GetComponent<Module>())
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
         }
         Top += Step;
         BS = new GUIStyle(ButtonStyle);
@@ -1030,6 +1039,16 @@ public class Preference : MonoBehaviour
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
         {
             Module md = LogParent.parent.GetComponent<Module>();
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == md)
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
             DeleteAModule(md.Id);
             show = false;
         }
