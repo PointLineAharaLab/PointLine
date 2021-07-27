@@ -4,30 +4,31 @@ using UnityEngine;
 
 public class Module : MonoBehaviour {
 
-    public int Type=0;
-    public int Object1Id = -1;
-    public int Object2Id = -1;
-    public int Object3Id = -1;
+    public int Type=0;//[1]
+    public int Object1Id = -1;//[2]
+    public int Object2Id = -1;//[3]
+    public int Object3Id = -1;//[4]
+    public int Id = -1;//[5]
+    public bool Active = true;//[6]
+    public float Ratio1 = 1f;//[7]
+    public float Ratio2 = 1f;//[8]
+    public float Constant = Mathf.PI / 2f;//[9]
+    public bool ShowConstant = false;//[10]
+    public bool FixAngle=false;//角度を固定するかどうかのフラグ//[11]
+    public bool FixRatio=true;//比を固定するかどうかのフラグ//[12]
+
     public GameObject Object1, Object2, Object3;
-    public int Id=-1;
-    public float Ratio1 = 1f;
-    public float Ratio2 = 1f;
-    public float Constant = Mathf.PI/2f;
-    public bool ShowConstant = false;
 
     public GameObject parent = null;
     public GameObject GameLog = null;
     public string ModuleName = "";
-    public bool Active = true;
-    public bool FixAngle;//角度を固定するかどうかのフラグ
-    public bool FixRatio;//比を固定するかどうかのフラグ
 
     public Vector3 PreVec;// 軌跡を描くための変数
 
     // Use this for initialization
     void Start () {
         Active = true;
-        FixAngle = false;
+        //FixAngle = false;
         //FixRatio = true;
     }
 

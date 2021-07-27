@@ -700,7 +700,8 @@ public class Log : MonoBehaviour
             Module md = parent.GetComponent<Module>();
             return "Module," + ModuleType + "," + Object1Id + "," + Object2Id + ","
                 + Object3Id + "," + Id + "," + Active + ","
-                + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant ;
+                + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant + "," 
+                + md.ShowConstant + "," + md.FixAngle + "," + md.FixRatio;
         }
         return "";
     }

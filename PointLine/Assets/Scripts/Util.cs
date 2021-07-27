@@ -702,18 +702,28 @@ public class Util
             int id = int.Parse(item[5]);
             bool act = bool.Parse(item[6]);
             float ra1 = 1f, ra2 = 1f, cst = Mathf.PI / 2;
-            if (item.Length == 10)
+            if (item.Length >= 10)
             {
                 ra1 = float.Parse(item[7]);
                 ra2 = float.Parse(item[8]);
                 cst = float.Parse(item[9]);
-
+            }
+            bool showC=true, fixA=false, fixR=false;
+            if (item.Length >= 13)
+            {
+                showC = (item[10]=="True");
+                fixA = (item[11]=="True");
+                fixR = (item[12]=="True");
             }
             //オブジェクト作成
             Module MD = Util.AddModule(mt, o1, o2, o3, id);
+            //パラメータ調整
             MD.Ratio1 = ra1;
             MD.Ratio2 = ra2;
             MD.Constant = cst;
+            MD.ShowConstant = showC;
+            MD.FixAngle = fixA;
+            MD.FixRatio = fixR;
             //ログ作成
             Log lg = MD.GameLog.GetComponent<Log>();
             lg.MakeModuleLog(id, mt, o1, o2, o3, MD.parent, act, MD.ModuleName);
