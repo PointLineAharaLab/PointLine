@@ -20,11 +20,13 @@ public class Module : MonoBehaviour {
     public string ModuleName = "";
     public bool Active = true;
     public bool FixAngle;//角度を固定するかどうかのフラグ
+    public bool FixRatio;//比を固定するかどうかのフラグ
 
     // Use this for initialization
     void Start () {
         Active = true;
         FixAngle = false;
+        FixRatio = true;
     }
 
     private void ModulePOINT_ON_POINT()
@@ -283,14 +285,23 @@ public class Module : MonoBehaviour {
             if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
             // debug
             //  線分の長さを等しくする
-            if (!p11.Fixed)
-                p11.Vec -= Delta * VecA;
-            if (!p21.Fixed)
-                p21.Vec += Delta * VecB;
-            if (!p12.Fixed)
-                p12.Vec += Delta * VecA;
-            if (!p22.Fixed)
-                p22.Vec -= Delta * VecB;
+            if (FixRatio)
+            {
+                if (!p11.Fixed)
+                    p11.Vec -= Delta * VecA;
+                if (!p21.Fixed)
+                    p21.Vec += Delta * VecB;
+                if (!p12.Fixed)
+                    p12.Vec += Delta * VecA;
+                if (!p22.Fixed)
+                    p22.Vec -= Delta * VecB;
+            }
+            else
+            {
+                Ratio1 = NormA;
+                Ratio2 = NormB;
+            }
+            
         }
         else
         {
