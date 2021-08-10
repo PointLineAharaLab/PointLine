@@ -42,6 +42,11 @@ public class Preference : MonoBehaviour
         Position = new Vector3(PreferenceX, 1.77f, -2f);
         GetScreenPosition(Position, out ScreenPosition);
     }
+    float floatParse(string s)
+    {
+        if (s == "") return 0;
+        else return float.Parse(s);
+    }
 
     public void SetData(Log lg)
     {
@@ -216,7 +221,7 @@ public class Preference : MonoBehaviour
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
             pt.Fixed = Fixed;
-            pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
+            pt.Vec = new Vector3(floatParse(CoordX), floatParse(CoordY), 0f);
             pt.PointName = ObjectName;
 
         }
@@ -226,8 +231,8 @@ public class Preference : MonoBehaviour
             if (ObjectName == "中点")
             {
                 Module md = LogParent.parent.GetComponent<Module>();
-                md.Ratio1 = float.Parse(CoordX);
-                md.Ratio2 = float.Parse(CoordX);
+                md.Ratio1 = floatParse(CoordX);
+                md.Ratio2 = floatParse(CoordX);
             }
         }
     }
@@ -659,7 +664,7 @@ public class Preference : MonoBehaviour
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
             pt.Fixed = Fixed;
-            pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
+            pt.Vec = new Vector3(floatParse(CoordX), floatParse(CoordY), 0f);
             pt.PointName = ObjectName;
             pt.ShowPointName = ShowName;
         }
@@ -759,7 +764,7 @@ public class Preference : MonoBehaviour
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
             pt.Fixed = Fixed;
-            pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
+            pt.Vec = new Vector3(floatParse(CoordX), floatParse(CoordY), 0f);
             pt.PointName = ObjectName;
             pt.ShowPointName = ShowName;
         }
@@ -873,7 +878,7 @@ public class Preference : MonoBehaviour
         if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             Circle ci = LogParent.parent.GetComponent<Circle>();
-            ci.Radius = float.Parse(CoordX);
+            ci.Radius = floatParse(CoordX);
             show = false;
         }
     }
@@ -916,7 +921,7 @@ public class Preference : MonoBehaviour
         if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             Circle ci = LogParent.parent.GetComponent<Circle>();
-            ci.Radius = float.Parse(CoordX);
+            ci.Radius = floatParse(CoordX);
             show = false;
         }
     }
@@ -959,8 +964,8 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Ratio1 = float.Parse(CoordX);
-            md.Ratio2 = float.Parse(CoordY);
+            md.Ratio1 = floatParse(CoordX);
+            md.Ratio2 = floatParse(CoordY);
         }
     }
     void ModuleMidpointPreferenceEnglish(float Left, float Top, float Step, float height)
@@ -1004,8 +1009,8 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Ratio1 = float.Parse(CoordX);
-            md.Ratio2 = float.Parse(CoordY);
+            md.Ratio1 = floatParse(CoordX);
+            md.Ratio2 = floatParse(CoordY);
         }
     }
 
@@ -1068,8 +1073,8 @@ public class Preference : MonoBehaviour
             show = false;
             // OK のときの処理
             //Module md = LogParent.parent.GetComponent<Module>();
-            //md.Ratio1 = float.Parse(CoordX);
-            //md.Ratio2 = float.Parse(CoordY);
+            //md.Ratio1 = floatParse(CoordX);
+            //md.Ratio2 = floatParse(CoordY);
         }
     }
 
@@ -1112,7 +1117,7 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "線分比(" + getRatioString(float.Parse(CoordX), float.Parse(CoordY)) + ")", LabelStyle);
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "線分比(" + getRatioString(floatParse(CoordX), floatParse(CoordY)) + ")", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
         CoordX = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordX, FieldStyle);
@@ -1169,8 +1174,8 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Ratio1 = float.Parse(CoordX);
-            md.Ratio2 = float.Parse(CoordY);
+            md.Ratio1 = floatParse(CoordX);
+            md.Ratio2 = floatParse(CoordY);
             md.FixRatio = Fixed;
         }
     }
@@ -1222,8 +1227,8 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Ratio1 = float.Parse(CoordX);
-            md.Ratio2 = float.Parse(CoordY);
+            md.Ratio1 = floatParse(CoordX);
+            md.Ratio2 = floatParse(CoordY);
         }
     }
 
@@ -1307,7 +1312,7 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+            md.Constant = floatParse(AngleConstant) * Mathf.PI / 180f;
             md.FixAngle = Fixed;
             md.ShowConstant = ShowConstant;
         }
@@ -1409,7 +1414,7 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+            md.Constant = floatParse(AngleConstant) * Mathf.PI / 180f;
             md.FixAngle = Fixed;
             md.ShowConstant = ShowConstant;
         }
