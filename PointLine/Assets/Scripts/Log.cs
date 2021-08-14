@@ -228,7 +228,7 @@ public class Log : MonoBehaviour
                         }
                         else
                         {
-                            Text1 = "線分比(固定)(" + Mathf.RoundToInt(Ratio1) + "," + Mathf.RoundToInt(Ratio2) + ")";
+                            Text1 = "線分比(固定)(" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
                             Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2);
                         }
                     }
@@ -251,13 +251,13 @@ public class Log : MonoBehaviour
                         }
                         else
                         {
-                            Text1 = "Segments in Ratio (Fixed) (" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
+                            Text1 = "Segments in(Fixed) (" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
                             Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2);
                         }
                     }
                     else
                     {
-                        Text1 = "Segments in Ratio(1 : " + Mathf.Round(Ratio2 / Ratio1 * 1000) / 1000f + ")";
+                        Text1 = "Segments in(1 : " + Mathf.Round(Ratio2 / Ratio1 * 1000) / 1000f + ")";
                         Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2);
                     }
 

@@ -249,7 +249,7 @@ public class Util
         return "";
     }
     /// パーティクルの生成
-    public static Module AddModule(int type, int first, int second, int third, int moduleId)
+    public static Module AddModule(int type, int first, int second, int third, int moduleId, bool fixRatio = true)
     {
         // プレハブを取得
         Prefab = Resources.Load<GameObject>("Prefabs/Module");
@@ -267,6 +267,7 @@ public class Util
             obj.Active = true;
             obj.parent = g;
             obj.ModuleName = GetModuleNameByType(type);
+            obj.FixRatio = fixRatio;
             AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
 
             //もし余分なログがある場合には   余分なログは消す．
