@@ -1141,6 +1141,15 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         ModeStep = 0;
     }
 
+    private void AddNewLocus(int MOP)
+    {//ステップ０ならば，「一つ目の点」のMOPから
+        if (pts == null) return;
+        Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
+        FirstClickId = MOP;
+        Module NewMd = Util.AddModule(MENU.ADD_LOCUS, FirstClickId, 0, 0, ModuleId++);
+        Mode = MENU.ADD_LOCUS;
+        ModeStep = 0;
+    }
 
     private void DeleteAPoint(int MOP)
     {
@@ -1471,6 +1480,10 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 else if (Mode == MENU.ADD_MIDPOINT)
                 {//２点の中点を追加
                     AddNewMidpoint(MOP);
+                }
+                else if (Mode == MENU.ADD_LOCUS)
+                {//点の軌跡を追加
+                    AddNewLocus(MOP);
                 }
                 else if(Mode == MENU.DELETE_POINT)
                 {// 点を一つ消去する

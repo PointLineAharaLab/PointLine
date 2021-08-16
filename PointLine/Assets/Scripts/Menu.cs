@@ -27,6 +27,7 @@ public class MENU
     public const int CIRCLE_TANGENT_LINE = 9;
     public const int CIRCLE_TANGENT_CIRCLE = 10;
     public const int FIX_POINT = 11;
+    public const int ADD_LOCUS = 26;
     public const int DELETE_POINT = 13;
     public const int DELETE_ALL = 14;
     public const int QUIT = 15;
@@ -49,7 +50,7 @@ public class Menu : MonoBehaviour
         "ButtonPointOnPoint(Clone)" ,"ButtonPointOnLine(Clone)","ButtonPointOnCircle(Clone)","ButtonIntersection(Clone)", 
         "ButtonIsom(Clone)","ButtonRatioLength(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)","ButtonAngle(Clone)" ,"ButtonBisector(Clone)" ,
         "ButtonTangentL2C(Clone)", "ButtonTangentC2C(Clone)",
-        "ButtonFixPoint(Clone)", "ButtonDeletePoint(Clone)", "ButtonDeleteAll(Clone)", 
+        "ButtonFixPoint(Clone)", "ButtonAddLocus(Clone)","ButtonDeletePoint(Clone)", "ButtonDeleteAll(Clone)", 
         "ButtonUndo(Clone)", "ButtonRedo(Clone)", "ButtonShowLogs(Clone)",
         "ButtonSave(Clone)", "ButtonOpen(Clone)", "ButtonSave2TeX(Clone)", "ButtonQuit(Clone)"
 
@@ -89,6 +90,7 @@ public class Menu : MonoBehaviour
     private string TextCIRLCE_TANGENT_CIRCLE0 = " 円を円に接させる: 円を選択.";
     private string TextCIRLCE_TANGENT_CIRCLE1 = " 円を円に接させる: もう一つ円を選択.";
     private string TextFIX_POINT1 = " 点を固定する : 頂点を選択.";
+    private string TextADD_LOCUS0 = " 軌跡を追加: 頂点を選択.";
     private string TextDELETE_POINT0 = " 点を消去する: 頂点を選択.";
 
 
@@ -138,6 +140,7 @@ public class Menu : MonoBehaviour
             TextCIRLCE_TANGENT_CIRCLE0 = " Make a circle tangent to a circle: Select a circle.";
             TextCIRLCE_TANGENT_CIRCLE1 = " Make a circle tangent to a circle: Select another circle.";
             TextFIX_POINT1 = " Fix/Unfix a point : Select a point.";
+            TextADD_LOCUS0 = " Add a locus : Select a point.";
             TextDELETE_POINT0 = " Delete a point : Select a point.";
         }
 
@@ -360,6 +363,9 @@ public class Menu : MonoBehaviour
                     GUILabel(TextADD_MIDPOINT1);
                 }
                 break;
+            case MENU.ADD_LOCUS:// add a locus
+                GUILabel(TextADD_LOCUS0);
+                break;
             case MENU.DELETE_POINT:// delete a point
                 if (AppMgr.ModeStep == 0)
                 {
@@ -393,6 +399,7 @@ public class Menu : MonoBehaviour
                 go[i].name == "ButtonTangentL2C(Clone)" ||
                 go[i].name == "ButtonTangentC2C(Clone)" ||
                 go[i].name == "ButtonFixPoint(Clone)" ||
+                go[i].name == "ButtonAddLocus(Clone)" ||
                 go[i].name == "ButtonDeletePoint(Clone)" ||
                 go[i].name == "ButtonDeleteAll(Clone)" ||
                 go[i].name == "ButtonUndo(Clone)" ||
@@ -429,6 +436,7 @@ public class Menu : MonoBehaviour
         CreateTangentL2CButton();
         CreateTangentC2CButton();
         CreateFixPointButton();
+        CreateAddLocusButton(); 
         CreateDeletePointButton();
         CreateDeleteAllButton();
         CreateUndoButton();
@@ -607,18 +615,28 @@ public class Menu : MonoBehaviour
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 0, -75f - 150f * 5, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
+
+    public void CreateAddLocusButton()
+    {
+        // AddLine button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAddLocus");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 5, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+    }
+
     public void CreateDeletePointButton()
     {
         // DeletePoint button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonDeletePoint");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 5, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 5, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
+
     public void CreateDeleteAllButton()
     {
         // DeleteAll button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonDeleteAll");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 5, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 5, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 

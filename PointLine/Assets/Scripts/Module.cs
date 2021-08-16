@@ -4,28 +4,32 @@ using UnityEngine;
 
 public class Module : MonoBehaviour {
 
-    public int Type=0;
-    public int Object1Id = -1;
-    public int Object2Id = -1;
-    public int Object3Id = -1;
+    public int Type=0;//[1]
+    public int Object1Id = -1;//[2]
+    public int Object2Id = -1;//[3]
+    public int Object3Id = -1;//[4]
+    public int Id=-1;//[5]
+    public bool Active = true;//[6]
+    public float Ratio1 = 1f;//[7]
+    public float Ratio2 = 1f;//[8]
+    public float Constant = Mathf.PI/2f;//[9]
+    public bool ShowConstant = false;//[10]
+    public bool FixAngle = false;//角度を固定するかどうかのフラグ//[11]
+    public bool FixRatio = true;//比を固定するかどうかのフラグ//[12]
+
     public GameObject Object1, Object2, Object3;
-    public int Id=-1;
-    public float Ratio1 = 1f;
-    public float Ratio2 = 1f;
-    public float Constant = Mathf.PI/2f;
-    public bool ShowConstant = false;
 
     public GameObject parent = null;
     public GameObject GameLog = null;
     public string ModuleName = "";
-    public bool Active = true;
-    public bool FixAngle;//角度を固定するかどうかのフラグ
-    public bool FixRatio;//比を固定するかどうかのフラグ
+    
+
+    public Vector3 PreVec;// 軌跡を描くための変数
 
     // Use this for initialization
     void Start () {
         Active = true;
-        FixAngle = false;
+        //FixAngle = false;
         //FixRatio = true;
     }
 
@@ -285,16 +289,16 @@ public class Module : MonoBehaviour {
             if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
             // debug
             //  線分の長さを等しくする
-            if (FixRatio)
+            if (FixRatio)// 比が固定されていれば
             {
                 if (!p11.Fixed)
-                    p11.Vec -= Delta * VecA;
+                    p11.Vec -= (Delta * Ratio2 / (Ratio1 + Ratio2)) * VecA;
                 if (!p21.Fixed)
-                    p21.Vec += Delta * VecB;
+                    p21.Vec += (Delta * Ratio1 / (Ratio1 + Ratio2)) * VecB;
                 if (!p12.Fixed)
-                    p12.Vec += Delta * VecA;
+                    p12.Vec += (Delta * Ratio2 / (Ratio1 + Ratio2)) * VecA;
                 if (!p22.Fixed)
-                    p22.Vec -= Delta * VecB;
+                    p22.Vec -= (Delta * Ratio1 / (Ratio1 + Ratio2)) * VecB;
             }
             else
             {
@@ -1122,6 +1126,35 @@ public class Module : MonoBehaviour {
 
     }
 
+    private void Module_LOCUS()
+    {
+        gameObject.SetActive(Active);
+        if (Object1 == null)
+        {
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Point PT = OBJs[i].GetComponent<Point>();
+                if (PT != null && PT.Id == Object1Id)
+                {
+                    Object1 = OBJs[i];
+                }
+            }
+            if (Object1 == null) Active = false;
+        }
+        Point pt = Object1.GetComponent<Point>();
+        Vector3 ptVec = pt.Vec;
+        if ((PreVec - ptVec).magnitude > 0.5f && AppMgr.ConvergencyCount == 0)
+        {
+            //Debug.Log("triggered");
+            PreVec = ptVec;
+            // LocusDotを追加する。
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/LocusDot");
+            GameObject obj = Instantiate<GameObject>(prefab, ptVec, Quaternion.identity);
+            obj.GetComponent<LocusDot>().parent = this;
+        }
+    }
+
     public void ExecuteModule()
     {
         if (!Active) return;
@@ -1158,6 +1191,9 @@ public class Module : MonoBehaviour {
                 break;
             case MENU.BISECTOR:
                 ModuleBISECTOR();
+                break;
+            case MENU.ADD_LOCUS:
+                Module_LOCUS();
                 break;
         }
     }

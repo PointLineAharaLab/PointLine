@@ -394,6 +394,19 @@ public class Log : MonoBehaviour
                     Text2 += " = Angle" + GetPNameByParentObject(md2.Object1) + "" + GetPNameByParentObject(md2.Object2) + "" + GetPNameByParentObject(md2.Object3);
                 }
             }
+            else if (PName == "軌跡" && Object1 != null)
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "軌跡 ：";
+                    Text2 = "頂点" + GetPNameByParentObject(Object1) + "の軌跡";
+                }
+                else
+                {
+                    Text1 = "locus ：";
+                    Text2 = "locus of " + GetPNameByParentObject(Object1);
+                }
+            }
             else
             {
                 if (AppMgr.Japanese == 1)
@@ -699,7 +712,8 @@ public class Log : MonoBehaviour
             Module md = parent.GetComponent<Module>();
             return "Module," + ModuleType + "," + Object1Id + "," + Object2Id + ","
                 + Object3Id + "," + Id + "," + Active + ","
-                + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant ;
+                + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant + ","
+                + md.ShowConstant + "," + md.FixAngle + "," + md.FixRatio;
         }
         return "";
     }

@@ -163,7 +163,19 @@ public class AppMgr : MonoBehaviour {
         {
             for (int repeat = 0; repeat < 2000; repeat++)
             {
+                AppMgr.ConvergencyCount = 0;
                 for (int i = 0; i < md.Length; i++)
+                {
+                    if (md[i].Type != MENU.ADD_LOCUS)
+                    {
+                        md[i].ExecuteModule();
+                    }
+                }
+            }
+            //Debug.Log(AppMgr.ConvergencyCount);
+            for (int i = 0; i < md.Length; i++)
+            {
+                if (md[i].Type == MENU.ADD_LOCUS)
                 {
                     md[i].ExecuteModule();
                 }

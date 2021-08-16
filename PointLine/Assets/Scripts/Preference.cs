@@ -188,6 +188,17 @@ public class Preference : MonoBehaviour
                         ModuleAnglePreferenceEnglish(Left, Top, Step, height);
                     }
                 }
+                else if (ObjectName == "軌跡")
+                {
+                    if (AppMgr.Japanese == 1)
+                    {
+                        ModuleLocusPreferenceJapanese(Left, Top, Step, height);
+                    }
+                    else
+                    {
+                        ModuleLocusPreferenceEnglish(Left, Top, Step, height);
+                    }
+                }
                 else 
                 {
                     if (AppMgr.Japanese == 1)
@@ -1001,6 +1012,128 @@ public class Preference : MonoBehaviour
             Module md = LogParent.parent.GetComponent<Module>();
             md.Ratio1 = floatParse(CoordX);
             md.Ratio2 = floatParse(CoordY);
+        }
+    }
+
+    void ModuleLocusPreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "クリア", BS))
+        {
+            //クリア(モジュールは残すが、軌跡は消す。)
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == LogParent.parent.GetComponent<Module>())
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == md)
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            // OK のときの処理
+        }
+    }
+
+    void ModuleLocusPreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Clear", BS))
+        {
+            //クリア(モジュールは残すが、軌跡は消す。)
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == LogParent.parent.GetComponent<Module>())
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == md)
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            // OK のときの処理
         }
     }
 
