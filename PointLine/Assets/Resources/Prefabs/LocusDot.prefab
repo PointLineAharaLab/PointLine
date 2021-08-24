@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1442007070409488927}
   - component: {fileID: 1649320720975820927}
   - component: {fileID: 3921796977999300878}
-  - component: {fileID: 1946245402170513408}
   m_Layer: 7
   m_Name: LocusDot
   m_TagString: Locus
@@ -53,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,24 +97,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
---- !u!114 &1946245402170513408
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1447566742962637305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fefbaee8c50c8984f95b319d0ebd7a70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Active: 0
-  Id: 0
-  Selected: 0
-  Fixed: 0
-  parent: {fileID: 0}
-  GameLog: {fileID: 0}
-  PTobject: {fileID: 0}
-  PointName: 
-  ShowPointName: 1
