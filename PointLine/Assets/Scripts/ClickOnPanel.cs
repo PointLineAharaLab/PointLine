@@ -475,52 +475,65 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     {
         if (Input.GetKey(KeyCode.UpArrow) || Input.GetAxis("Mouse ScrollWheel")>0)
         {//拡大
-            Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pts = FindObjectsOfType<Point>();
-            for(int i=0; i<pts.Length; i++)
+            if (!Util.FixDisplay)
             {
-                Point pt = pts[i];
-                Vector3 NewVec = 1.05f * (pt.Vec - MousePosition) + MousePosition;
-                pt.Vec = NewVec;
+                Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                pts = FindObjectsOfType<Point>();
+                for (int i = 0; i < pts.Length; i++)
+                {
+                    Point pt = pts[i];
+                    Vector3 NewVec = 1.05f * (pt.Vec - MousePosition) + MousePosition;
+                    pt.Vec = NewVec;
+                }
             }
+            
         }
         if (Input.GetKey(KeyCode.DownArrow) || Input.GetAxis("Mouse ScrollWheel") < 0)
         {//縮小 
-            Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pts = FindObjectsOfType<Point>();
-            for (int i = 0; i < pts.Length; i++)
+            if (!Util.FixDisplay)
             {
-                Point pt = pts[i];
-                Vector3 NewVec = 0.96f * (pt.Vec - MousePosition) + MousePosition;
-                pt.Vec = NewVec;
+                Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                pts = FindObjectsOfType<Point>();
+                for (int i = 0; i < pts.Length; i++)
+                {
+                    Point pt = pts[i];
+                    Vector3 NewVec = 0.96f * (pt.Vec - MousePosition) + MousePosition;
+                    pt.Vec = NewVec;
+                }
             }
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {//右へ回す
-            Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pts = FindObjectsOfType<Point>();
-            float angle = -0.025f;
-            for (int i = 0; i < pts.Length; i++)
+            if (!Util.FixDisplay)
             {
-                Point pt = pts[i];
-                float x = pt.Vec.x - MousePosition.x;
-                float y = pt.Vec.y - MousePosition.y;
-                Vector3 NewVec = new Vector3(Mathf.Cos(angle) * x - Mathf.Sin(angle) * y , Mathf.Sin(angle) * x + Mathf.Cos(angle) * y) ;
-                pt.Vec = NewVec + MousePosition;
+                Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                pts = FindObjectsOfType<Point>();
+                float angle = -0.025f;
+                for (int i = 0; i < pts.Length; i++)
+                {
+                    Point pt = pts[i];
+                    float x = pt.Vec.x - MousePosition.x;
+                    float y = pt.Vec.y - MousePosition.y;
+                    Vector3 NewVec = new Vector3(Mathf.Cos(angle) * x - Mathf.Sin(angle) * y, Mathf.Sin(angle) * x + Mathf.Cos(angle) * y);
+                    pt.Vec = NewVec + MousePosition;
+                }
             }
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {//左へ回す
-            Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pts = FindObjectsOfType<Point>();
-            float angle = 0.025f;
-            for (int i = 0; i < pts.Length; i++)
+            if (!Util.FixDisplay)
             {
-                Point pt = pts[i];
-                float x = pt.Vec.x - MousePosition.x;
-                float y = pt.Vec.y - MousePosition.y;
-                Vector3 NewVec = new Vector3(Mathf.Cos(angle) * x - Mathf.Sin(angle) * y, Mathf.Sin(angle) * x + Mathf.Cos(angle) * y);
-                pt.Vec = NewVec + MousePosition;
+                Vector3 MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                pts = FindObjectsOfType<Point>();
+                float angle = 0.025f;
+                for (int i = 0; i < pts.Length; i++)
+                {
+                    Point pt = pts[i];
+                    float x = pt.Vec.x - MousePosition.x;
+                    float y = pt.Vec.y - MousePosition.y;
+                    Vector3 NewVec = new Vector3(Mathf.Cos(angle) * x - Mathf.Sin(angle) * y, Mathf.Sin(angle) * x + Mathf.Cos(angle) * y);
+                    pt.Vec = NewVec + MousePosition;
+                }
             }
         }
 
@@ -695,14 +708,16 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
         else
         {//空ドラッグ→画面全体の平行移動
-            pts = FindObjectsOfType<Point>();
-            for(int i=0; i<pts.Length; i++)
+            if (!Util.FixDisplay)
             {
-                Point pt = pts[i];
-                pt.Vec += (MouseDragPosition - PreviousMouseDragPosition);
+                pts = FindObjectsOfType<Point>();
+                for (int i = 0; i < pts.Length; i++)
+                {
+                    Point pt = pts[i];
+                    pt.Vec += (MouseDragPosition - PreviousMouseDragPosition);
+                }
+                PreviousMouseDragPosition = MouseDragPosition;
             }
-            PreviousMouseDragPosition = MouseDragPosition;
-
         }
     }
 
@@ -1144,6 +1159,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     private void AddNewLocus(int MOP)
     {//ステップ０ならば，「一つ目の点」のMOPから
         if (pts == null) return;
+        Util.FixDisplay = true;
         Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
         FirstClickId = MOP;
         Module NewMd = Util.AddModule(MENU.ADD_LOCUS, FirstClickId, 0, 0, ModuleId++);
@@ -1329,7 +1345,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             {
                 Destroy(gp[i]);
             }
-            //直角マークも消しておく。
+            //直角マーク(角度マーク)も消しておく。
             AngleMark am = (AngleMark)gp[i].GetComponent("AngleMark");
             if (am != null)
             {
@@ -1338,6 +1354,12 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             //細線補助線も消しておく。
             ThinLine TL = (ThinLine)gp[i].GetComponent("ThinLine");
             if (TL != null)
+            {
+                Destroy(gp[i]);
+            }
+            //軌跡も消しておく。
+            LocusDot LD = (LocusDot)gp[i].GetComponent("LocusDot");
+            if (LD != null)
             {
                 Destroy(gp[i]);
             }

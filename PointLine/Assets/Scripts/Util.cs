@@ -29,6 +29,12 @@ public class Util
     public static Color[] IsometryColor;
     public static Color[] IsometrySelectedColor;
 
+    /// <summary>
+    /// 画面固定のためのフラグ
+    /// </summary>
+    public static bool FixDisplay = false;
+
+
     private static void GetLogFolder()
     {
         if(LogFolder == null)

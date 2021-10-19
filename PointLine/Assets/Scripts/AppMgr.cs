@@ -121,6 +121,7 @@ public class AppMgr : MonoBehaviour {
     public static void Rescaling()
     {
         if (pts == null) return;
+        if (Util.FixDisplay) return;
         float MaxX = -9999f, MaxY = -9999f;
         float MinX = 9999f, MinY = 9999f;
 

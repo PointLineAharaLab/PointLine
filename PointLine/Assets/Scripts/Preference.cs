@@ -1056,6 +1056,21 @@ public class Preference : MonoBehaviour
                 }
             }
             DeleteAModule(md.Id);
+            //Locusがなくなった場合、FixDisplayをfalseにする
+            Module[] MDS = FindObjectsOfType<Module>();
+            int count = 0;
+            for(int i = 0; i < MDS.Length; i++)
+            {
+                if(MDS[i].Type == MENU.ADD_LOCUS)
+                {
+                    count++;
+                }
+            }
+            //Debug.Log(count);
+            if(count <= 1)
+            {
+                Util.FixDisplay = false;
+            }
             show = false;
         }
         Top += Step;
@@ -1117,6 +1132,20 @@ public class Preference : MonoBehaviour
                 }
             }
             DeleteAModule(md.Id);
+            Module[] MDS = FindObjectsOfType<Module>();
+            int count = 0;
+            for (int i = 0; i < MDS.Length; i++)
+            {
+                if (MDS[i].Type == MENU.ADD_LOCUS)
+                {
+                    count++;
+                }
+            }
+            //Debug.Log(count);
+            if (count <= 1)
+            {
+                Util.FixDisplay = false;
+            }
             show = false;
         }
         Top += Step;
