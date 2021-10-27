@@ -3,6 +3,9 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using OpenCvSharp.Demo;
+using OpenCvSharp;
+using OpenCvSharp.Aruco;
 
 using System.IO;
 using GracesGames.Common.Scripts;
@@ -604,6 +607,43 @@ public class Util
                 Debug.Log(e.Message);
             }
         }
+        else if (extPath==".png" && path.Length != 0)
+        {
+                    byte[] bytes = File.ReadAllBytes(path);
+                    Texture2D texture = new Texture2D(2, 2);        
+                    texture.LoadImage(bytes);
+                    AppMgr.BackgroundTexture = texture;
+                    Mat mat = OpenCvSharp.Unity.TextureToMat(texture);
+
+                    // グレースケール
+                    Mat gray = new Mat();
+                    Cv2.CvtColor(mat, gray, ColorConversionCodes.BGR2GRAY);
+                    
+                    //２値化
+                    Mat bin = new Mat();
+                    Cv2.Canny(gray, bin, 50, 255);
+                    
+                    OpenCvSharp.LineSegmentPoint[] lines;
+                    lines = Cv2.HoughLinesP(bin, 1, Mathf.PI/180, 100, 100, 5);
+                    for(int i=0; i < lines.Length; i++){
+                        
+                        //mat.Line(lines[i].P1, lines[i].P2, Scalar.Red, 1, LineTypes.AntiAlias);
+                        
+                        Debug.Log(lines[i].P1 + " , " + lines[i].P2);
+                        
+                        }
+
+                     // 画像書き出し
+                    Texture2D outTexture = new Texture2D(mat.Width, mat.Height, TextureFormat.ARGB32, false);
+                    OpenCvSharp.Unity.MatToTexture(mat, outTexture);
+                    AppMgr.BackgroundTexture = outTexture;
+
+          /*          // 表示
+                    GameObject image = FindObjectOfType<RawImage>();
+                    image.GetComponent<RawImage>().texture = outTexture;
+       */ 
+       }
+
         else
         {
             Debug.Log("Invalid path given");
@@ -622,7 +662,7 @@ public class Util
         //fb.SetupFileBrowser(PortraitMode ? ViewMode.Portrait : ViewMode.Landscape);
         //fb.OpenFilePanel(ext);
         //fb.OnFileSelect += LoadFileUsingPath;
-        String[] ext={"txt", "jpg"};
+        String[] ext={"txt", "png"};
         string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", ext);
         LoadFileUsingPath(path);
         return false;

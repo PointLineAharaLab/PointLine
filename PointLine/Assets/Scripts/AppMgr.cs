@@ -34,7 +34,7 @@ public class AppMgr : MonoBehaviour {
     public GameObject ConvergencyAlertText;
     public static float ConvergencyError = 0.0001f;
     public static bool ModuleOn = true;
-
+    public static Texture2D BackgroundTexture;
 
     // Use this for initialization
     void Start () {

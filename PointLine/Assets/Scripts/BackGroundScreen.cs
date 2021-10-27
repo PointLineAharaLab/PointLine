@@ -15,6 +15,7 @@ public class BackGroundScreen : MonoBehaviour
         PictureWidth = 16f;
         PictureHeight = 12f;
         PictureScale = new Vector3(PictureWidth, PictureHeight, 0.01f);
+        
     }
 
     // Update is called once per frame
@@ -25,6 +26,11 @@ public class BackGroundScreen : MonoBehaviour
             PictureScale.x = PictureWidth;
             PictureScale.y = PictureHeight;
             transform.localScale = PictureScale;
+            if(AppMgr.BackgroundTexture != null)
+            {
+                Tex2D = AppMgr.BackgroundTexture;
+                ScreenPictureMaterial.mainTexture = Tex2D;
+            }
             GetComponent<MeshRenderer>().material = ScreenPictureMaterial;
         }
         else
@@ -33,7 +39,7 @@ public class BackGroundScreen : MonoBehaviour
 		}
     }
 
-    //PNGƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚ñ‚ÅTexture‚Æ‚µ‚Äg‚¤•û–@
+    //PNGï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½ï¿½Textureï¿½Æ‚ï¿½ï¿½Ägï¿½ï¿½ï¿½ï¿½ï¿½@
     // https://ugcj.com/png%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%93%E3%81%A7texture%E3%81%A8%E3%81%97%E3%81%A6%E4%BD%BF%E3%81%86%E6%96%B9%E6%B3%95/
 
     public Texture2D ReadPng(string path)
@@ -53,15 +59,15 @@ public class BackGroundScreen : MonoBehaviour
     public void CaptureFromCamera(string path)
     {
         Debug.Log("CaptureFromCamera");
-        // ƒŒƒ“ƒ_[—p‚ÌƒJƒƒ‰‚ğæ“¾B
+        // ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½[ï¿½pï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½B
         Camera RenderCamera = RenderCameraObject.GetComponent<Camera>();
         var width = Screen.width;
         var height = Screen.height;
-        // ƒŒƒ“ƒ_[—p‚ÌƒeƒNƒXƒ`ƒƒ‚ğæ“¾‚·‚éB
+        // ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½[ï¿½pï¿½Ìƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½B
         RenderTex = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
         RenderCamera.targetTexture = RenderTex;
 
-        // ƒJ[ƒ\ƒ‹‚ª‰f‚è‚Ü‚È‚¢‚æ‚¤‚É”ñƒAƒNƒeƒBƒu‚É‚·‚éB
+        // ï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½èï¿½Ü‚È‚ï¿½ï¿½æ‚¤ï¿½É”ï¿½Aï¿½Nï¿½eï¿½Bï¿½uï¿½É‚ï¿½ï¿½ï¿½B
         GameObject Cursor1Object=null, Cursor2Object=null;
         GameObject[] Objects = FindObjectsOfType<GameObject>();
         for (int i = 0; i < Objects.Length ; i++)
@@ -79,16 +85,16 @@ public class BackGroundScreen : MonoBehaviour
             }
         }
         RenderCamera.Render();
-        //2ŸŒ³ƒeƒNƒXƒ`ƒƒ‚ÉƒRƒs[‚·‚éB
+        //2ï¿½ï¿½ï¿½ï¿½ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ÉƒRï¿½sï¿½[ï¿½ï¿½ï¿½ï¿½B
         RenderTexture.active = RenderTex;
         Tex2D = new Texture2D(width, height, TextureFormat.ARGB32, false);
         Tex2D.ReadPixels(new Rect(0, 0, width, height), 0, 0);
         Tex2D.Apply();
-        // ƒtƒ@ƒCƒ‹o—Í‚·‚éB
+        // ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½oï¿½Í‚ï¿½ï¿½ï¿½B
         byte[] bytes = Tex2D.EncodeToPNG();
         File.WriteAllBytes(path, bytes);
 
-        // ƒJ[ƒ\ƒ‹‚ğƒAƒNƒeƒBƒu‚É‚·‚éB        
+        // ï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Nï¿½eï¿½Bï¿½uï¿½É‚ï¿½ï¿½ï¿½B        
         Cursor1Object.SetActive(true);
         Cursor2Object.SetActive(true);
         //Destroy(tex);
