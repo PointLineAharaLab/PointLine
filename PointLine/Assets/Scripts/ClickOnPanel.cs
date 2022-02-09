@@ -31,6 +31,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     float DraggedGameLogStartTop = 0f;
     Vector3 DraggedPreferencePosition;
     Vector3 PreviousMouseDragPosition;
+    BackGroundScreen Back;//BackgroundScreenのscript
 
     // Use this for initialization
     void Start()
@@ -51,6 +52,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Util.IsometryColor[i] = new Color((vx + 1f) * 0.5f, (vy + 1f) * 0.5f, (vz + 1f) * 0.5f);
             Util.IsometrySelectedColor[i] = new Color(vx, vy, vz);
         }
+        Back = GameObject.Find("BackGroundScreen").GetComponent<BackGroundScreen>();//BackgroundScreenのscript
     }
 
     private readonly float[] ColorCode = new float[]{ 
@@ -255,6 +257,12 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {
             //Debug.Log("MOL = "+MOL);
             return MOL;//ログの上にある時が優先
+        }
+        //画像読み込み後のスライダーエリア除外
+        if(Back.SliderDestory == false){
+            if(Input.mousePosition.x <= 400f){
+                return 6000;
+            }
         }
         int MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
         if (MOP == -1)

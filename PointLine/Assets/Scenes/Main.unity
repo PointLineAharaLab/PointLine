@@ -1486,6 +1486,8 @@ GameObject:
   - component: {fileID: 1718670116}
   - component: {fileID: 1718670118}
   - component: {fileID: 1718670117}
+  - component: {fileID: 1718670119}
+  - component: {fileID: 1718670120}
   m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
@@ -1507,9 +1509,9 @@ RectTransform:
   m_Father: {fileID: 1269749012}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1261.3511, y: -669.3065}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: -300, y: -1396.3065}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1718670117
@@ -1532,7 +1534,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 1811781062814824fb8688c434b4e0db, type: 3}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1547,6 +1549,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1718670115}
   m_CullTransparentMesh: 1
+--- !u!114 &1718670119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718670115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcda6bfae73a9da41a86329558ed0d28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 3523241470511414897, guid: e4185ac042439cf4995cedbb72f47fbb, type: 3}
+  slider2: {fileID: 3020852218630289817, guid: a869f0645cdc68c4684367c3c8668c8a, type: 3}
+  slider3: {fileID: 5440620364668762496, guid: 8aa4ee27914c8074ebbee6d10d5403d3, type: 3}
+  canvas: {fileID: 1718670115}
+--- !u!114 &1718670120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718670115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76375f012a4a051458ffeade038353c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 6604566970794377146, guid: 19cd23ed44e779548a56ec8500aeb7d1, type: 3}
+  canvas: {fileID: 1718670115}
+  Slider: {fileID: 3523241470511414897, guid: e4185ac042439cf4995cedbb72f47fbb, type: 3}
 --- !u!1 &1814194204
 GameObject:
   m_ObjectHideFlags: 0

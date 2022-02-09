@@ -607,7 +607,7 @@ public class Util
                 Debug.Log(e.Message);
             }
         }
-        else if (extPath==".png" && path.Length != 0)
+        else if ((extPath==".png" && path.Length != 0) || (extPath==".PNG" && path.Length != 0))
         {
                     byte[] bytes = File.ReadAllBytes(path);
                     Texture2D texture = new Texture2D(2, 2);        
@@ -615,23 +615,9 @@ public class Util
                     AppMgr.BackgroundTexture = texture;
                     Mat mat = OpenCvSharp.Unity.TextureToMat(texture);
 
-                    // グレースケール
                     Mat gray = new Mat();
                     Cv2.CvtColor(mat, gray, ColorConversionCodes.BGR2GRAY);
-                    
-                    //２値化
-                    Mat bin = new Mat();
-                    Cv2.Canny(gray, bin, 50, 255);
-                    
-                    OpenCvSharp.LineSegmentPoint[] lines;
-                    lines = Cv2.HoughLinesP(bin, 1, Mathf.PI/180, 100, 100, 5);
-                    for(int i=0; i < lines.Length; i++){
-                        
-                        //mat.Line(lines[i].P1, lines[i].P2, Scalar.Red, 1, LineTypes.AntiAlias);
-                        
-                        Debug.Log(lines[i].P1 + " , " + lines[i].P2);
-                        
-                        }
+
 
                      // 画像書き出し
                     Texture2D outTexture = new Texture2D(mat.Width, mat.Height, TextureFormat.ARGB32, false);
