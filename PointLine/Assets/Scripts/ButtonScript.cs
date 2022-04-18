@@ -55,9 +55,9 @@ public class ButtonScript : MonoBehaviour
             return new Vector3(gx,gy,0);
         }
 
-    public class Line{
+    public class Line2{
         public float x1,y1,x2,y2;
-        public Line(float _x1,float _y1,float _x2,float _y2){
+        public Line2(float _x1,float _y1,float _x2,float _y2){
             x1 = _x1;
             y1 = _y1;
             x2 = _x2;
@@ -79,11 +79,11 @@ public class ButtonScript : MonoBehaviour
         Util.InitLog();
         int PId = -1, LId = -1, CId = -1, MId = -1;
 
-        List<Line> line = new List<Line>();
+        List<Line2> line = new List<Line2>();
 
         for(int i=0; i < Back.lines.Length; i++){
             if(i==0){
-                line.Add(new Line(Back.lines[0].P1.X,Back.lines[0].P1.Y,Back.lines[0].P2.X,Back.lines[0].P2.Y));
+                line.Add(new Line2(Back.lines[0].P1.X,Back.lines[0].P1.Y,Back.lines[0].P2.X,Back.lines[0].P2.Y));
             }
             else{ 
                 bool AddNew = true;
@@ -110,66 +110,109 @@ public class ButtonScript : MonoBehaviour
                     }
                 }
                 if(AddNew == true){
-                            line.Add(new Line(Back.lines[i].P1.X,Back.lines[i].P1.Y,Back.lines[i].P2.X,Back.lines[i].P2.Y));
+                            line.Add(new Line2(Back.lines[i].P1.X,Back.lines[i].P1.Y,Back.lines[i].P2.X,Back.lines[i].P2.Y));
                         }
             }
 
         }
 
+        int pointid = 0;
+        int lineid=1000;
+        int circleid=2000;
+        int moduleid = 3000;
 
         for(int i=0; i < line.Count; i++){
             Vector3 v1 = ConvertTexture2World(line[i].x1 , line[i].y1);
             Vector3 v2 = ConvertTexture2World(line[i].x2 , line[i].y2);
-            Util.AddPoint(v1,1);
-            Util.AddPoint(v2,2);
+            Util.AddPoint(v1,pointid++);
+            Util.AddPoint(v2,pointid++);
+            Util.AddLine(pointid-2, pointid-1, lineid++);
             }
             
 
         for(int i=0; i < Back.circles.Length; i++){
             Debug.Log(Back.circles[i]);
             Vector3 v3 = ConvertTexture2World(Back.circles[i].Center.X , Back.circles[i].Center.Y);
-            Util.AddPoint(v3,3);
-
+            Util.AddPoint(v3,pointid++);
+            float rate = 9f/AppMgr.BackgroundTexture.height;
+            float rad = Back.circles[i].Radius*rate;
+            Util.AddCircle(pointid-1, rad, circleid++);
         }
 
-        Debug.Log(line.Count);
-        
-        /*
-                    string str;
-                    int PId = -1, LId = -1, CId = -1, MId = -1;
-                    do
-                    {
-                        str = reader.ReadLine();
-                        if (str == null) break;//多分要らない。
-                        else
-                        {
-                            Log lg = GetLogFromString(str);
-                            //AddLog(lg);
-                            if (lg.ObjectType == "Point")
-                            {
-                                if (PId < lg.Id) PId = lg.Id;
-                            }
-                            else if (lg.ObjectType == "Line")
-                            {
-                                if (LId < lg.Id) LId = lg.Id;
-                            }
-                            else if (lg.ObjectType == "Circle")
-                            {
-                                if (CId < lg.Id) CId = lg.Id;
-                            }
-                            else if (lg.ObjectType == "Module")
-                            {
-                                if (MId < lg.Id) MId = lg.Id;
-                            }
-                        }
+
+        AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
+        int cou = AppMgr.pts.Length;
+        for(int i=0; i<cou; i++){
+            for(int j=i+1; j<cou; j++){
+                Point pt1 = AppMgr.pts[i];
+                Point pt2 = AppMgr.pts[j];
+                if((pt1.Vec-pt2.Vec).magnitude < 0.5f ){
+                    Util.AddModule(MENU.POINT_ON_POINT, pt1.Id, pt2.Id, -1, moduleid++);
+                }
+            }
+        }
+
+        //垂直判定
+        AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
+        Line[] lns = AppMgr.lns;
+        for(int i=0; i<lns.Length; i++){
+            for(int j=i+1; j<lns.Length; j++){
+                Point p11 = null, p12 = null, p21 = null, p22 = null;
+                Line ln1 = lns[i];
+                Line ln2 = lns[j];
+                for(int k=0; k<AppMgr.pts.Length; k++){
+                    if(ln1.Point1Id == AppMgr.pts[k].Id){
+                        p11 = AppMgr.pts[k];
+                    }else if(ln1.Point2Id == AppMgr.pts[k].Id){
+                        p12 = AppMgr.pts[k];
+                    }else if(ln2.Point1Id == AppMgr.pts[k].Id){
+                        p21 = AppMgr.pts[k];
+                    }else if(ln2.Point2Id == AppMgr.pts[k].Id){
+                        p22 = AppMgr.pts[k];
                     }
-                    while (str != null);
-                    reader.Close();
-                    ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
-                    AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
-                    AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
-                    AppMgr.cis = MonoBehaviour.FindObjectsOfType<Circle>();
-                    AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
-    */
+                }
+                Vector3 vec1 = Vector3.Normalize(p11.Vec - p12.Vec);
+                Vector3 vec2 = Vector3.Normalize(p21.Vec - p22.Vec);
+               /* Vector3 vec1 = ln1.Point1.GetComponent<Point>().Vec - ln1.Point2.GetComponent<Point>().Vec;
+                Vector3 vec2 = ln2.Point1.GetComponent<Point>().Vec - ln2.Point2.GetComponent<Point>().Vec;
+                */
+                float inner = Vector3.Dot(vec1, vec2);
+                Debug.Log(inner);
+                if(Mathf.Abs(inner)<0.017f){
+                    Util.AddModule(MENU.LINES_PERPENDICULAR, ln1.Id, ln2.Id, -1, moduleid++);
+                }
+            }
+        }
+
+        //円の接触判定
+        for(int i=0; i<AppMgr.lns.Length; i++){
+            for(int j=0; j<AppMgr.cis.Length; j++){
+                Line ln = AppMgr.lns[i];
+                Point pt1 = null, pt2 = null;
+                Circle ci = AppMgr.cis[j];
+                Point pt = null;
+                for(int k=0; k<AppMgr.pts.Length; k++){
+                    if(ci.CenterPointId == AppMgr.pts[k].Id){
+                        pt = AppMgr.pts[k];
+                    }
+                    if(ln.Point1Id == AppMgr.pts[k].Id){
+                        pt1 = AppMgr.pts[k];
+                    }else if(ln.Point2Id == AppMgr.pts[k].Id){
+                        pt2 = AppMgr.pts[k];
+                    }
+                }
+                float dist = Mathf.Abs(GetPointPosition(pt1.Vec.x, pt1.Vec.y, pt2.Vec.x, pt2.Vec.y, pt.Vec.x, pt.Vec.y).y);
+
+                if(Mathf.Abs(dist-ci.Radius)<0.1f){
+                    Util.AddModule(MENU.CIRCLE_TANGENT_LINE, ci.Id, ln.Id, -1, moduleid++);
+                }
+            }
+        }
+
+
+
+        //Debug.Log(line.Count);
+        
+        
     }
 }

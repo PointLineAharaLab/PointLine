@@ -42,6 +42,13 @@ public class Module : MonoBehaviour {
             Vector3 v2 = p2.Vec;
             Vector3 v1New = 0.7f * v1 + 0.3f * v2;
             Vector3 v2New = 0.3f * v1 + 0.7f * v2;
+
+            if(p1.Id < p2.Id){
+                p2.ShowPointName = false;
+            }else{
+                p1.ShowPointName = false;
+            }
+
             // debug
             float err = (p1.Vec - v1New).magnitude + (p2.Vec - v2New).magnitude;
             if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;

@@ -546,7 +546,7 @@ public class Util
         //fb.SetupFileBrowser(PortraitMode ? ViewMode.Portrait : ViewMode.Landscape);
         //fb.SaveFilePanel("pointLineFigure", ext);
         //fb.OnFileSelect += SaveFileUsingPath;
-        string[] exts = {"txt", "png"};
+        string[] exts = {"txt", "png","jpg"};
         string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine",exts);
         SaveFileUsingPath(path);
         return false;
@@ -607,7 +607,7 @@ public class Util
                 Debug.Log(e.Message);
             }
         }
-        else if ((extPath==".png" && path.Length != 0) || (extPath==".PNG" && path.Length != 0))
+        else if ((extPath==".png" && path.Length != 0) || (extPath==".PNG" && path.Length != 0) || (extPath==".jpg" && path.Length != 0))
         {
                     byte[] bytes = File.ReadAllBytes(path);
                     Texture2D texture = new Texture2D(2, 2);        
@@ -648,7 +648,7 @@ public class Util
         //fb.SetupFileBrowser(PortraitMode ? ViewMode.Portrait : ViewMode.Landscape);
         //fb.OpenFilePanel(ext);
         //fb.OnFileSelect += LoadFileUsingPath;
-        String[] ext={"txt", "png"};
+        String[] ext={"txt", "png","jpg"};
         string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", ext);
         LoadFileUsingPath(path);
         return false;
