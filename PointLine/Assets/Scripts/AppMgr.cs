@@ -121,6 +121,7 @@ public class AppMgr : MonoBehaviour {
     public static void Rescaling()
     {
         if (pts == null) return;
+        if (Util.FixDisplay) return;
         float MaxX = -9999f, MaxY = -9999f;
         float MinX = 9999f, MinY = 9999f;
 
@@ -163,7 +164,19 @@ public class AppMgr : MonoBehaviour {
         {
             for (int repeat = 0; repeat < 2000; repeat++)
             {
+                AppMgr.ConvergencyCount = 0;
                 for (int i = 0; i < md.Length; i++)
+                {
+                    if (md[i].Type != MENU.ADD_LOCUS)
+                    {
+                        md[i].ExecuteModule();
+                    }
+                }
+            }
+            //Debug.Log(AppMgr.ConvergencyCount);
+            for (int i = 0; i < md.Length; i++)
+            {
+                if (md[i].Type == MENU.ADD_LOCUS)
                 {
                     md[i].ExecuteModule();
                 }

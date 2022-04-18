@@ -12,6 +12,7 @@ TagManager:
   - Cursor
   - Menu
   - Slider
+  - Locus
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - Locus
   - AngleMark
   - Line
   - Circle

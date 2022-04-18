@@ -29,6 +29,12 @@ public class Preference : MonoBehaviour
     public Log LogParent = null;
     public GameObject Parent = null;
 
+    float floatParse(string s)
+    {
+        if (s == "") return 0;
+        else return float.Parse(s);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,10 +70,11 @@ public class Preference : MonoBehaviour
         }
         else if (ObjectType == "Module")
         {
-            if (ObjectName == "中点")
+            if (ObjectName == "中点" || ObjectName == "等長")
             {
                 CoordX = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio1) / 10f;
                 CoordY = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio2) / 10f;
+                Fixed = lg.parent.GetComponent<Module>().FixRatio;
             }
             else if (ObjectName == "角度")
             {
@@ -159,6 +166,17 @@ public class Preference : MonoBehaviour
                         ModuleMidpointPreferenceEnglish(Left, Top, Step, height);
                     }
                 }
+                else if (ObjectName == "等長")
+                {
+                    if (AppMgr.Japanese == 1)
+                    {
+                        ModuleIsometryPreferenceJapanese(Left, Top, Step, height);
+                    }
+                    else
+                    {
+                        ModuleIsometryPreferenceEnglish(Left, Top, Step, height);
+                    }
+                }
                 else if (ObjectName == "角度")
                 {
                     if (AppMgr.Japanese == 1)
@@ -168,6 +186,17 @@ public class Preference : MonoBehaviour
                     else
                     {
                         ModuleAnglePreferenceEnglish(Left, Top, Step, height);
+                    }
+                }
+                else if (ObjectName == "軌跡")
+                {
+                    if (AppMgr.Japanese == 1)
+                    {
+                        ModuleLocusPreferenceJapanese(Left, Top, Step, height);
+                    }
+                    else
+                    {
+                        ModuleLocusPreferenceEnglish(Left, Top, Step, height);
                     }
                 }
                 else 
@@ -193,7 +222,7 @@ public class Preference : MonoBehaviour
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
             pt.Fixed = Fixed;
-            pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
+            pt.Vec = new Vector3(floatParse(CoordX), floatParse(CoordY), 0f);
             pt.PointName = ObjectName;
 
         }
@@ -203,8 +232,8 @@ public class Preference : MonoBehaviour
             if (ObjectName == "中点")
             {
                 Module md = LogParent.parent.GetComponent<Module>();
-                md.Ratio1 = float.Parse(CoordX);
-                md.Ratio2 = float.Parse(CoordX);
+                md.Ratio1 = floatParse(CoordX);
+                md.Ratio2 = floatParse(CoordX);
             }
         }
     }
@@ -636,7 +665,7 @@ public class Preference : MonoBehaviour
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
             pt.Fixed = Fixed;
-            pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
+            pt.Vec = new Vector3(floatParse(CoordX), floatParse(CoordY), 0f);
             pt.PointName = ObjectName;
             pt.ShowPointName = ShowName;
         }
@@ -736,7 +765,7 @@ public class Preference : MonoBehaviour
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
             pt.Fixed = Fixed;
-            pt.Vec = new Vector3(float.Parse(CoordX), float.Parse(CoordY), 0f);
+            pt.Vec = new Vector3(floatParse(CoordX), floatParse(CoordY), 0f);
             pt.PointName = ObjectName;
             pt.ShowPointName = ShowName;
         }
@@ -850,7 +879,7 @@ public class Preference : MonoBehaviour
         if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             Circle ci = LogParent.parent.GetComponent<Circle>();
-            ci.Radius = float.Parse(CoordX);
+            ci.Radius = floatParse(CoordX);
             show = false;
         }
     }
@@ -893,7 +922,7 @@ public class Preference : MonoBehaviour
         if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             Circle ci = LogParent.parent.GetComponent<Circle>();
-            ci.Radius = float.Parse(CoordX);
+            ci.Radius = floatParse(CoordX);
             show = false;
         }
     }
@@ -907,10 +936,10 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分比(" + CoordX + " : " + CoordY + ")", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordX, FieldStyle);
+        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordX, FieldStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
-        CoordY = GUI.TextField(new Rect(Left + 40, Top, DialogWidth - 40, height), CoordY, FieldStyle);
+        CoordY = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordY, FieldStyle);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
@@ -936,8 +965,8 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Ratio1 = float.Parse(CoordX);
-            md.Ratio2 = float.Parse(CoordY);
+            md.Ratio1 = floatParse(CoordX);
+            md.Ratio2 = floatParse(CoordY);
         }
     }
     void ModuleMidpointPreferenceEnglish(float Left, float Top, float Step, float height)
@@ -952,10 +981,10 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio(" + CoordX + ":" + CoordY + ")", LabelStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 1", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordX, FieldStyle);
+        CoordX = GUI.TextField(new Rect(Left + DialogWidth * 0.4f, Top, DialogWidth - DialogWidth * 0.4f, height), CoordX, FieldStyle);
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 2", LabelStyle);
-        CoordY = GUI.TextField(new Rect(Left + 70, Top, DialogWidth - 70, height), CoordY, FieldStyle);
+        CoordY = GUI.TextField(new Rect(Left + DialogWidth * 0.4f, Top, DialogWidth - DialogWidth * 0.4f, height), CoordY, FieldStyle);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
@@ -981,8 +1010,345 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Ratio1 = float.Parse(CoordX);
-            md.Ratio2 = float.Parse(CoordY);
+            md.Ratio1 = floatParse(CoordX);
+            md.Ratio2 = floatParse(CoordY);
+        }
+    }
+
+    void ModuleLocusPreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "クリア", BS))
+        {
+            //クリア(モジュールは残すが、軌跡は消す。)
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == LogParent.parent.GetComponent<Module>())
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == md)
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
+            DeleteAModule(md.Id);
+            //Locusがなくなった場合、FixDisplayをfalseにする
+            Module[] MDS = FindObjectsOfType<Module>();
+            int count = 0;
+            for(int i = 0; i < MDS.Length; i++)
+            {
+                if(MDS[i].Type == MENU.ADD_LOCUS)
+                {
+                    count++;
+                }
+            }
+            //Debug.Log(count);
+            if(count <= 1)
+            {
+                Util.FixDisplay = false;
+            }
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            // OK のときの処理
+        }
+    }
+
+    void ModuleLocusPreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Clear", BS))
+        {
+            //クリア(モジュールは残すが、軌跡は消す。)
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == LogParent.parent.GetComponent<Module>())
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            LocusDot[] LDS = FindObjectsOfType<LocusDot>();
+            for (int n = LDS.Length - 1; n >= 0; n--)
+            {
+                LocusDot ld = LDS[n];
+                if (ld.parent == md)
+                {
+                    //ld.gameObject.SetActive(false);
+                    Destroy(ld.gameObject);
+                }
+            }
+            DeleteAModule(md.Id);
+            Module[] MDS = FindObjectsOfType<Module>();
+            int count = 0;
+            for (int i = 0; i < MDS.Length; i++)
+            {
+                if (MDS[i].Type == MENU.ADD_LOCUS)
+                {
+                    count++;
+                }
+            }
+            //Debug.Log(count);
+            if (count <= 1)
+            {
+                Util.FixDisplay = false;
+            }
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            // OK のときの処理
+        }
+    }
+
+    string getRatioString(float a, float b)
+    {
+        if (a == 0f)
+        {
+            return "1:infinity";
+
+        }
+        else if (b == 0f)
+        {
+            return "infinity:1";
+        }
+        else if (b / a > 1000f)
+        {
+            return "1:Inf";
+        }
+        else if (a / b > 1000f)
+        {
+            return "Inf:1";
+        }
+        else
+        {
+            float ratio = b / a;
+            for (int n = 1; n < 30; n++)
+            {
+                float nRatio = n * ratio;
+                float floorNRaito = Mathf.Floor(nRatio + 0.025f);
+                if(Mathf.Abs(floorNRaito - nRatio) < 0.025f)
+                {
+                    return "" + n + ":" + Mathf.FloorToInt(floorNRaito);
+                }
+            }
+            return "" + Mathf.Round(a * 1000f) / 1000f + ":" + Mathf.Round(b * 1000f) / 1000f;
+        }
+    }
+
+    void ModuleIsometryPreferenceJapanese(float Left, float Top, float Step, float height)
+    {
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "線分比(" + getRatioString(floatParse(CoordX), floatParse(CoordY)) + ")", LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordX, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
+        CoordY = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordY, FieldStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        if (Fixed)
+        {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "可動にする", BS))
+            {
+                Fixed = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "固定にする", BS))
+            {
+                Fixed = true;
+            }
+            Top += Step;
+        }
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            md.Ratio1 = floatParse(CoordX);
+            md.Ratio2 = floatParse(CoordY);
+            md.FixRatio = Fixed;
+        }
+    }
+
+    void ModuleIsometryPreferenceEnglish(float Left, float Top, float Step, float height)
+    {
+        GUIStyle LS = new GUIStyle(LabelStyle);
+        LS.fontSize = Mathf.FloorToInt(DialogWidth / 9);
+        if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
+        if (CoordX == CoordY)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Isometric", LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Segments in ratio", LS);
+        Top += Step;
+        LS = new GUIStyle(LabelStyle);
+        LS.fontSize = Mathf.FloorToInt(DialogWidth / 10);
+        if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LS);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio(" + getRatioString(floatParse(CoordX), floatParse(CoordY)) + ")", LabelStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 1", LabelStyle);
+        CoordX = GUI.TextField(new Rect(Left + DialogWidth * 0.5f, Top, DialogWidth - DialogWidth * 0.5f, height), CoordX, FieldStyle);
+        Top += Step;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 2", LabelStyle);
+        CoordY = GUI.TextField(new Rect(Left + DialogWidth * 0.5f, Top, DialogWidth - DialogWidth * 0.5f, height), CoordY, FieldStyle);
+        Top += Step;
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        if (Fixed)
+        {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 9);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            LS = new GUIStyle(LabelStyle);
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
+            if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Unfixed", BS))
+            {
+                Fixed = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            BS = new GUIStyle(ButtonStyle);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            LS = new GUIStyle(LabelStyle);
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 9);
+            if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Unfixed", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Fixed", BS))
+            {
+                Fixed = true;
+            }
+            Top += Step;
+        }
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        {
+            show = false;
+        }
+        BS = new GUIStyle(ButtonStyle);
+        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
+        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            md.Ratio1 = floatParse(CoordX);
+            md.Ratio2 = floatParse(CoordY);
+            md.FixRatio = Fixed;
         }
     }
 
@@ -992,8 +1358,8 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - 40, height), AngleConstant, FieldStyle);
-        GUI.Label(new Rect(DialogWidth - 20, Top, DialogWidth, height), "度", LabelStyle);
+        AngleConstant = GUI.TextField(new Rect(Left, Top, DialogWidth - DialogWidth / 3, height), AngleConstant, FieldStyle);
+        GUI.Label(new Rect(DialogWidth - DialogWidth / 6, Top, DialogWidth, height), "度", LabelStyle);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
         if (ShowConstant)
@@ -1066,7 +1432,7 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+            md.Constant = floatParse(AngleConstant) * Mathf.PI / 180f;
             md.FixAngle = Fixed;
             md.ShowConstant = ShowConstant;
         }
@@ -1168,7 +1534,7 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Constant = float.Parse(AngleConstant) * Mathf.PI / 180f;
+            md.Constant = floatParse(AngleConstant) * Mathf.PI / 180f;
             md.FixAngle = Fixed;
             md.ShowConstant = ShowConstant;
         }

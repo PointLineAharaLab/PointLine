@@ -218,13 +218,49 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "" + PName;
-                    Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
+                    Fixed = parent.GetComponent<Module>().FixRatio;
+                    if(Fixed)
+                    {
+                        if (Ratio1 == Ratio2)
+                        {
+                            Text1 = "" + PName;
+                            Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2) + "は等長";
+                        }
+                        else
+                        {
+                            Text1 = "線分比(固定)(" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
+                            Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2);
+                        }
+                    }
+                    else
+                    {
+                        Text1 = "線分比(1 : " + Mathf.Round(Ratio2 / Ratio1 * 1000) / 1000f + ")";
+                        Text2 = GetPNameByParentObject(Object1) + "と" + GetPNameByParentObject(Object2);
+                    }
+
                 }
                 else
                 {
-                    Text1 = "Isometry";
-                    Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + " are isometry";
+                    Fixed = parent.GetComponent<Module>().FixRatio;
+                    if (Fixed)
+                    {
+                        if (Ratio1 == Ratio2)
+                        {
+                            Text1 = "Isometry";
+                            Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2) + " are isometry";
+                        }
+                        else
+                        {
+                            Text1 = "Segments in(Fixed) (" + Mathf.RoundToInt(Ratio1) + ":" + Mathf.RoundToInt(Ratio2) + ")";
+                            Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2);
+                        }
+                    }
+                    else
+                    {
+                        Text1 = "Segments in(1 : " + Mathf.Round(Ratio2 / Ratio1 * 1000) / 1000f + ")";
+                        Text2 = GetPNameByParentObject(Object1) + " , " + GetPNameByParentObject(Object2);
+                    }
+
                 }
             }
             else if (PName == "垂直")
@@ -356,6 +392,19 @@ public class Log : MonoBehaviour
                     Text2 = "Angle " + GetPNameByParentObject(md1.Object1) + "" + GetPNameByParentObject(md1.Object2) + "" + GetPNameByParentObject(md1.Object3);
                     Module md2 = Object2.GetComponent<Module>();
                     Text2 += " = Angle" + GetPNameByParentObject(md2.Object1) + "" + GetPNameByParentObject(md2.Object2) + "" + GetPNameByParentObject(md2.Object3);
+                }
+            }
+            else if (PName == "軌跡" && Object1 != null)
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "軌跡 ：";
+                    Text2 = "頂点" + GetPNameByParentObject(Object1) + "の軌跡";
+                }
+                else
+                {
+                    Text1 = "locus ：";
+                    Text2 = "locus of " + GetPNameByParentObject(Object1);
                 }
             }
             else
@@ -663,7 +712,8 @@ public class Log : MonoBehaviour
             Module md = parent.GetComponent<Module>();
             return "Module," + ModuleType + "," + Object1Id + "," + Object2Id + ","
                 + Object3Id + "," + Id + "," + Active + ","
-                + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant ;
+                + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant + ","
+                + md.ShowConstant + "," + md.FixAngle + "," + md.FixRatio;
         }
         return "";
     }
