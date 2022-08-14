@@ -6,11 +6,14 @@ using System.IO;
 using OpenCvSharp.Demo;
 using OpenCvSharp;
 using OpenCvSharp.Aruco;
+using System.Linq;
+
 
 public class BackGroundScreen : MonoBehaviour
 {
     bool Show = true;
     public Material ScreenPictureMaterial;
+    public Material ScreencolorMaterial;
     public float PictureWidth;
     public float PictureHeight;
     Slider slider1;
@@ -21,6 +24,8 @@ public class BackGroundScreen : MonoBehaviour
     public bool SliderDestory;
     public OpenCvSharp.LineSegmentPoint[] lines;
     public OpenCvSharp.CircleSegment[] circles;
+    OpenCvSharp.Point[][] contours;
+    OpenCvSharp.HierarchyIndex[] hierarchyIndexes;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +36,7 @@ public class BackGroundScreen : MonoBehaviour
         PictureWidth = 16f;
         PictureHeight = 9f;
         PictureScale = new Vector3(PictureWidth, PictureHeight, 0.01f);
+
         
     }
 
@@ -60,102 +66,131 @@ public class BackGroundScreen : MonoBehaviour
                 Mat gray = new Mat();
                 Cv2.CvtColor(mat, gray, ColorConversionCodes.BGR2GRAY);
 
-                HoughLine(mat,gray);
-                HoughCircle(mat,gray);
+                Mat bin = new Mat();
+                Contours(gray, bin);
 
-                Tex2D = OpenCvSharp.Unity.MatToTexture(mat, Tex2D);
+                Hough(bin,bin);
+
+                //HoughCircle(bin, bin);
+                //HoughLine(bin, bin);
+                
+
+                Tex2D = OpenCvSharp.Unity.MatToTexture(bin, Tex2D);
 
                 ScreenPictureMaterial.mainTexture = Tex2D;
                /* Debug.Log("height = " + AppMgr.BackgroundTexture.height);
                 Debug.Log("width = " + AppMgr.BackgroundTexture.width);*/
+                GetComponent<MeshRenderer>().material = ScreenPictureMaterial;
             }
-            GetComponent<MeshRenderer>().material = ScreenPictureMaterial;
+            else{
+                GetComponent<MeshRenderer>().material = ScreencolorMaterial;
+
+            }
+           
         }
         else
 		{
             
+            
 		}
     }
 
-        public void HoughLine(Mat mat, Mat gray){
-        /*
-        // 画像読み込み
-        Mat mat = OpenCvSharp.Unity.TextureToMat(this.texture);
+        public void Hough(Mat gray, Mat mat2){
 
-        // グレースケール
-        Mat gray = new Mat();
-        Cv2.CvtColor(mat, gray, ColorConversionCodes.BGR2GRAY);
+            if(SliderDestory == false){
+                slider1 = GameObject.Find("SliderCircle(Clone)").GetComponent<Slider>();
+                
+                slider2 = GameObject.Find("SliderLine(Clone)").GetComponent<Slider>();
+                
+                slider3 = GameObject.Find("SliderLineGap(Clone)").GetComponent<Slider>();
+                }
 
-        */
+                circles = Cv2.HoughCircles(gray, HoughMethods.Gradient, 1, 80, 50, slider1.value, 0, 0);
+                lines = Cv2.HoughLinesP(gray, 1, Mathf.PI/180, 100, slider2.value, slider3.value);
+                
+                Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2RGB);
 
+                for(int i=0; i < circles.Length; i++){
+                    
+                    mat2.Circle(circles[i].Center, (int)circles[i].Radius, new OpenCvSharp.Scalar(255,0,0), 3, LineTypes.AntiAlias);
+                    
+                    }
 
-        //２値化
-        Mat bin = new Mat();
-        Cv2.Canny(gray, bin, 150, 255);
+                for(int i=0; i < lines.Length; i++){
+                    
+                    mat2.Line(lines[i].P1, lines[i].P2, new OpenCvSharp.Scalar(0,0,255), 1, LineTypes.AntiAlias);
+                    
+                    }
 
-        //直線検出
-        //OpenCvSharp.LineSegmentPoint[] lines;
+        }
+
+        public void HoughLine(Mat gray, Mat mat){
+            
+        Mat bin2 = new Mat();               
 
         if(SliderDestory == false){
         
         slider2 = GameObject.Find("SliderLine(Clone)").GetComponent<Slider>();
 
-        
         slider3 = GameObject.Find("SliderLineGap(Clone)").GetComponent<Slider>();
 
         }
 
-        lines = Cv2.HoughLinesP(bin, 1, Mathf.PI/180, 100, slider2.value, slider3.value);
+        lines = Cv2.HoughLinesP(gray, 1, Mathf.PI/180, 100, slider2.value, slider3.value);
+        //Cv2.CvtColor(gray, bin2, ColorConversionCodes.GRAY2RGB);
+        Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2RGB);
         for(int i=0; i < lines.Length; i++){
             
-            mat.Line(lines[i].P1, lines[i].P2, Scalar.Red, 1, LineTypes.AntiAlias);
+            mat.Line(lines[i].P1, lines[i].P2, new OpenCvSharp.Scalar(0,0,255), 1, LineTypes.AntiAlias);
             
-            //Debug.Log(lines[i]);
         }
+        //Cv2.CvtColor(gray, gray, ColorConversionCodes.RGB2GRAY);
 
     }
 
-    public void HoughCircle(Mat mat, Mat gray){
-        /*
+    public void HoughCircle(Mat gray, Mat mat2){
 
-        // 画像読み込み
-        Mat mat = OpenCvSharp.Unity.TextureToMat(this.texture);
-
-        // グレースケール
-        Mat gray = new Mat();
-        Cv2.CvtColor(mat, gray, ColorConversionCodes.BGR2GRAY);
-
-        //２値化
-        Mat bin = new Mat();
-        Cv2.Canny(gray, bin, 50, 255);
-
-        */
-
-        //円検出
+        //二値化
+        //Mat bin = new Mat();
+        //Cv2.Threshold(gray, bin, 0, 255, ThresholdTypes.Otsu);
         
         if(SliderDestory == false){
         slider1 = GameObject.Find("SliderCircle(Clone)").GetComponent<Slider>();
         }
 
         circles = Cv2.HoughCircles(gray, HoughMethods.Gradient, 1, 80, 50, slider1.value, 0, 0);
+        Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2RGB);
         for(int i=0; i < circles.Length; i++){
  
-            mat.Circle(circles[i].Center, (int)circles[i].Radius, Scalar.Blue, 1, LineTypes.AntiAlias);        
+            mat2.Circle(circles[i].Center, (int)circles[i].Radius, new OpenCvSharp.Scalar(255,0,0), 3, LineTypes.AntiAlias);        
 
-            //Debug.Log(circles[i]);
         }
+        //Cv2.CvtColor(gray, gray, ColorConversionCodes.RGB2GRAY);
 
+    }
 
-        /*
-        
-        // 画像書き出し
-        Texture2D outTexture = new Texture2D(mat.Width, mat.Height, TextureFormat.ARGB32, false);
-        OpenCvSharp.Unity.MatToTexture(mat, outTexture);
+    //輪郭
+    public void Contours(Mat gray, Mat mat){
 
-        // 表示
-        GetComponent<RawImage>().texture = outTexture;
-*/
+        //二値化
+        Mat bin = new Mat();
+        Cv2.Threshold(gray, mat, 0, 255, ThresholdTypes.Otsu);
 
+        //反転
+        Cv2.BitwiseNot(mat, bin);
+
+        Cv2.FindContours(bin, out contours, out hierarchyIndexes, RetrievalModes.Tree, ContourApproximationModes.ApproxSimple);
+
+        for(int i=0; i<contours.Length; i++){
+            var Area = Cv2.ContourArea(contours[i]);
+            if(contours[i].Length > 15){
+                if(Area > 50 && Area < 1500){
+                Cv2.DrawContours(mat, contours, i, new OpenCvSharp.Scalar(255,255,255), -1);
+                }else{
+                    Cv2.DrawContours(mat, contours, i, new OpenCvSharp.Scalar(0,0,0), 1);
+                }
+            }
+        }
     }
 
 

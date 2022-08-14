@@ -152,7 +152,6 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -297,7 +296,6 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -884,7 +882,6 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1288,7 +1285,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1297,7 +1293,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f8d49f902e88e6409b10e5dc23d4ef8, type: 2}
+  - {fileID: 2100000, guid: 6fefc1fa3de2c5344b601f70acf2392e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1355,8 +1351,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ScreenPictureMaterial: {fileID: 2100000, guid: 2f8d49f902e88e6409b10e5dc23d4ef8,
     type: 2}
+  ScreencolorMaterial: {fileID: 2100000, guid: 6fefc1fa3de2c5344b601f70acf2392e, type: 2}
   PictureWidth: 0
   PictureHeight: 0
+  PictureScale: {x: 0, y: 0, z: 0}
+  SliderDestory: 0
+  lines: []
+  circles: []
   RenderCameraObject: {fileID: 1700646872}
   Tex2D: {fileID: 0}
   RenderTex: {fileID: 0}
@@ -1583,7 +1584,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 6604566970794377146, guid: 19cd23ed44e779548a56ec8500aeb7d1, type: 3}
   canvas: {fileID: 1718670115}
-  Slider: {fileID: 3523241470511414897, guid: e4185ac042439cf4995cedbb72f47fbb, type: 3}
 --- !u!1 &1814194204
 GameObject:
   m_ObjectHideFlags: 0
@@ -1635,7 +1635,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1

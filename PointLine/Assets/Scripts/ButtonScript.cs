@@ -213,6 +213,7 @@ public class ButtonScript : MonoBehaviour
 
         //Debug.Log(line.Count);
         
-        
+    AppMgr.BackgroundTexture=null;
+
     }
 }
