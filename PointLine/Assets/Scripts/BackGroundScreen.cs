@@ -105,8 +105,13 @@ public class BackGroundScreen : MonoBehaviour
                 slider3 = GameObject.Find("SliderLineGap(Clone)").GetComponent<Slider>();
                 }
 
-                circles = Cv2.HoughCircles(gray, HoughMethods.Gradient, 1, 80, 50, slider1.value, 0, 0);
-                lines = Cv2.HoughLinesP(gray, 1, Mathf.PI/180, 100, slider2.value, slider3.value);
+                Cv2.Threshold(gray, gray, 0, 255, ThresholdTypes.Otsu);
+
+                Mat bin = new Mat();
+                Cv2.BitwiseNot(gray, bin);
+
+                circles = Cv2.HoughCircles(bin, HoughMethods.Gradient, 1, 80, 50, slider1.value, 0, 0);
+                lines = Cv2.HoughLinesP(bin, 1, Mathf.PI/180, 100, slider2.value, slider3.value);
                 
                 Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2RGB);
 
