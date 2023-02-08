@@ -5,9 +5,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 using System.IO;
-using GracesGames.Common.Scripts;
-using GracesGames.SimpleFileBrowser.Scripts;
-using GracesGames.SimpleFileBrowser.Scripts.UI;
+//using GracesGames.Common.Scripts;
+//using GracesGames.SimpleFileBrowser.Scripts;
+//using GracesGames.SimpleFileBrowser.Scripts.UI;
+using SimpleFileBrowser;
 
 
 /// 様々なユーティリティ.
@@ -560,13 +561,16 @@ public class Util
         //Prefab = Resources.Load<GameObject>("Prefabs/FileBrowser");
         //GameObject g = FileBrowser.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity);
         //FileBrowser fb = g.GetComponent<FileBrowser>();
-        //string[] ext = new string[] { "txt", "plf" };
-        //fb.SetupFileBrowser(PortraitMode ? ViewMode.Portrait : ViewMode.Landscape);
+        //string[] ext = new string[] { "txt", "png" };
+        //fb.SetupFileBrowser(ViewMode.Landscape);// : ViewMode.Landscape);Portrait
         //fb.SaveFilePanel("pointLineFigure", ext);
         //fb.OnFileSelect += SaveFileUsingPath;
-        string[] exts = {"txt", "png"};
-        string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine",exts);
-        SaveFileUsingPath(path);
+        //string[] exts = {"txt", "png"};
+        //string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine",exts);
+        //SaveFileUsingPath(path);
+        FileBrowser FB = new FileBrowser();
+        //FileBrowser.OnSuccess suc = new FileBrowser.OnSuccess();
+        FB.Show("\\", "samplePL.txt");
         return false;
     }
 
@@ -640,8 +644,8 @@ public class Util
         //fb.SetupFileBrowser(PortraitMode ? ViewMode.Portrait : ViewMode.Landscape);
         //fb.OpenFilePanel(ext);
         //fb.OnFileSelect += LoadFileUsingPath;
-        string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", "txt");
-        LoadFileUsingPath(path);
+        //string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", "txt");
+        //LoadFileUsingPath(path);
         return false;
     }
 
@@ -869,8 +873,9 @@ public class Util
         //fb.SetupFileBrowser(PortraitMode ? ViewMode.Portrait : ViewMode.Landscape);
         //fb.SaveFilePanel("PointLine", ext);
         //fb.OnFileSelect += SaveTeXFileUsingPath;
-        string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine TeX file", "", "SamplePointLine.tex","tex");
-        SaveTeXFileUsingPath(path);
+        //string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine TeX file", "", "SamplePointLine.tex","tex");
+        //SaveTeXFileUsingPath(path);
+
         return false;
     }
 
