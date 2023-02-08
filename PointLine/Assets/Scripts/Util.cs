@@ -3,20 +3,22 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using System.IO;
+
 //using GracesGames.Common.Scripts;
 //using GracesGames.SimpleFileBrowser.Scripts;
 //using GracesGames.SimpleFileBrowser.Scripts.UI;
 using SimpleFileBrowser;
 
 
-/// 様々なユーティリティ.
+
+/// 様々なユーティリティ. <summary>
+/// </summary>
 public class Util
 {
     public static List<Log> logs = null;
-    public static int LogLength=0;
-    static int LastLog=0;
+    public static int LogLength = 0;
+    static int LastLog = 0;
 
     /// プレハブ
     private static GameObject Prefab = null;
@@ -38,7 +40,7 @@ public class Util
 
     private static void GetLogFolder()
     {
-        if(LogFolder == null)
+        if (LogFolder == null)
         {
             GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
             for (int i = 0; i < OBJs.Length; i++)
@@ -65,8 +67,8 @@ public class Util
             pt.Active = true;
             pt.parent = obj;
             char[] name = { 'A' };
-            name[0] = (char)('A'+pt.Id);
-            pt.PointName = new string(name) ;
+            name[0] = (char)('A' + pt.Id);
+            pt.PointName = new string(name);
             AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
             pt.PTobject.GetComponent<TextMesh>().text = pt.PointName;
             pt.PTobject.transform.localPosition = Vector3.zero;
@@ -115,7 +117,7 @@ public class Util
 
         GameObject obj = Point.Instantiate(Prefab, 0.5f * v1 + 0.5f * v2, Quaternion.identity) as GameObject;
         Point pt = obj.GetComponent<Point>();
-        if (pt!= null)
+        if (pt != null)
         {
             pt.Vec = obj.transform.position;
 
@@ -168,7 +170,7 @@ public class Util
             obj.Id = lineId;
             obj.Active = true;
             obj.parent = g;
-            obj.LineName = "L" + (obj.Id-999);
+            obj.LineName = "L" + (obj.Id - 999);
             AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
 
             //もし余分なログがある場合には   余分なログは消す．
@@ -314,7 +316,7 @@ public class Util
         Prefab = Resources.Load<GameObject>("Prefabs/AngleMark");
         GameObject g = AngleMark.Instantiate(Prefab, Vector3.zero, Quaternion.identity) as GameObject;
         AngleMark obj = g.GetComponent<AngleMark>();
-        if(obj!= null)
+        if (obj != null)
         {
             obj.Object1Id = first;
             obj.Object2Id = second;
@@ -357,7 +359,7 @@ public class Util
     {
         // GameLogの親すべて消去する
         Log[] OBJs = MonoBehaviour.FindObjectsOfType<Log>();
-        for(int i=OBJs.Length-1; i>=0; i--)
+        for (int i = OBJs.Length - 1; i >= 0; i--)
         {
             MonoBehaviour.Destroy(OBJs[i].gameObject);
         }
@@ -375,7 +377,7 @@ public class Util
         }
         //DeleteNonactiveLog();
         logs.Add(_log);
-        LogLength = LastLog+1;
+        LogLength = LastLog + 1;
         LastLog = LogLength;
 
         CopyLog("TmpLog.txt", "TmpBeforeLastLog.txt");
@@ -390,7 +392,7 @@ public class Util
         {
             if (logs[i].Id == MOP)
             {
-                logs[i].Fixed = ! logs[i].Fixed;
+                logs[i].Fixed = !logs[i].Fixed;
             }
 
         }
@@ -400,9 +402,9 @@ public class Util
     public static void RemakeLog()
     {// 現状の頂点の座標をlogsに反映する。
         if (logs == null) return;
-        for (int i=0; i<LogLength; i++)
+        for (int i = 0; i < LogLength; i++)
         {
-            if(logs[i].ObjectType == "Point")
+            if (logs[i].ObjectType == "Point")
             {
                 GameObject g = logs[i].parent;
                 if (g != null)
@@ -418,9 +420,9 @@ public class Util
     public static void DeleteLogAtID(int MOP)
     {
         if (logs == null) return;
-        for (int i=0; i<LogLength; i++)
+        for (int i = 0; i < LogLength; i++)
         {
-            if(logs[i].Id == MOP)
+            if (logs[i].Id == MOP)
             {
                 LogLength--;
                 if (logs[i].Active)
@@ -487,7 +489,7 @@ public class Util
             using (StreamWriter writer = new StreamWriter(Application.dataPath + "/Resources/" + path, false))
             {
                 //Debug.Log("start savelog : logLength = " + LogLength);
-                for(int i=0; i<LogLength; i++)
+                for (int i = 0; i < LogLength; i++)
                 {
                     writer.WriteLine(logs[i].ToString());
                 }
@@ -507,22 +509,24 @@ public class Util
     // Unity Action Event for selecting a file
     //public event Action<string> OnFileSelect = delegate { };
 
+    #region ファイル保存
+
     // Saves a file with the textToSave using a path
     private static void SaveFileUsingPath(string path)
     {
-        if (logs == null) return ;
+        if (logs == null) return;
         // Make sure path is not null or empty
         if (!String.IsNullOrEmpty(path)/* && !String.IsNullOrEmpty(_textToSave)*/)
         {
             Debug.Log("SaveFileUsingPath - " + path);
             string ext = path.Substring(path.Length - 4);
-            if(ext.Contains("png") || ext.Contains("PNG"))
-			{
+            if (ext.Contains("png") || ext.Contains("PNG"))
+            {
                 BackGroundScreen BGS = MonoBehaviour.FindObjectOfType<BackGroundScreen>();
                 BGS.CaptureFromCamera(path);
             }
             else
-			{
+            {
                 try
                 {
                     using (StreamWriter writer = new StreamWriter(path, false))
@@ -556,6 +560,7 @@ public class Util
 
     //private static  bool PortraitMode = false;
 
+
     public static bool SaveLogSelectFile()
     {
         //Prefab = Resources.Load<GameObject>("Prefabs/FileBrowser");
@@ -568,11 +573,34 @@ public class Util
         //string[] exts = {"txt", "png"};
         //string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine",exts);
         //SaveFileUsingPath(path);
-        FileBrowser FB = new FileBrowser();
-        //FileBrowser.OnSuccess suc = new FileBrowser.OnSuccess();
-        FB.Show("\\", "samplePL.txt");
+        FileBrowser.SetFilters(
+            true,
+            new FileBrowser.Filter("Images", ".jpg", ".png"),
+            new FileBrowser.Filter("Text Files", ".txt")
+        );
+        // ダイアログが表示されたときに選択されるデフォルトフィルタを設定します
+        FileBrowser.SetDefaultFilter(".txt");
+        // /除外する拡張子を設定します
+        FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
+        // 新しいクイックリンクを追加します
+        //FileBrowser.AddQuickLink(null, "Users", "C:\\Users");
+        // ファイル保存ダイアログを表示します
+        StartCoroutine(ShowSaveDialogCoroutine());
+        //FileBrowser.ShowSaveDialog(null, null, FileBrowser.PickMode.FilesAndFolders, false, "", "SamplePointLine.txt", "Save");
+        //Debug.Log("result="+FileBrowser.Result);
         return false;
     }
+
+    public IEnumerator ShowSaveDialogCoroutine()
+    {
+        yield return FileBrowser.WaitForSaveDialog(FileBrowser.PickMode.FilesAndFolders, false, null, "Sample.txt", "Save", "Save");
+        Debug.Log(FileBrowser.Success + " " + FileBrowser.Result);
+    }
+
+
+    #endregion
+
+    #region ファイルを開く
 
     private static void LoadFileUsingPath(string path)
     {
@@ -646,8 +674,38 @@ public class Util
         //fb.OnFileSelect += LoadFileUsingPath;
         //string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", "txt");
         //LoadFileUsingPath(path);
+        // フィルタを設定します
+        FileBrowser.SetFilters( true,
+            new FileBrowser.Filter("Images", ".jpg", ".png"),
+            new FileBrowser.Filter("Text Files", ".txt")        );
+        // ダイアログが表示されたときに選択されるデフォルトフィルタを設定します
+        FileBrowser.SetDefaultFilter(".jpg");
+        // /除外する拡張子を設定します
+        FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
+        // 新しいクイックリンクを追加します
+        //FileBrowser.AddQuickLink(null, "Users", "C:\\Users");
+        // フォルダ選択ダイアログを表示します
+        //FileBrowser.ShowLoadDialog
+        //(
+        //    path => Debug.Log("Selected: " + path),
+        //    () => Debug.Log("Canceled"),
+        //    true,
+        //    null,
+        //    "Select Folder",
+        //    "Select"
+        //);
+        // コルーチンサンプル
+        //StartCoroutine(ShowLoadDialogCoroutine());
         return false;
     }
+
+    //private bool IEnumerator ShowLoadDialogCoroutine()
+    //{
+    //    // ファイル読み込みダイアログを表示してユーザーからの応答を待ちます
+    //    yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
+    //    Debug.Log(FileBrowser.Success + " " + FileBrowser.Result);
+    //    return false;
+    //}
 
 
     public static Log GetLogFromString(string str)
@@ -753,6 +811,10 @@ public class Util
         }
         return new Log();
     }
+
+    #endregion
+
+    #region TeX保存
 
     private static void SaveTeXFileUsingPath(string path)
     {
@@ -879,6 +941,7 @@ public class Util
         return false;
     }
 
+    #endregion
 
     public static bool CopyLog(string srcPath, string tgtPath)
     {
