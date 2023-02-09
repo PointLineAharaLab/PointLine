@@ -244,6 +244,8 @@ public class Util
                 return "垂直";//"一定角"
             case MENU.LINES_PARALLEL:
                 return "平行";
+            case MENU.LINE_HORIZONTAL:
+                return "水平";
             case MENU.CIRCLE_TANGENT_LINE:
                 return "円 - 直線";
             case MENU.CIRCLE_TANGENT_CIRCLE:
@@ -548,6 +550,10 @@ public class Util
                     Debug.Log(e.Message);
                 }
             }
+            else if (ext.Contains("tex"))
+            {
+                SaveTeXFileUsingPath(path);
+            }
         }
         else
         {
@@ -572,7 +578,7 @@ public class Util
         //fb.OnFileSelect += SaveFileUsingPath;
         //string[] exts = {"txt", "png"};
         //string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine",exts);
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Text Files", ".txt"), new FileBrowser.Filter("Image Files", ".png"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Text Files", ".txt"), new FileBrowser.Filter("Image Files", ".png"), new FileBrowser.Filter("TeX Files", ".tex"));
         FileBrowser.SetDefaultFilter(".txt");
         FileBrowser.ShowSaveDialog(onSaveSuccess, onCancel, FileBrowser.PickMode.FilesAndFolders, false, "", 
             "SamplePointLine.txt", "Save PointLine File");
@@ -678,14 +684,7 @@ public class Util
         AppMgr.KeyOn = true;
         AppMgr.FileDialogOn = false;
     }
-    //private bool IEnumerator ShowLoadDialogCoroutine()
-    //{
-    //    // ファイル読み込みダイアログを表示してユーザーからの応答を待ちます
-    //    yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
-    //    Debug.Log(FileBrowser.Success + " " + FileBrowser.Result);
-    //    return false;
-    //}
-
+    
 
     public static Log GetLogFromString(string str)
     {// 文字列からlogを起こすのだが、実物も伴う。

@@ -22,6 +22,7 @@ public class MENU
     public const int RATIO_LENGTH = 25;
     public const int LINES_PERPENDICULAR = 7;
     public const int LINES_PARALLEL = 8;
+    public const int LINE_HORIZONTAL = 27;
     public const int ANGLE = 23;
     public const int BISECTOR = 24;
     public const int CIRCLE_TANGENT_LINE = 9;
@@ -48,7 +49,7 @@ public class Menu : MonoBehaviour
     {
         "ButtonMenuOff(Clone)", "ButtonAddPoint(Clone)", "ButtonAddMidPoint(Clone)","ButtonAddLine(Clone)","ButtonAddCircle(Clone)",
         "ButtonPointOnPoint(Clone)" ,"ButtonPointOnLine(Clone)","ButtonPointOnCircle(Clone)","ButtonIntersection(Clone)", 
-        "ButtonIsom(Clone)","ButtonRatioLength(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)","ButtonAngle(Clone)" ,"ButtonBisector(Clone)" ,
+        "ButtonIsom(Clone)","ButtonRatioLength(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)", "ButtonHori(Clone)","ButtonAngle(Clone)" ,"ButtonBisector(Clone)" ,
         "ButtonTangentL2C(Clone)", "ButtonTangentC2C(Clone)",
         "ButtonFixPoint(Clone)", "ButtonAddLocus(Clone)","ButtonDeletePoint(Clone)", "ButtonDeleteAll(Clone)", 
         "ButtonUndo(Clone)", "ButtonRedo(Clone)", "ButtonShowLogs(Clone)",
@@ -80,6 +81,7 @@ public class Menu : MonoBehaviour
     private string TextLINES_PERPENDICULAR1 = " ２直線を直交させる: もう一つ直線を選択.";
     private string TextLINES_PARALLEL0 = " ２直線を平行にする: 直線を選択.";
     private string TextLINES_PARALLEL1 = " ２直線を平行にする: もう一つ直線を選択.";
+    private string TextLINE_HORIZONTAL0 = "直線を水平にする: 直線を選択."; 
     private string TextANGLE0 = " 角度を指定する: 頂点を選択.";
     private string TextANGLE1 = " 角度を指定する: もう一つ頂点を選択.";
     private string TextANGLE2 = " 角度を指定する: さらに頂点を選択.";
@@ -130,6 +132,7 @@ public class Menu : MonoBehaviour
             TextLINES_PERPENDICULAR1 = " Make two lines perpendicular: Select another line.";
             TextLINES_PARALLEL0 = " Make two lines parallel: Select a line.";
             TextLINES_PARALLEL1 = " Make two lines parallel: Select another line.";
+            TextLINE_HORIZONTAL0 = "Make a line horizontal: Select a line.";
             TextANGLE0 = " Angle: Select a point.";
     　　　  TextANGLE1 = " Angle: Select another point.";
             TextANGLE2 = " Angle: Select the third point.";
@@ -306,6 +309,12 @@ public class Menu : MonoBehaviour
                     GUILabel(TextLINES_PARALLEL1);
                 }
                 break;
+            case MENU.LINE_HORIZONTAL:// make a line horizontal
+                if (AppMgr.ModeStep == 0)
+                {
+                    GUILabel(TextLINE_HORIZONTAL0);
+                }
+                break;
             case MENU.ANGLE:
                 if (AppMgr.ModeStep == 0)
                 {
@@ -394,6 +403,7 @@ public class Menu : MonoBehaviour
                 go[i].name == "ButtonRatioLength(Clone)" || 
                 go[i].name == "ButtonPerp(Clone)" ||
                 go[i].name == "ButtonPara(Clone)" ||
+                go[i].name == "ButtonHori(Clone)" ||
                 go[i].name == "ButtonAngle(Clone)" ||
                 go[i].name == "ButtonBisector(Clone)"||
                 go[i].name == "ButtonTangentL2C(Clone)" ||
@@ -431,6 +441,7 @@ public class Menu : MonoBehaviour
         CreateRatioLengthButton(); 
         CreatePerpButton();
         CreateParaButton();
+        CreateHoriButton();
         CreateAngleButton();
         CreateBisectorButton();
         CreateTangentL2CButton();
@@ -576,11 +587,19 @@ public class Menu : MonoBehaviour
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
+    public void CreateHoriButton()
+    {
+        // para button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonHori");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 4, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+    }
+
     public void CreateAngleButton()
     {
         // angle button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAngle");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 4, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 5, -75f - 150f * 3, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
@@ -588,7 +607,7 @@ public class Menu : MonoBehaviour
     {
         // bisector button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonBisector");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 5, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 6, -75f - 150f * 3, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 

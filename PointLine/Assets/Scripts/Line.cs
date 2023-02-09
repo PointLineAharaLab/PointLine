@@ -20,7 +20,17 @@ public class Line : MonoBehaviour {
     Color StandardColor = new Color(0.3f, 0.3f, 0.6f);
     Color SelectedColor = new Color(0.2f, 0.2f, 0.4f); 
     LineRenderer lr;
-
+    public bool Bracket = false;
+    public string BracketText = "";
+    public enum BracketMarkType : int
+    {
+        SINGLE = 1,
+        DOUBLE = 2,
+        CIRCLE = 5,
+        TEXT = 10,
+        WHITE_BOX = 20
+    };
+    public int BracketMark = (int)BracketMarkType.SINGLE;
 
 
     private Vector3 vec0,vec1;

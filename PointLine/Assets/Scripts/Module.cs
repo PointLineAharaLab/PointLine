@@ -33,6 +33,7 @@ public class Module : MonoBehaviour {
         //FixRatio = true;
     }
 
+    #region Point2Point
     private void ModulePOINT_ON_POINT()
     {        //二つの頂点を1つにする
         if(Object1 != null && Object2 != null)
@@ -82,7 +83,9 @@ public class Module : MonoBehaviour {
             if (Object1 == null || Object2 == null) Active = false;
         }
     }
+    #endregion
 
+    #region PointOnLine
     private static Vector3 Rotate90(Vector3 V)
     {
         return new Vector3(-V.y, V.x, 0f);
@@ -185,7 +188,7 @@ public class Module : MonoBehaviour {
             }
         }
     }
-
+    #endregion
     private void ModulePOINT_ON_CIRCLE()
     {        // 点を円の上に載せる
         
@@ -252,6 +255,7 @@ public class Module : MonoBehaviour {
     }
 
 
+    #region LINES_ISOMETRY
     private void ModuleLINES_ISOMETRY()
     {
         gameObject.SetActive(Active);
@@ -328,7 +332,9 @@ public class Module : MonoBehaviour {
             if (Object1 == null || Object2 == null) Active = false;
         }
     }
+    #endregion
 
+    #region LINES_PERPENDICULAR
     private void ModuleLINES_PERPENDICULAR()
     {
         gameObject.SetActive(Active);
@@ -419,7 +425,9 @@ public class Module : MonoBehaviour {
             if (Object1 == null || Object2 == null) Active = false;
         }
     }
+    #endregion
 
+    #region LINES_PARALLEL
     private void ModuleLINES_PARALLEL()
     {//直線を平行にする
         gameObject.SetActive(Active);
@@ -513,6 +521,76 @@ public class Module : MonoBehaviour {
         }
         return;
     }
+    #endregion
+
+    #region LINE_HORIZONTAL
+    private void ModuleLINE_HORIZONTAL()
+    {//直線を平行にする
+        gameObject.SetActive(Active);
+        if (Object1 != null)
+        {
+            Line LN1 = Object1.GetComponent<Line>();
+            if (LN1 == null)
+            {
+                Active = false;
+                return;
+            }
+            Point p11 = LN1.Point1.GetComponent<Point>();
+            Point p12 = LN1.Point2.GetComponent<Point>();
+            if (p11 == null || p12 == null)
+            {
+                Active = false;
+                return;
+            }
+            float x11 = p11.Vec.x;
+            float y11 = p11.Vec.y;
+            float x12 = p12.Vec.x;
+            float y12 = p12.Vec.y;
+            float theta1 = -Mathf.Atan2(y12 - y11, x12 - x11);
+            float Delta = theta1;
+            if (Delta > Mathf.PI / 2)
+                Delta -= Mathf.PI;
+            else if (Delta > -Mathf.PI / 2)
+                Delta += 0;
+            else if (Delta >= -Mathf.PI * 3 / 2)
+                Delta += Mathf.PI;
+            Delta *= 0.125f;
+            float CosDelta = Mathf.Cos(Delta);
+            float SinDelta = Mathf.Sin(Delta);
+            float x1c = (x11 + x12) * 0.5f;
+            float y1c = (y11 + y12) * 0.5f;
+            float err = Mathf.Abs(SinDelta);
+            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            Vector3 NewVec = Vector3.zero;
+            NewVec.x = (x11 - x1c) * CosDelta - (y11 - y1c) * SinDelta + x1c;
+            NewVec.y = +(x11 - x1c) * SinDelta + (y11 - y1c) * CosDelta + y1c;
+            if (!p11.Fixed)
+                p11.Vec = NewVec;
+            NewVec.x = (x12 - x1c) * CosDelta - (y12 - y1c) * SinDelta + x1c;
+            NewVec.y = +(x12 - x1c) * SinDelta + (y12 - y1c) * CosDelta + y1c;
+            if (!p12.Fixed)
+                p12.Vec = NewVec;
+        }
+        else
+        {
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Line LN = OBJs[i].GetComponent<Line>();
+                if (LN != null)
+                {
+                    if (LN.Id == Object1Id)
+                    {
+                        Object1 = OBJs[i];
+                    }
+                }
+            }
+            if (Object1 == null) Active = false;
+        }
+        return;
+    }
+    #endregion
+
 
     private void ModuleCIRCLE_TANGENT_LINE()
     {//円を直線に接させる
@@ -1155,6 +1233,10 @@ public class Module : MonoBehaviour {
         }
     }
 
+
+
+
+
     public void ExecuteModule()
     {
         if (!Active) return;
@@ -1176,6 +1258,9 @@ public class Module : MonoBehaviour {
                 break;
             case MENU.LINES_PARALLEL:
                 ModuleLINES_PARALLEL();
+                break;
+            case MENU.LINE_HORIZONTAL:
+                ModuleLINE_HORIZONTAL();
                 break;
             case MENU.CIRCLE_TANGENT_LINE:
                 ModuleCIRCLE_TANGENT_LINE();

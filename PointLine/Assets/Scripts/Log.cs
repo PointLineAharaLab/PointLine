@@ -289,6 +289,19 @@ public class Log : MonoBehaviour
                     Text2 = GetPNameByParentObject(Object1) + " || " + GetPNameByParentObject(Object2) + "";
                 }
             }
+            else if (PName == "水平")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) +  "は水平";
+                }
+                else
+                {
+                    Text1 = "Horizontal";
+                    Text2 = GetPNameByParentObject(Object1) + " is horizontal";
+                }
+            }
             else if (PName == "円 - 直線")
             {
                 if (AppMgr.Japanese == 1)
@@ -630,8 +643,12 @@ public class Log : MonoBehaviour
         Show = Util.ShowLog;
         PName = _pname;
         Text1 = "作図 ：" + PName;
-        Text2 = GetPNameByParentObject(Object1) + "-" + GetPNameByParentObject(Object2) ;
-        if(Object3 != null)
+        Text2 = GetPNameByParentObject(Object1);
+        if (Object2 != null)
+        {
+            Text2 += ("-" + GetPNameByParentObject(Object2));
+        }
+        if (Object3 != null)
         {
             Text2 += ("-" + GetPNameByParentObject(Object3));
         }

@@ -568,7 +568,15 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     void OnKeyLine()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Debug.Log("Let a line horizontal (key)");
+            Mode = MENU.LINE_HORIZONTAL;
+            ModeStep = 0;
+            MenuOn = false;
+            FirstKey = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.I))
         {
             Debug.Log("Let two lines isometry(key)");
             Mode = MENU.LINES_ISOMETRY;
@@ -1034,6 +1042,20 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
         }
     }
+    private void MakeALineHorizontal(int MOP)
+    {
+        if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
+        {//モード２７ステップ０ならば，「一つ目の線」をFirstClickIdに記録
+            Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+            FirstClickId = MOP;
+            // 新しいモジュールの追加
+            Util.AddModule(MENU.LINE_HORIZONTAL, FirstClickId, 0, 0, ModuleId++);
+            Mode = MENU.LINE_HORIZONTAL;
+            //Mode = 0;
+            ModeStep = 0;
+        }
+    }
+
 
     private void MakeThreePointAngle(int MOP)
     {
@@ -1561,6 +1583,10 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 else if (Mode == MENU.LINES_PARALLEL)
                 {//２つの線を並行にするのに、線を選ぶ
                     MakeTwoLinesParallel(MOP);
+                }
+                else if (Mode == MENU.LINE_HORIZONTAL)
+                {//１つの線を水平にするのに、線を選ぶ
+                    MakeALineHorizontal(MOP);
                 }
                 else if (Mode == MENU.CIRCLE_TANGENT_LINE && ModeStep == 1)
                 {
