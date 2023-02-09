@@ -525,7 +525,7 @@ public class Util
                 BackGroundScreen BGS = MonoBehaviour.FindObjectOfType<BackGroundScreen>();
                 BGS.CaptureFromCamera(path);
             }
-            else
+            else if (ext.Contains("txt") || ext.Contains("TXT"))
             {
                 try
                 {
@@ -572,31 +572,18 @@ public class Util
         //fb.OnFileSelect += SaveFileUsingPath;
         //string[] exts = {"txt", "png"};
         //string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine",exts);
-        //SaveFileUsingPath(path);
-        FileBrowser.SetFilters(
-            true,
-            new FileBrowser.Filter("Images", ".jpg", ".png"),
-            new FileBrowser.Filter("Text Files", ".txt")
-        );
-        // ダイアログが表示されたときに選択されるデフォルトフィルタを設定します
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Text Files", ".txt"), new FileBrowser.Filter("Image Files", ".png"));
         FileBrowser.SetDefaultFilter(".txt");
-        // /除外する拡張子を設定します
-        FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
-        // 新しいクイックリンクを追加します
-        //FileBrowser.AddQuickLink(null, "Users", "C:\\Users");
-        // ファイル保存ダイアログを表示します
-        StartCoroutine(ShowSaveDialogCoroutine());
-        //FileBrowser.ShowSaveDialog(null, null, FileBrowser.PickMode.FilesAndFolders, false, "", "SamplePointLine.txt", "Save");
-        //Debug.Log("result="+FileBrowser.Result);
+        FileBrowser.ShowSaveDialog(onSaveSuccess, onCancel, FileBrowser.PickMode.FilesAndFolders, false, "", 
+            "SamplePointLine.txt", "Save PointLine File");
+
         return false;
     }
-
-    public IEnumerator ShowSaveDialogCoroutine()
+    static void onSaveSuccess(string[] paths)
     {
-        yield return FileBrowser.WaitForSaveDialog(FileBrowser.PickMode.FilesAndFolders, false, null, "Sample.txt", "Save", "Save");
-        Debug.Log(FileBrowser.Success + " " + FileBrowser.Result);
+        Debug.Log("" + paths[0]);
+        SaveFileUsingPath(paths[0]);
     }
-
 
     #endregion
 
@@ -673,32 +660,24 @@ public class Util
         //fb.OpenFilePanel(ext);
         //fb.OnFileSelect += LoadFileUsingPath;
         //string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", "txt");
-        //LoadFileUsingPath(path);
-        // フィルタを設定します
-        FileBrowser.SetFilters( true,
-            new FileBrowser.Filter("Images", ".jpg", ".png"),
-            new FileBrowser.Filter("Text Files", ".txt")        );
-        // ダイアログが表示されたときに選択されるデフォルトフィルタを設定します
-        FileBrowser.SetDefaultFilter(".jpg");
-        // /除外する拡張子を設定します
-        FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
-        // 新しいクイックリンクを追加します
-        //FileBrowser.AddQuickLink(null, "Users", "C:\\Users");
-        // フォルダ選択ダイアログを表示します
-        //FileBrowser.ShowLoadDialog
-        //(
-        //    path => Debug.Log("Selected: " + path),
-        //    () => Debug.Log("Canceled"),
-        //    true,
-        //    null,
-        //    "Select Folder",
-        //    "Select"
-        //);
-        // コルーチンサンプル
-        //StartCoroutine(ShowLoadDialogCoroutine());
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Text Files", ".txt"), new FileBrowser.Filter("Image Files", ".png"));
+        FileBrowser.SetDefaultFilter(".txt"); 
+        FileBrowser.ShowLoadDialog(onLoadSuccess, onCancel, FileBrowser.PickMode.FilesAndFolders, false, "", "SamplePointLine.txt", "Open PointLine File");
         return false;
     }
 
+
+    static void onLoadSuccess(string[] paths)
+    {
+        Debug.Log("" + paths[0]);
+        LoadFileUsingPath(paths[0]);
+    }
+    static void onCancel()
+    {
+        AppMgr.DrawOn = true;
+        AppMgr.KeyOn = true;
+        AppMgr.FileDialogOn = false;
+    }
     //private bool IEnumerator ShowLoadDialogCoroutine()
     //{
     //    // ファイル読み込みダイアログを表示してユーザーからの応答を待ちます
@@ -943,6 +922,7 @@ public class Util
 
     #endregion
 
+    #region Log操作
     public static bool CopyLog(string srcPath, string tgtPath)
     {
         //ストリームリーダーreaderから読み込む
@@ -1135,7 +1115,9 @@ public class Util
             logs[i].parent.SetActive(true);
         }
     }
+#endregion
 
+    #region Undo
     //undoするとき、点の位置を動かす。//0.770
     //private static void PerturbPoints(float delta)
     //{
@@ -1148,7 +1130,6 @@ public class Util
     //        AppMgr.pts[i].Vec += dVec;
     //    }
     //}
-
     public static void Undo()
     {
         if (LastLog > 0)
@@ -1198,7 +1179,8 @@ public class Util
             Util.SetIsometry();
         }
     }
-
+    #endregion
+    #region Redo
     public static void Redo()
     {
         if (logs == null) return;
@@ -1228,7 +1210,7 @@ public class Util
             LastLog++;
         }
     }
-
+    #endregion
     public static void SetGameLogPosition()
     {
         for(int i=0; i<logs.Count; i++)
