@@ -7,7 +7,7 @@ public class LineBracket : MonoBehaviour
 {
     public int Point1Id = -1, Point2Id = -1;
     public int Id = 0;
-    public bool Active;
+    public bool Active = false;
 
     public GameObject parent = null;
     public Line parentLine = null;
@@ -43,6 +43,7 @@ public class LineBracket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        gameObject.SetActive(Active);
         if (Point1 != null && Point2 != null)
         {
             vec0 = Point1.GetComponent<Point>().transform.position;
@@ -73,7 +74,7 @@ public class LineBracket : MonoBehaviour
         vec1.y = ori.y + d - c * 0.75f;
         vec2.x = ori.x + b + a * 0.75f;
         vec2.y = ori.y + d + c * 0.75f;
-        int poly = (int)Mathf.Floor(n * 5f);
+        int poly = Mathf.Max((int)Mathf.Floor(n * 5f),10);
         lr.positionCount = poly+1;
         for (int i = 0; i <= poly; i++)
         {

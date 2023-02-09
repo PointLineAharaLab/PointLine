@@ -10,6 +10,7 @@ public class Line : MonoBehaviour {
     public bool Active;
 
     public GameObject parent = null;
+    public GameObject child = null;
     public GameObject GameLog = null;
     public GameObject TextName = null;
     public GameObject Point1 = null, Point2 = null;

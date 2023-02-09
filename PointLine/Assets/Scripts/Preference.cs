@@ -26,6 +26,7 @@ public class Preference : MonoBehaviour
     public bool Delete = false;
     public bool ShowName = true;
     public bool ShowConstant = false;
+    public bool Bracket = false; // LineBracket
     public Log LogParent = null;
     public GameObject Parent = null;
 
@@ -35,7 +36,7 @@ public class Preference : MonoBehaviour
         else return float.Parse(s);
     }
 
-    // Start is called before the first frame update
+    #region Start is called before the first frame update
     void Start()
     {
         float PreferenceX = -(WorldHeight / Screen.height * Screen.width) + 1.5f;
@@ -48,7 +49,9 @@ public class Preference : MonoBehaviour
         Position = new Vector3(PreferenceX, 1.77f, -2f);
         GetScreenPosition(Position, out ScreenPosition);
     }
+    #endregion
 
+    #region SetData
     public void SetData(Log lg)
     {
         ObjectType = lg.ObjectType;
@@ -63,6 +66,7 @@ public class Preference : MonoBehaviour
         }
         else if (ObjectType == "Line")
         {
+            Bracket = lg.parent.GetComponent<Line>().Bracket;
         }
         else if (ObjectType == "Circle")
         {
@@ -95,7 +99,9 @@ public class Preference : MonoBehaviour
         q.z = 0f;
         DialogWidth = 3f * rate;
     }
+    #endregion
 
+    #region 設定ダイアログの内容設定
     private void OnGUI()
     {
         if (show)
@@ -106,8 +112,8 @@ public class Preference : MonoBehaviour
 
     /// <summary>
     /// 設定ダイアログの内容設定
-    /// </summary>
     /// <param name="id"></param>
+    /// </summary>
     private void WindowProc(int id)
     {
         Vector3 Pos = Position;
@@ -241,7 +247,9 @@ public class Preference : MonoBehaviour
     {
         GetScreenPosition(Position, out ScreenPosition);
     }
+    #endregion
 
+    #region Delete point, line, circle, module 
     /// <summary>
     /// ClickOnPnael.DeleteAPointのコピー
     /// </summary>
@@ -576,8 +584,9 @@ public class Preference : MonoBehaviour
         AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
     }
+    #endregion
 
-
+    #region PointPreferences
     void PointPreferenceJapanese(float Left, float Top, float Step, float height)
     {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "点 " + ObjectName, LabelStyle);
@@ -770,7 +779,9 @@ public class Preference : MonoBehaviour
             pt.ShowPointName = ShowName;
         }
     }
+    #endregion
 
+    #region LinePreferences
     void LinePreferenceJapanese(float Left, float Top, float Step, float height)
     {
         Point pt1 = LogParent.GetComponent<Log>().Object1.GetComponent<Point>();
@@ -782,12 +793,38 @@ public class Preference : MonoBehaviour
         Top += Step;
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "辺長 " + Mathf.Round(dist * 1000f) / 1000f, LabelStyle);
         Top += Step;
+        GUIStyle LS = new GUIStyle(LabelStyle);
         GUIStyle BS = new GUIStyle(ButtonStyle);
+        Line ln = LogParent.parent.GetComponent<Line>();
+        if (Bracket)
+        {
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "ブラケットあり", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth * 0.7f, Top, DialogWidth * 0.3f, height), "なし", BS))
+            {
+                Bracket = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "ブラケットなし", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth * 0.7f, Top, DialogWidth * 0.3f, height), "あり", BS))
+            {
+                Bracket = true;
+            }
+            Top += Step;
+        }
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
         if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
         {
-            Line ln = LogParent.parent.GetComponent<Line>();
+            ln = LogParent.parent.GetComponent<Line>();
             DeleteALine(ln.Id);
             show = false;
         }
@@ -805,6 +842,23 @@ public class Preference : MonoBehaviour
         if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
+            ln.Bracket = Bracket;
+            LineBracket lb = ln.child.GetComponent<LineBracket>();
+            lb.Active = Bracket;
+            ln.child.SetActive(Bracket);
+            if (lb.parent == null)
+            {
+                lb.parent = ln.gameObject;
+            }
+            if (lb.Point1 == null)
+            {
+                lb.Point1 = ln.Point1;
+            }
+            if (lb.Point2 == null)
+            {
+                lb.Point2 = ln.Point2;
+            }
+
         }
     }
 
@@ -820,11 +874,37 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Length " + Mathf.Round(dist * 1000f) / 1000f, LabelStyle);
         Top += Step;
         GUIStyle BS = new GUIStyle(ButtonStyle);
+        GUIStyle LS = new GUIStyle(LabelStyle);
+        Line ln = LogParent.parent.GetComponent<Line>();
+        if (Bracket)
+        {
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Bracket ", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth * 0.7f, Top, DialogWidth * 0.3f, height), "Delete", BS))
+            {
+                Bracket = false;
+            }
+            Top += Step;
+        }
+        else
+        {
+            BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+            LS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
+            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "No bracket ", LS);
+            if (GUI.Button(new Rect(Left + DialogWidth * 0.7f, Top, DialogWidth * 0.3f, height), "Add", BS))
+            {
+                Bracket = true;
+            }
+            Top += Step;
+        }
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
         if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
         if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
         {
-            Line ln = LogParent.parent.GetComponent<Line>();
+            ln = LogParent.parent.GetComponent<Line>();
             DeleteALine(ln.Id);
             show = false;
         }
@@ -842,8 +922,12 @@ public class Preference : MonoBehaviour
         if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
         {
             show = false;
+            ln.Bracket = Bracket;
         }
     }
+    #endregion
+
+    #region CirclePreferences
     void CirclePreferenceJapanese(float Left, float Top, float Step, float height)
     {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "円 " + ObjectName, LabelStyle);
@@ -883,7 +967,6 @@ public class Preference : MonoBehaviour
             show = false;
         }
     }
-
     void CirclePreferenceEnglish(float Left, float Top, float Step, float height)
     {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "Circle " + ObjectName, LabelStyle);
@@ -926,6 +1009,9 @@ public class Preference : MonoBehaviour
             show = false;
         }
     }
+    #endregion
+
+    #region ModuleMidpointPreferences
 
     void ModuleMidpointPreferenceJapanese(float Left, float Top, float Step, float height)
     {
@@ -1014,7 +1100,9 @@ public class Preference : MonoBehaviour
             md.Ratio2 = floatParse(CoordY);
         }
     }
+    #endregion
 
+    #region ModuleLocusPreferences
     void ModuleLocusPreferenceJapanese(float Left, float Top, float Step, float height)
     {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
@@ -1165,7 +1253,9 @@ public class Preference : MonoBehaviour
             // OK のときの処理
         }
     }
+    #endregion
 
+    #region ModuleIsometryPreference
     string getRatioString(float a, float b)
     {
         if (a == 0f)
@@ -1351,7 +1441,9 @@ public class Preference : MonoBehaviour
             md.FixRatio = Fixed;
         }
     }
+    #endregion
 
+    #region ModuleAnglePreference
     void ModuleAnglePreferenceJapanese(float Left, float Top, float Step, float height)
     {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
@@ -1540,6 +1632,9 @@ public class Preference : MonoBehaviour
         }
 
     }
+    #endregion
+
+    #region ModulePreferences
     void ModulePreferenceJapanese(float Left, float Top, float Step, float height)
     {
         GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
@@ -1603,5 +1698,5 @@ public class Preference : MonoBehaviour
             show = false;
         }
     }
-
+    #endregion
 }
