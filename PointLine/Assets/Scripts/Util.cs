@@ -55,6 +55,62 @@ public class Util
     #endregion
 
     #region AddPoint
+
+    public static char[] GetNewPointName()
+    {
+        char[] name = { 'A' };
+        for (int k=0; k<26; k++)
+        {
+            name[0] = (char)((int)('A') + k);
+            //Debug.Log("k = "+k+", name = " + name[0]);
+            bool OK = true;
+            AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
+            int size = AppMgr.pts.Length;
+            for (int i=0; i<size; i++)
+            {
+                Point pt = AppMgr.pts[i];
+                //Debug.Log("PointName = " + pt.PointName);
+                if (pt.PointName.Length == 1 && pt.PointName[0] == name[0])
+                {
+                    OK = false;
+                    break;
+                }
+            }
+            if (OK)
+            {
+                return name;
+            }
+        }
+        name = new char[2];
+        name[0] = 'A';
+        name[1] = 'A';
+        for (int k = 0; k < 26; k++)
+        {
+            name[1] = (char)((int)('A') + k);
+            Debug.Log("k = " + k + ", name = " + name[0]);
+            bool OK = true;
+            AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
+            int size = AppMgr.pts.Length;
+            for (int i = 0; i < size; i++)
+            {
+                Point pt = AppMgr.pts[i];
+                Debug.Log("PointName = " + pt.PointName);
+                if (pt.PointName.Length == 2 && pt.PointName[0] == name[0] && pt.PointName[1] == name[1])
+                {
+                    OK = false;
+                    break;
+                }
+            }
+            if (OK)
+            {
+                return name;
+            }
+        }
+        name[0] = 'B';
+        name[1] = 'A';
+        return name;
+    }
+
     /// 頂点の生成
     public static Point AddPoint(Vector3 V, int pointId)
     {
@@ -69,9 +125,7 @@ public class Util
             pt.Vec = V;
             pt.Active = true;
             pt.parent = obj;
-            char[] name = { 'A' };
-            name[0] = (char)('A' + pt.Id);
-            pt.PointName = new string(name);
+            pt.PointName = new string(GetNewPointName());
             AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
             pt.PTobject.GetComponent<TextMesh>().text = pt.PointName;
             pt.PTobject.transform.localPosition = Vector3.zero;
@@ -319,6 +373,7 @@ public class Util
             //ログをlogsに追加
             AddLog(lg);
             obj.GameLog = LogObj;
+            //AppMgr.ExecuteAllModules();// 念のためにモジュールを一度回してみる。
         }
         return obj;
     }

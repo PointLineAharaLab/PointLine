@@ -63,7 +63,25 @@ public class AppMgr : MonoBehaviour {
         Rescaling();
         if (ConvergencyCount > 1000)
         {
-            if(Japanese==1)
+            //頂点の一つを微動させる。
+            pts = FindObjectsOfType<Point>();
+            if (pts.Length > 0)
+            {
+                int index = (int)UnityEngine.Random.Range(0, pts.Length);
+                Debug.Log("Point.index = " + index);
+                Point pt = pts[index];
+                Debug.Log("pt.transform = " + pt.transform.position);
+                float x = UnityEngine.Random.Range(-0.01f, 0.01f);
+                float y = UnityEngine.Random.Range(-0.01f, 0.01f);
+                Vector3 position = pt.transform.position;
+                position.x += x;
+                position.y += y;
+                pt.Vec = position;
+                pt.transform.position = position;
+                Debug.Log("pt.transform = " + pt.transform.position);
+                ExecuteAllModules();
+            }
+            if (Japanese==1)
                 ConvergencyAlertText.GetComponent<TextMesh>().text = "競合(press Z)";
             else 
                 ConvergencyAlertText.GetComponent<TextMesh>().text = "Conflict(press Z)";

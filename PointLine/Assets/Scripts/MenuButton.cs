@@ -164,6 +164,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickPointOnLine()
@@ -175,6 +176,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickPointOnCircle()
@@ -186,6 +188,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickIntersection()
@@ -197,6 +200,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickIsom()
@@ -208,6 +212,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickRatioLength()
@@ -219,7 +224,8 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
-    } 
+        AppMgr.ModuleOn = true;
+    }
 
     public void OnClickPerp()
     {
@@ -230,6 +236,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickPara()
@@ -241,6 +248,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickHori()
@@ -252,6 +260,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickAngle()
@@ -263,6 +272,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickBisector()
@@ -274,6 +284,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
+        AppMgr.ModuleOn = true;
     }
 
     public void OnClickTangentL2C()
