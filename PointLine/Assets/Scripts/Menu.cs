@@ -44,19 +44,49 @@ public class MENU
 
 public class Menu : MonoBehaviour
 {
-
+    #region プレハブの名称一覧
     public static string[] PrefabCloneName = new string[]
     {
-        "ButtonMenuOff(Clone)", "ButtonAddPoint(Clone)", "ButtonAddMidPoint(Clone)","ButtonAddLine(Clone)","ButtonAddCircle(Clone)",
-        "ButtonPointOnPoint(Clone)" ,"ButtonPointOnLine(Clone)","ButtonPointOnCircle(Clone)","ButtonIntersection(Clone)", 
-        "ButtonIsom(Clone)","ButtonRatioLength(Clone)", "ButtonPerp(Clone)", "ButtonPara(Clone)", "ButtonHori(Clone)","ButtonAngle(Clone)" ,"ButtonBisector(Clone)" ,
-        "ButtonTangentL2C(Clone)", "ButtonTangentC2C(Clone)",
-        "ButtonFixPoint(Clone)", "ButtonAddLocus(Clone)","ButtonDeletePoint(Clone)", "ButtonDeleteAll(Clone)", 
-        "ButtonUndo(Clone)", "ButtonRedo(Clone)", "ButtonShowLogs(Clone)",
-        "ButtonSave(Clone)", "ButtonOpen(Clone)", "ButtonSave2TeX(Clone)", "ButtonQuit(Clone)"
-
-
+        //1
+        "ButtonMenuOff(Clone)", 
+        "ButtonAddPoint(Clone)", 
+        "ButtonAddMidPoint(Clone)",
+        "ButtonAddLine(Clone)",
+        "ButtonAddCircle(Clone)",
+        //2
+        "ButtonPointOnPoint(Clone)",
+        "ButtonPointOnLine(Clone)",
+        "ButtonPointOnCircle(Clone)",
+        "ButtonIntersection(Clone)", 
+        //3
+        "ButtonIsom(Clone)",
+        "ButtonRatioLength(Clone)", 
+        "ButtonPerp(Clone)", 
+        "ButtonPara(Clone)", 
+        "ButtonHori(Clone)",
+        "ButtonAngle(Clone)" ,
+        "ButtonBisector(Clone)" ,
+        //4
+        "ButtonTangentL2C(Clone)", 
+        "ButtonTangentC2C(Clone)",
+        //5
+        "ButtonFixPoint(Clone)", 
+        "ButtonAddLocus(Clone)",
+        "ButtonDeletePoint(Clone)", 
+        "ButtonDeleteAll(Clone)", 
+        //6
+        "ButtonUndo(Clone)", 
+        "ButtonRedo(Clone)", 
+        "ButtonShowLogs(Clone)",
+        //7
+        "ButtonSave(Clone)", 
+        "ButtonOpen(Clone)", 
+        "ButtonSave2TeX(Clone)", 
+        "ButtonQuit(Clone)"
     };
+    #endregion
+
+    #region ヘッダーメッセージ一覧
     private string TextADD_POINT0 = "メニュー ";
     private string TextADD_POINT1 = " クリックすれば点を追加できます． ";
     private string TextADD_MIDPOINT0 = " 中点を追加: 頂点を選択.";
@@ -94,7 +124,7 @@ public class Menu : MonoBehaviour
     private string TextFIX_POINT1 = " 点を固定する : 頂点を選択.";
     private string TextADD_LOCUS0 = " 軌跡を追加: 頂点を選択.";
     private string TextDELETE_POINT0 = " 点を消去する: 頂点を選択.";
-
+    #endregion
 
     public GUIStyle MyStyle;
     public static Canvas canvas;
@@ -109,6 +139,7 @@ public class Menu : MonoBehaviour
 
     //  initialization
     void Start() {
+        #region ヘッダーメッセージ（英語）
         if (AppMgr.Japanese != 1) {// English 
             TextADD_POINT0 = "Menu";
             TextADD_POINT1 = " Click once to make a new point. ";
@@ -146,6 +177,7 @@ public class Menu : MonoBehaviour
             TextADD_LOCUS0 = " Add a locus : Select a point.";
             TextDELETE_POINT0 = " Delete a point : Select a point.";
         }
+        #endregion
 
         gst = new GUIStyle(MyStyle);
         FontSize = (int)Mathf.Floor(Screen.width / 39);
@@ -162,10 +194,9 @@ public class Menu : MonoBehaviour
 
         //ガイドボタンの表示
         CreateMenuOffUI();
-
-
     }
 
+    #region GUI（入力）まわり
     void OnGUI()
     {
 
@@ -198,8 +229,9 @@ public class Menu : MonoBehaviour
         else
             gst.normal.textColor = Color.white;
     }
+#endregion
 
-    // ガイドの表示
+    #region ガイド（ヘッダーメッセージ）の表示
     public void DrawGuideText()
     {
         //ガイドテキストを表示する。(メニュへ誘導するボタンは別扱い。)
@@ -383,8 +415,9 @@ public class Menu : MonoBehaviour
                 break;
         }
     }
+    #endregion
 
-
+    #region メニュー表示切り替え
     public void DestroyMenuOnUI()
     {
         GameObject[] go = MonoBehaviour.FindObjectsOfType<GameObject>();
@@ -475,7 +508,9 @@ public class Menu : MonoBehaviour
     {
         CreateMenuOnButton();
     }
+    #endregion
 
+    #region メニューの各ボタンの生成
     public void CreateMenuOnButton()
     {
         // MenuOn button
@@ -720,5 +755,6 @@ public class Menu : MonoBehaviour
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 7, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
+    #endregion
 
 }

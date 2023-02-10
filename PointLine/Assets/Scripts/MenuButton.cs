@@ -17,6 +17,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
     public string PrefabName;
     public GUIStyle menuHoverStyle;
 
+    #region Start
     // Use this for initialization
     void Start () {
         if (AppMgr.Japanese == 1) {
@@ -50,7 +51,9 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         menuHoverStyle = new GUIStyle(MyStyle);
         menuHoverStyle.fontSize = (int)Mathf.Floor(Screen.width / 39);// // 横幅のサイズからここを決めるべき。
     }
+    #endregion
 
+    #region hovering on menues
     // Update is called once per frame
     void OnGUI()
     {
@@ -82,7 +85,9 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         HoverOn = false;
 
     }
+    #endregion
 
+    #region MenuOn/Off
     public void OnClick()
     {
         Debug.Log("menu on (mouse)");
@@ -103,7 +108,9 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
     }
+    #endregion
 
+    #region menu buttons
     public void OnClickAddPoint()
     {
         Debug.Log("add a point (mouse)");
@@ -442,6 +449,6 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         return;
 
     }
-
+#endregion
 
 }

@@ -37,7 +37,7 @@ public class Util
     /// </summary>
     public static bool FixDisplay = false;
 
-
+    #region GetLogFolder
     private static void GetLogFolder()
     {
         if (LogFolder == null)
@@ -52,7 +52,10 @@ public class Util
             }
         }
     }
-    /// パーティクルの生成
+    #endregion
+
+    #region AddPoint
+    /// 頂点の生成
     public static Point AddPoint(Vector3 V, int pointId)
     {
         // プレハブを取得
@@ -93,7 +96,9 @@ public class Util
 
         return pt;
     }
+#endregion
 
+    #region Midpoint
     public static Point AddMidpoint(int first, int second, int third, int moduleId)
     {
         Prefab = Resources.Load<GameObject>("Prefabs/Point");
@@ -154,8 +159,10 @@ public class Util
         }
         return pt;
     }
+#endregion
 
-    /// パーティクルの生成
+    #region AddLine
+    ///線分の生成
     public static Line AddLine(int first, int second, int lineId)
     {
         // プレハブを取得
@@ -190,9 +197,10 @@ public class Util
         }
         return obj;
     }
+#endregion
 
-
-    /// パーティクルの生成
+    #region AddCircle
+    /// 円の生成
     public static Circle AddCircle(int first, float rd, int circleId)
     {
         // プレハブを取得
@@ -227,7 +235,9 @@ public class Util
         }
         return obj;
     }
+    #endregion
 
+    #region AddModule
     public static string GetModuleNameByType(int type)
     {
         switch (type)
@@ -312,7 +322,9 @@ public class Util
         }
         return obj;
     }
+    #endregion
 
+    #region AddAngleMark
     public static AngleMark AddAngleMark(int first, int second, GameObject parentModule = null)// omit 'Id'
     {//
         Prefab = Resources.Load<GameObject>("Prefabs/AngleMark");
@@ -342,7 +354,9 @@ public class Util
         }
         return obj;
     }
+    #endregion
 
+    #region AddThinLine
     public static ThinLine AddThinLine(int first, int second)// first is a point, the second is a line.
     {//
         Prefab = Resources.Load<GameObject>("Prefabs/ThinLine");
@@ -356,7 +370,9 @@ public class Util
         }
         return TL;
     }
+    #endregion
 
+    #region Logまわり
     public static void InitLog()
     {
         // GameLogの親すべて消去する
@@ -506,10 +522,7 @@ public class Util
         }
         return true;
     }
-
-
-    // Unity Action Event for selecting a file
-    //public event Action<string> OnFileSelect = delegate { };
+    #endregion
 
     #region ファイル保存
 
@@ -1179,6 +1192,7 @@ public class Util
         }
     }
     #endregion
+
     #region Redo
     public static void Redo()
     {
@@ -1210,6 +1224,7 @@ public class Util
         }
     }
     #endregion
+
     public static void SetGameLogPosition()
     {
         for(int i=0; i<logs.Count; i++)
@@ -1218,6 +1233,7 @@ public class Util
         }
     }
 
+    #region Isometry
     public static void SetIsometry() {
         Line[] lns = MonoBehaviour.FindObjectsOfType<Line>();
         GameObject[] objs = MonoBehaviour.FindObjectsOfType<GameObject>();
@@ -1285,4 +1301,5 @@ public class Util
             }
         }
     }
+    #endregion
 }
