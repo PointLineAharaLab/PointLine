@@ -245,172 +245,207 @@ public class Menu : MonoBehaviour
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextADD_LINE0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 else
                 {
                     GUILabel(TextADD_LINE1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 break;
             case MENU.POINT_ON_POINT:// lay a point on another object.
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextPOINT_ON_POINT0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 else
                 {
                     GUILabel(TextPOINT_ON_POINT1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 break;
             case MENU.POINT_ON_LINE:// lay a point on a line.
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextPOINT_ON_LINE0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_NULL;
                 }
                 else
                 {
                     GUILabel(TextPOINT_ON_LINE1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 break;
             case MENU.ADD_CIRCLE:// draw a circle.
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextADD_CIRCLE0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_NULL;
                 }
                 else
                 {
                     GUILabel(TextADD_CIRCLE1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_NULL;
                 }
                 break;
             case MENU.POINT_ON_CIRCLE:// lay a point on a circle.
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextPOINT_ON_CIRCLE0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_NULL;
                 }
                 else
                 {
                     GUILabel(TextPOINT_ON_CIRCLE1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_CIRCLE;
                 }
                 break;
             case MENU.INTERSECTION:// どこかに挿入.
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextINTERSECTION0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 else
                 {
                     GUILabel(TextINTERSECTION1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 break;
             case MENU.LINES_ISOMETRY:// make two lines isometry
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextLINES_ISOMETRY0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 else
                 {
                     GUILabel(TextLINES_ISOMETRY1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 break;
             case MENU.RATIO_LENGTH://get two lines ratio
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextRATIO_LENGTH0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 else if (AppMgr.ModeStep == 1)
                 {
                     GUILabel(TextRATIO_LENGTH1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 break;
             case MENU.LINES_PERPENDICULAR://make two lines perpendicular
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextLINES_PERPENDICULAR0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 else
                 {
                     GUILabel(TextLINES_PERPENDICULAR1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 break;
             case MENU.LINES_PARALLEL:// make two lines parallel
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextLINES_PARALLEL0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 else
                 {
                     GUILabel(TextLINES_PARALLEL1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 break;
             case MENU.LINE_HORIZONTAL:// make a line horizontal
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextLINE_HORIZONTAL0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 break;
             case MENU.ANGLE:
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextANGLE0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 else if (AppMgr.ModeStep == 1)
                 {
                     GUILabel(TextANGLE1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 else
                 {
                     GUILabel(TextANGLE2);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 break;
             case MENU.BISECTOR:
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextBISECTOR0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_ANGLE;
                 }
                 else if (AppMgr.ModeStep == 1)
                 {
                     GUILabel(TextBISECTOR1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_ANGLE;
                 }
                 break;
             case MENU.CIRCLE_TANGENT_LINE:// make a circle tangent to a line
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextCIRLCE_TANGENT_LINE0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_CIRCLE;
                 }
                 else
                 {
                     GUILabel(TextCIRLCE_TANGENT_LINE1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
                 }
                 break;
             case MENU.CIRCLE_TANGENT_CIRCLE:// make a circle tangent to a circle
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextCIRLCE_TANGENT_CIRCLE0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_CIRCLE;
                 }
                 else
                 {
                     GUILabel(TextCIRLCE_TANGENT_CIRCLE1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_CIRCLE;
                 }
                 break;
             case MENU.FIX_POINT:// fix/unfix a point.
                 GUILabel(TextFIX_POINT1);
+                AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 break;
             case MENU.ADD_MIDPOINT:// add a midpoint
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextADD_MIDPOINT0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 else
                 {
                     GUILabel(TextADD_MIDPOINT1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 break;
             case MENU.ADD_LOCUS:// add a locus
                 GUILabel(TextADD_LOCUS0);
+                AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 break;
             case MENU.DELETE_POINT:// delete a point
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextDELETE_POINT0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 break;
         }

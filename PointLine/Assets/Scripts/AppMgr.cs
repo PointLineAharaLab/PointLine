@@ -35,6 +35,12 @@ public class AppMgr : MonoBehaviour {
     public static float ConvergencyError = 0.0001f;
     public static bool ModuleOn = true;
 
+    public static int ClickRequire = 0;// 1: point, 2: line, 3:circle, 4:angle
+    public static int CLICKREQ_NULL = 0;
+    public static int CLICKREQ_POINT = 1;
+    public static int CLICKREQ_LINE = 2;
+    public static int CLICKREQ_CIRCLE = 3;
+    public static int CLICKREQ_ANGLE = 4;
 
     // Use this for initialization
     void Start () {

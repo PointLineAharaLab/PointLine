@@ -256,22 +256,44 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             //Debug.Log("MOL = "+MOL);
             return MOL;//ログの上にある時が優先
         }
-        int MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
-        if (MOP == -1)
+        int MOP=-1;
+        // 状況ごとに、優先されるべき要素に対応する。
+        Debug.Log("ClickRequire = " + AppMgr.ClickRequire);
+        if (AppMgr.ClickRequire == AppMgr.CLICKREQ_POINT)
+        {
+            MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
+        }
+        else if (AppMgr.ClickRequire == AppMgr.CLICKREQ_LINE)
         {
             MOP = MouseOnLines(v);// ラインをクリックしたかどうかのチェック
-            //Debug.Log("no existing point, so check it is on a line." + MOP);
+        }
+        else if (AppMgr.ClickRequire == AppMgr.CLICKREQ_CIRCLE)
+        {
+            MOP = MouseOnCircle(v);//サークルをクリックしたかどうかのチェック
+        }
+        else if (AppMgr.ClickRequire == AppMgr.CLICKREQ_ANGLE)
+        {
+            MOP = MouseOnAngle(v);//角度をクリックしたかどうかのチェック
+        }
+        if (MOP == -1)
+        {
+            MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
             if (MOP == -1)
             {
-                MOP = MouseOnCircle(v);//サークルをクリックしたかどうかのチェック
+                MOP = MouseOnLines(v);// ラインをクリックしたかどうかのチェック
                 if(MOP == -1)
                 {
-                    MOP = MouseOnAngle(v);//角度をクリックしたかどうかのチェック
+                    MOP = MouseOnCircle(v);//サークルをクリックしたかどうかのチェック
+                    if (MOP == -1)
+                    {
+                        MOP = MouseOnAngle(v);//角度をクリックしたかどうかのチェック
+                    }
                 }
             }
         }
         if (MOP >= 0 && MOP < 4000)
         {// MOP番のオブジェクト
+            Debug.Log("MOP = " + MOP);
             return MOP;
         }
         else if (ClickOnButton(Input.mousePosition))
