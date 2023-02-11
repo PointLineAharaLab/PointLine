@@ -136,7 +136,7 @@ public class Menu : MonoBehaviour
     static float MenuOnTextWidth;
     static Rect GuideTextRect;
 
-
+    #region Start
     //  initialization
     void Start() {
         #region ヘッダーメッセージ（英語）
@@ -155,6 +155,8 @@ public class Menu : MonoBehaviour
             TextPOINT_ON_LINE1 = " Set a point on a line: Select a line.";
             TextPOINT_ON_CIRCLE0 = " Set a point on a circle: Select a point.";
             TextPOINT_ON_CIRCLE1 = " Set a point on a circle: Select a circle.";
+            TextINTERSECTION0 = "Add an intersection: Select a line.";
+            TextINTERSECTION1 = "Add an intersection: Select another line.";
             TextLINES_ISOMETRY0 = " Make two lines isometry: Select a line.";
             TextLINES_ISOMETRY1 = " Make two lines isometry: Select another line.";
             TextRATIO_LENGTH0 = "Ratio of two segments : Select a line";
@@ -195,6 +197,7 @@ public class Menu : MonoBehaviour
         //ガイドボタンの表示
         CreateMenuOffUI();
     }
+    #endregion
 
     #region GUI（入力）まわり
     void OnGUI()

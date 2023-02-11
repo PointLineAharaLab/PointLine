@@ -858,6 +858,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             {
                 // 新しいモジュールの追加
                 Util.AddModule(MENU.POINT_ON_POINT, FirstClickId, SecondClickId, 0, ModuleId++);
+                AppMgr.ExecuteAllModules();
             }
             Mode = MENU.POINT_ON_POINT;
             //Mode = 0;
@@ -884,6 +885,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Util.AddThinLine(FirstClickId, SecondClickId);
             Mode = MENU.POINT_ON_LINE;
             ModeStep = 0;
+            AppMgr.ExecuteAllModules();
         }
     }
 
@@ -905,6 +907,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Mode = MENU.POINT_ON_CIRCLE;
             //Mode = 0;
             ModeStep = 0;
+            AppMgr.ExecuteAllModules();
         }
     }
 
@@ -927,7 +930,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {//ステップ1ならば，「2つ目の線」をSecondClickIdに記録
             Line.AddOneLineSelected(MOP);//クリックしたラインのみを選択
             SecondClickId = MOP;
-            ModeStep = 0;
             if (FirstClickId != SecondClickId)
             {
                 // 新しい点の追加
@@ -944,13 +946,19 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, FirstClickId, 0, ModuleId++);
                     Util.AddModule(MENU.POINT_ON_LINE, NewPointId, SecondClickId, 0, ModuleId++);
                 }
+                Mode = MENU.POINT_ON_LINE;
+                AppMgr.ExecuteAllModules();
             }
+            else
+            {
+                Mode = MENU.INTERSECTION;
+            }
+            ModeStep = 0;
         }
         else if (ModeStep == 1 && 2000 <= MOP && MOP < 3000)
         {//ステップ1ならば，「2つ目の円」をSecondClickIdに記録
             Line.AddOneLineSelected(MOP);//クリックした円のみを選択
             SecondClickId = MOP;
-            ModeStep = 0;
             if (FirstClickId != SecondClickId)
             {
                 // 新しい点の追加
@@ -967,7 +975,14 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, FirstClickId, 0, ModuleId++);
                     Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, SecondClickId, 0, ModuleId++);
                 }
+                Mode = MENU.POINT_ON_LINE;
+                AppMgr.ExecuteAllModules();
             }
+            else
+            {
+                Mode = MENU.INTERSECTION;
+            }
+            ModeStep = 0;
         }
 
     }
@@ -1037,6 +1052,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 Module MD = Util.AddModule(MENU.LINES_PERPENDICULAR, FirstClickId, SecondClickId, 0, ModuleId++);
                 // 新しい直角記号の追加
                 Util.AddAngleMark(FirstClickId, SecondClickId, MD.gameObject);
+                AppMgr.ExecuteAllModules();
             }
             Mode = MENU.LINES_PERPENDICULAR;
             //Mode = 0;
@@ -1059,9 +1075,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             // 新しいモジュールの追加
             Util.AddModule(MENU.LINES_PARALLEL, FirstClickId, SecondClickId, 0, ModuleId++);
             Mode = MENU.LINES_PARALLEL;
+            AppMgr.ExecuteAllModules();
             //Mode = 0;
             ModeStep = 0;
-
         }
     }
     private void MakeALineHorizontal(int MOP)
@@ -1073,6 +1089,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             // 新しいモジュールの追加
             Util.AddModule(MENU.LINE_HORIZONTAL, FirstClickId, 0, 0, ModuleId++);
             Mode = MENU.LINE_HORIZONTAL;
+            AppMgr.ExecuteAllModules();
             //Mode = 0;
             ModeStep = 0;
         }
@@ -1124,9 +1141,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             SecondClickId = MOP;
             // 新しいモジュールの追加
             Module MD = Util.AddModule(MENU.BISECTOR, FirstClickId, SecondClickId, 0, ModuleId++);
-            //新たな直角マークの追加
-            //Util.AddAngleMark(FirstClickId, SecondClickId, ThirdClickId, MD.gameObject);
             Mode = MENU.BISECTOR;
+            AppMgr.ExecuteAllModules();
             ModeStep = 0;
         }
     }
@@ -1146,6 +1162,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             // 新しいモジュールの追加
             Util.AddModule(MENU.CIRCLE_TANGENT_LINE, FirstClickId, SecondClickId, 0, ModuleId++);
             Mode = MENU.CIRCLE_TANGENT_LINE;
+            AppMgr.ExecuteAllModules();
             //Mode = 0;
             ModeStep = 0;
         }
@@ -1169,6 +1186,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 Util.AddModule(MENU.CIRCLE_TANGENT_CIRCLE, FirstClickId, SecondClickId, 0, ModuleId++);
             }
             Mode = MENU.CIRCLE_TANGENT_CIRCLE;
+            AppMgr.ExecuteAllModules();
             //Mode = 0;
             ModeStep = 0;
         }
