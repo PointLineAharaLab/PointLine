@@ -982,11 +982,17 @@ public class Util
         //fb.SaveFilePanel("PointLine", ext);
         //fb.OnFileSelect += SaveTeXFileUsingPath;
         //string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine TeX file", "", "SamplePointLine.tex","tex");
-        //SaveTeXFileUsingPath(path);
-
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("TeX Files", ".tex"));
+        FileBrowser.SetDefaultFilter(".tex");
+        FileBrowser.ShowSaveDialog(onSaveTeXSuccess, onCancel, FileBrowser.PickMode.FilesAndFolders, false, "",
+            "SamplePointLine.tex", "Save TeX File");
         return false;
     }
-
+    static void onSaveTeXSuccess(string[] paths)
+    {
+        Debug.Log("" + paths[0]);
+        SaveTeXFileUsingPath(paths[0]);
+    }
     #endregion
 
     #region Log操作
