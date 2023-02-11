@@ -882,7 +882,7 @@ public class Preference : MonoBehaviour
             LS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
             if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "Bracket ", LS);
-            if (GUI.Button(new Rect(Left + DialogWidth * 0.7f, Top, DialogWidth * 0.3f, height), "Delete", BS))
+            if (GUI.Button(new Rect(Left + DialogWidth * 0.5f, Top, DialogWidth * 0.5f, height), "Delete", BS))
             {
                 Bracket = false;
             }
@@ -923,6 +923,21 @@ public class Preference : MonoBehaviour
         {
             show = false;
             ln.Bracket = Bracket;
+            LineBracket lb = ln.child.GetComponent<LineBracket>();
+            lb.Active = Bracket;
+            ln.child.SetActive(Bracket);
+            if (lb.parent == null)
+            {
+                lb.parent = ln.gameObject;
+            }
+            if (lb.Point1 == null)
+            {
+                lb.Point1 = ln.Point1;
+            }
+            if (lb.Point2 == null)
+            {
+                lb.Point2 = ln.Point2;
+            }
         }
     }
     #endregion

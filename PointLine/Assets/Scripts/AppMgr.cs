@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class AppMgr : MonoBehaviour {
     /// <summary>
-    /// Language
+    /// Language, 1:Japanese, 0:English
     /// </summary>
-    public static int Japanese = 1;
+    public static int Japanese = 0;
     /// 
 
     public static int Mode = 0;
