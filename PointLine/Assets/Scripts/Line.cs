@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Line : MonoBehaviour {
+public class Line : Object 
+{
 
     public int Point1Id=-1, Point2Id=-1;
     public int Id = 0;
@@ -66,6 +67,7 @@ public class Line : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        this.thisis = "Line";
         lr = GetComponent<LineRenderer>();
 
         Vec0 = new Vector3(0, 0, 0);

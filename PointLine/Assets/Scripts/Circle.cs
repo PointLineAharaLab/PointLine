@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Circle : MonoBehaviour {
+public class Circle : Object 
+{
 
     public Vector3 CenterVec;
     public int CenterPointId=-1;
@@ -24,6 +25,7 @@ public class Circle : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        this.thisis = "Circle";
         Active = true;
     }
 	

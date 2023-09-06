@@ -1474,7 +1474,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             GameObject g = Point.Instantiate(_prefab, MouseDownVec, Quaternion.identity) as GameObject;
             MouseDown obj = g.GetComponent<MouseDown>();
             obj.Vec = MouseDownVec;
-            //Point obj = g.GetComponent<Point>();
+            Point p = g.GetComponent<Point>();
             Destroy(g, 1.2f);//モジュールの消去
 
             int MOP = MousePosition();

@@ -325,6 +325,24 @@ public class Util
         }
         return "";
     }
+
+    public static Point2Point AddPoint2Point(Point point1, Point point2)
+    {
+        // プレハブを取得
+        Prefab = Resources.Load<GameObject>("Prefabs/Module");
+        //// プレハブからインスタンスを生成
+        /// インスタンスを生成してスクリプトを返す.
+        GameObject obj = Module.Instantiate(Prefab, Vector3.zero, Quaternion.identity) as GameObject;
+        Point2Point p2p = new Point2Point();
+        if (p2p != null) 
+        {
+            p2p.SetModule(point1, point2);
+            p2p.SetParent(obj);
+            p2p.Active = true;
+        }
+
+        return null;
+    }
     /// パーティクルの生成
     public static Module AddModule(int type, int first, int second, int third, int moduleId, bool fixRatio = true)
     {

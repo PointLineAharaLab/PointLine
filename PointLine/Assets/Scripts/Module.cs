@@ -2,7 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Module : MonoBehaviour {
+public class MODULE
+{
+    public const int POINT2POINT = 2;
+}
+
+public abstract class Module : Object 
+{
 
     public int Type=0;//[1]
     public int Object1Id = -1;//[2]
@@ -26,8 +32,12 @@ public class Module : MonoBehaviour {
 
     public Vector3 PreVec;// 軌跡を描くための変数
 
+    abstract public float Execute();
+
+
     // Use this for initialization
     void Start () {
+        this.thisis = "Module";
         Active = true;
         //FixAngle = false;
         //FixRatio = true;
@@ -1298,4 +1308,49 @@ public class Module : MonoBehaviour {
             GameLog.GetComponent<Log>().Constant = Constant;
         }
     }
+    public void SetParent(GameObject obj)
+    {
+        this.parent = obj;
+    }
+
+}
+
+public class Point2Point: Module
+{
+    public Point point1, point2;
+    public GameObject Point1, Point2;
+    public float para1=0.1f, para2=0.1f;
+    public void SetModule(Point p1, Point p2)
+    {
+        this.thisis = "Module";
+        this.Type = MODULE.POINT2POINT;
+        point1 = p1;
+        point2 = p2;
+    }
+
+
+    override public float Execute()
+    {
+        if (point1 != null && point2 != null)
+        {
+            Vector3 v1 = point1.Vec;
+            Vector3 v2 = point2.Vec;
+            float err = (v1 - v2).magnitude * this.para1 * 2;
+            Vector3 v1New = (1f - this.para1) * v1 + this.para1 * v2;
+            Vector3 v2New = (1f - this.para1) * v2 + this.para1 * v1;
+            // debug
+            if (!point1.Fixed) 
+                point1.Vec = v1New;
+            if (!point2.Fixed)
+                point2.Vec = v2New;
+            return err;
+        }
+        else
+        {
+            Active = false;
+            return 0f;
+        }
+    }
+
+}
 }

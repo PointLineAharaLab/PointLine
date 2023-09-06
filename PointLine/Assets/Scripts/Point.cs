@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; //
 
-public class Point : MonoBehaviour
+public class Point : Object
 {
 
     public bool Active;
@@ -36,6 +36,7 @@ public class Point : MonoBehaviour
 
     // Use this for initialization
     void Start() {
+        this.thisis = "Point";
         Vec = gameObject.transform.position;
         Active = true;
 
