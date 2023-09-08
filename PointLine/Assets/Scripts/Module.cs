@@ -16,6 +16,8 @@ public class Module : MonoBehaviour {
     public bool ShowConstant = false;//[10]
     public bool FixAngle = false;//角度を固定するかどうかのフラグ//[11]
     public bool FixRatio = true;//比を固定するかどうかのフラグ//[12]
+    public float para = 0.1f;
+    public float err=0f;
 
     public GameObject Object1, Object2, Object3;
 
@@ -34,7 +36,7 @@ public class Module : MonoBehaviour {
     }
 
     #region Point2Point
-    private void ModulePOINT_ON_POINT()
+    private float ModulePOINT_ON_POINT()
     {        //二つの頂点を1つにする
         if(Object1 != null && Object2 != null)
         {
@@ -43,24 +45,25 @@ public class Module : MonoBehaviour {
             if (p1 == null || p2 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Vector3 v1 = p1.Vec;
             Vector3 v2 = p2.Vec;
-            Vector3 v1New = 0.7f * v1 + 0.3f * v2;
-            Vector3 v2New = 0.3f * v1 + 0.7f * v2;
-            // debug
-            float err = (p1.Vec - v1New).magnitude + (p2.Vec - v2New).magnitude;
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
+            Vector3 v1New = (1f-para) * v1 + para * v2;
+            Vector3 v2New = para * v1 + (1f - para) * v2;
+            float err = 0;
+            //if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
             if (!p1.Fixed)
             {
                 p1.Vec = v1New;
+                err += (p1.Vec - v1New).magnitude;
             }
             if (!p2.Fixed)
             {
                 p2.Vec = v2New;
+                err += (p2.Vec - v2New).magnitude;
             }
+            return err;
         }
         else 
         {
@@ -81,6 +84,7 @@ public class Module : MonoBehaviour {
                 }
             }
             if (Object1 == null || Object2 == null) Active = false;
+            return 0f;
         }
     }
     #endregion
@@ -117,48 +121,50 @@ public class Module : MonoBehaviour {
         return ret;
     }
 
-    private void ModulePOINT_ON_LINE()
+    private float ModulePOINT_ON_LINE()
     {
         // 点を直線の上に載せる。
         if (parent != null) parent.SetActive(Active);
-        if(Object1 != null && Object2 != null)
+        if (Object1 != null && Object2 != null)
         {
             Point p1 = Object1.GetComponent<Point>();
             Line l2 = Object2.GetComponent<Line>();
             if(p1 == null || l2 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Point p21 = l2.Point1.GetComponent<Point>();
             Point p22 = l2.Point2.GetComponent<Point>();
             if(p21 == null || p22 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             float Distance;
             Vector3 DVec, PVec;
             DVec = Rotate90(p22.Vec - p21.Vec);
             DVec.Normalize();
             PVec = p1.Vec - p21.Vec;
-            Distance = Vector3.Dot(DVec, PVec);
-            // debug
-            float err = Mathf.Abs(Distance) * 0.25f;
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
+            Distance = Vector3.Dot(DVec, PVec) * para;
+            float err = 0f;
+            
             if (!p1.Fixed)
             {// 点を直線に近づける
-                p1.Vec -= (Distance * 0.25f) * DVec;
+                p1.Vec -= (Distance * 0.5f) * DVec;
+                err += Mathf.Abs(Distance) * 0.5f;
             }
             if (!p21.Fixed)
             { //直線を点に近づける
                 p21.Vec += (Distance * 0.25f) * DVec;
+                err += Mathf.Abs(Distance) * 0.25f;
             }
             if (!p22.Fixed)
             { //直線を点に近づける
                 p22.Vec += (Distance * 0.25f) * DVec;
+                err += Mathf.Abs(Distance) * 0.25f;
             }
+            return err;
         }
         else
         {
@@ -186,10 +192,13 @@ public class Module : MonoBehaviour {
             {
                 Active = false;
             }
+            return 0f;
         }
     }
     #endregion
-    private void ModulePOINT_ON_CIRCLE()
+
+    #region PointOnCircle
+    private float  ModulePOINT_ON_CIRCLE()
     {        // 点を円の上に載せる
         
         Point p1 = null, p21 = null;
@@ -203,27 +212,28 @@ public class Module : MonoBehaviour {
             if (p1 == null || c2 == null || p21 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             float dist = Vector3.Distance(p21.Vec, p1.Vec);
             float rad = c2.Radius;
-            float delta = (dist - rad) * 0.25f;
+            float delta = (dist - rad) * para * 0.33f;
             float radNew = rad + delta;
+            float err = Mathf.Abs(delta);
             c2.Radius = radNew;
             Vector3 v2 = p1.Vec - p21.Vec;
             v2.Normalize();
-            // debug
-            float err = Mathf.Abs(delta);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
+            //if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
             if (!p1.Fixed)
             {
                 p1.Vec = p1.Vec - delta * v2;
+                err += Mathf.Abs(delta);
             }
             if (!p21.Fixed)
             { 
                 p21.Vec = p21.Vec + delta * v2;
+                err += Mathf.Abs(delta);
             }
+            return err;
         }
         else
         {
@@ -251,12 +261,14 @@ public class Module : MonoBehaviour {
             {
                 Active = false;
             }
+            return 0f;
         }
     }
+    #endregion
 
 
     #region LINES_ISOMETRY
-    private void ModuleLINES_ISOMETRY()
+    private float ModuleLINES_ISOMETRY()
     {
         gameObject.SetActive(Active);
         if(Object1 != null && Object2 != null)
@@ -266,7 +278,7 @@ public class Module : MonoBehaviour {
             if(LN1 == null || LN2 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Point p11 = LN1.Point1.GetComponent<Point>();
             Point p12 = LN1.Point2.GetComponent<Point>();
@@ -275,11 +287,11 @@ public class Module : MonoBehaviour {
             if(p11 == null|| p12 == null|| p21 == null||p22 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Vector3 VecA, VecB;
             float NormA, NormB, Delta;
-
+            float err = 0f;
             VecA = p12.Vec - p11.Vec;
             VecB = p22.Vec - p21.Vec;
             NormA = VecA.magnitude;
@@ -287,27 +299,36 @@ public class Module : MonoBehaviour {
             VecA.Normalize();
             VecB.Normalize();
             //Delta = (NormB - NormA) * 0.125f;//等長
-            Delta = (NormB * Ratio1 - NormA * Ratio2) / (Ratio1 + Ratio2) * 0.25f;//Ratioの値によって変わる
-            // debug
-            float err = Mathf.Abs(Delta);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
+            Delta = (NormB * Ratio1 - NormA * Ratio2) / (Ratio1 + Ratio2) * para;//Ratioの値によって変わる
             //  線分の長さを等しくする
             if (FixRatio)// 比が固定されていれば
             {
                 if (!p11.Fixed)
+                {
                     p11.Vec -= (Delta * Ratio2 / (Ratio1 + Ratio2)) * VecA;
-                if (!p21.Fixed)
+                    err += Mathf.Abs(Delta * Ratio2 / (Ratio1 + Ratio2));
+                }
+                if (!p21.Fixed) {
                     p21.Vec += (Delta * Ratio1 / (Ratio1 + Ratio2)) * VecB;
+                    err += Mathf.Abs(Delta * Ratio1 / (Ratio1 + Ratio2));
+                }
                 if (!p12.Fixed)
+                {
                     p12.Vec += (Delta * Ratio2 / (Ratio1 + Ratio2)) * VecA;
+                    err += Mathf.Abs(Delta * Ratio2 / (Ratio1 + Ratio2));
+                }
                 if (!p22.Fixed)
+                {
                     p22.Vec -= (Delta * Ratio1 / (Ratio1 + Ratio2)) * VecB;
+                    err += Mathf.Abs(Delta * Ratio1 / (Ratio1 + Ratio2));
+                }
+                return err;
             }
             else
             {
                 Ratio1 = NormA;
                 Ratio2 = NormB;
+                return 0f;
             }
             
         }
@@ -330,12 +351,13 @@ public class Module : MonoBehaviour {
                 }
             }
             if (Object1 == null || Object2 == null) Active = false;
+            return 0f;
         }
     }
     #endregion
 
     #region LINES_PERPENDICULAR
-    private void ModuleLINES_PERPENDICULAR()
+    private float ModuleLINES_PERPENDICULAR()
     {
         gameObject.SetActive(Active);
         if (Object1 != null && Object2 != null)
@@ -345,7 +367,7 @@ public class Module : MonoBehaviour {
             if (LN1 == null || LN2 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Point p11 = LN1.Point1.GetComponent<Point>();
             Point p12 = LN1.Point2.GetComponent<Point>();
@@ -354,7 +376,7 @@ public class Module : MonoBehaviour {
             if (p11 == null || p12 == null || p21 == null || p22 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             float x11 = p11.Vec.x;
             float y11 = p11.Vec.y;
@@ -375,34 +397,44 @@ public class Module : MonoBehaviour {
                 Delta += Mathf.PI / 2;
             else if (Delta >= -Mathf.PI * 2)
                 Delta += Mathf.PI * 3 / 2;
-            Delta *= 0.05f;
+            Delta *= para;
             float CosDelta = Mathf.Cos(Delta);
             float SinDelta = Mathf.Sin(Delta);
             float x1c = (x11 + x12) * 0.5f;
             float y1c = (y11 + y12) * 0.5f;
             float x2c = (x21 + x22) * 0.5f;
             float y2c = (y21 + y22) * 0.5f;
-            // debug
-            float err = Mathf.Abs(SinDelta);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
             Vector3 NewVec = Vector3.zero;
+            float err = 0f;
             NewVec.x = (x11 - x1c) * CosDelta - (y11 - y1c) * SinDelta + x1c;
             NewVec.y = +(x11 - x1c) * SinDelta + (y11 - y1c) * CosDelta + y1c;
             if (!p11.Fixed)
+            {
                 p11.Vec = NewVec;
+                err += Util.Magnitude(x11 - x1c, y11 - y1c) * Mathf.Abs(Delta);
+            }
             NewVec.x = (x12 - x1c) * CosDelta - (y12 - y1c) * SinDelta + x1c;
             NewVec.y = +(x12 - x1c) * SinDelta + (y12 - y1c) * CosDelta + y1c;
             if (!p12.Fixed)
+            {
                 p12.Vec = NewVec;
+                err += Util.Magnitude(x12 - x1c, y12 - y1c) * Mathf.Abs(Delta);
+            }
             NewVec.x = (x21 - x2c) * CosDelta + (y21 - y2c) * SinDelta + x2c;
             NewVec.y = -(x21 - x2c) * SinDelta + (y21 - y2c) * CosDelta + y2c;
             if (!p21.Fixed)
+            {
                 p21.Vec = NewVec;
+                err += Util.Magnitude(x21 - x2c, y21 - y2c) * Mathf.Abs(Delta);
+            }
             NewVec.x = (x22 - x2c) * CosDelta + (y22 - y2c) * SinDelta + x2c;
             NewVec.y = -(x22 - x2c) * SinDelta + (y22 - y2c) * CosDelta + y2c;
             if (!p22.Fixed)
+            {
                 p22.Vec = NewVec;
+                err += Util.Magnitude(x22 - x2c, y22 - y2c) * Mathf.Abs(Delta);
+            }
+            return err;
         }
         else
         {
@@ -423,12 +455,13 @@ public class Module : MonoBehaviour {
                 }
             }
             if (Object1 == null || Object2 == null) Active = false;
+            return 0f;
         }
     }
     #endregion
 
     #region LINES_PARALLEL
-    private void ModuleLINES_PARALLEL()
+    private float ModuleLINES_PARALLEL()
     {//直線を平行にする
         gameObject.SetActive(Active);
         if (Object1 != null && Object2 != null)
@@ -438,7 +471,7 @@ public class Module : MonoBehaviour {
             if (LN1 == null || LN2 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Point p11 = LN1.Point1.GetComponent<Point>();
             Point p12 = LN1.Point2.GetComponent<Point>();
@@ -447,7 +480,7 @@ public class Module : MonoBehaviour {
             if (p11 == null || p12 == null || p21 == null || p22 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             float x11 = p11.Vec.x;
             float y11 = p11.Vec.y;
@@ -470,34 +503,43 @@ public class Module : MonoBehaviour {
                 Delta += Mathf.PI;
             else
                 Delta += Mathf.PI * 2;
-            Delta *= 0.125f;
+            Delta *= para;
             float CosDelta = Mathf.Cos(Delta);
             float SinDelta = Mathf.Sin(Delta);
             float x1c = (x11 + x12) * 0.5f;
             float y1c = (y11 + y12) * 0.5f;
             float x2c = (x21 + x22) * 0.5f;
             float y2c = (y21 + y22) * 0.5f;
-            // debug
-            float err = Mathf.Abs(SinDelta);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
+            float err = 0f;
             Vector3 NewVec = Vector3.zero;
             NewVec.x = (x11 - x1c) * CosDelta - (y11 - y1c) * SinDelta + x1c;
             NewVec.y = +(x11 - x1c) * SinDelta + (y11 - y1c) * CosDelta + y1c;
             if (!p11.Fixed)
+            {
                 p11.Vec = NewVec;
+                err += Util.Magnitude(x11 - x1c, y11 - y1c) * Mathf.Abs(Delta);
+            }
             NewVec.x = (x12 - x1c) * CosDelta - (y12 - y1c) * SinDelta + x1c;
             NewVec.y = +(x12 - x1c) * SinDelta + (y12 - y1c) * CosDelta + y1c;
-            if (!p12.Fixed)
+            if (!p12.Fixed) {
                 p12.Vec = NewVec;
+                err += Util.Magnitude(x12 - x1c, y12 - y1c) * Mathf.Abs(Delta);
+            }
             NewVec.x = (x21 - x2c) * CosDelta + (y21 - y2c) * SinDelta + x2c;
             NewVec.y = -(x21 - x2c) * SinDelta + (y21 - y2c) * CosDelta + y2c;
             if (!p21.Fixed)
+            {
                 p21.Vec = NewVec;
+                err += Util.Magnitude(x21 - x2c, y21 - y2c) * Mathf.Abs(Delta);
+            }
             NewVec.x = (x22 - x2c) * CosDelta + (y22 - y2c) * SinDelta + x2c;
             NewVec.y = -(x22 - x2c) * SinDelta + (y22 - y2c) * CosDelta + y2c;
             if (!p22.Fixed)
+            {
                 p22.Vec = NewVec;
+                err += Util.Magnitude(x22 - x2c, y22 - y2c) * Mathf.Abs(Delta);
+            }
+            return err;
         }
         else
         {
@@ -519,12 +561,12 @@ public class Module : MonoBehaviour {
             }
             if (Object1 == null || Object2 == null) Active = false;
         }
-        return;
+        return 0f;
     }
     #endregion
 
     #region LINE_HORIZONTAL
-    private void ModuleLINE_HORIZONTAL()
+    private float ModuleLINE_HORIZONTAL()
     {//直線を平行にする
         gameObject.SetActive(Active);
         if (Object1 != null)
@@ -533,14 +575,14 @@ public class Module : MonoBehaviour {
             if (LN1 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Point p11 = LN1.Point1.GetComponent<Point>();
             Point p12 = LN1.Point2.GetComponent<Point>();
             if (p11 == null || p12 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             float x11 = p11.Vec.x;
             float y11 = p11.Vec.y;
@@ -554,22 +596,28 @@ public class Module : MonoBehaviour {
                 Delta += 0;
             else if (Delta >= -Mathf.PI * 3 / 2)
                 Delta += Mathf.PI;
-            Delta *= 0.125f;
+            Delta *= para;
             float CosDelta = Mathf.Cos(Delta);
             float SinDelta = Mathf.Sin(Delta);
             float x1c = (x11 + x12) * 0.5f;
             float y1c = (y11 + y12) * 0.5f;
-            float err = Mathf.Abs(SinDelta);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
+            float err = 0f;
             Vector3 NewVec = Vector3.zero;
             NewVec.x = (x11 - x1c) * CosDelta - (y11 - y1c) * SinDelta + x1c;
             NewVec.y = +(x11 - x1c) * SinDelta + (y11 - y1c) * CosDelta + y1c;
             if (!p11.Fixed)
+            {
                 p11.Vec = NewVec;
+                err += Util.Magnitude(x11 - x1c, y11 - y1c) * Mathf.Abs(Delta);
+            }
             NewVec.x = (x12 - x1c) * CosDelta - (y12 - y1c) * SinDelta + x1c;
             NewVec.y = +(x12 - x1c) * SinDelta + (y12 - y1c) * CosDelta + y1c;
             if (!p12.Fixed)
+            {
                 p12.Vec = NewVec;
+                err += Util.Magnitude(x12 - x1c, y12 - y1c) * Mathf.Abs(Delta);
+            }
+            return err;
         }
         else
         {
@@ -587,7 +635,7 @@ public class Module : MonoBehaviour {
             }
             if (Object1 == null) Active = false;
         }
-        return;
+        return 0f;
     }
     #endregion
 
@@ -1232,10 +1280,6 @@ public class Module : MonoBehaviour {
             obj.GetComponent<LocusDot>().parent = this;
         }
     }
-
-
-
-
 
     public void ExecuteModule()
     {

@@ -258,7 +258,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
         int MOP=-1;
         // 状況ごとに、優先されるべき要素に対応する。
-        Debug.Log("ClickRequire = " + AppMgr.ClickRequire);
+        //Debug.Log("ClickRequire = " + AppMgr.ClickRequire);
         if (AppMgr.ClickRequire == AppMgr.CLICKREQ_POINT)
         {
             MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
