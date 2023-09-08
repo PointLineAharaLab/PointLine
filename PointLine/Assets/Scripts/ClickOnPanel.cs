@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
+
 public class ClickOnPanel : AppMgr //MonoBehaviour
 {
     static int PointId=0;
@@ -31,8 +33,22 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     float DraggedGameLogStartTop = 0f;
     Vector3 DraggedPreferencePosition;
     Vector3 PreviousMouseDragPosition;
+    private readonly float[] ColorCode = new float[]{
+        0.7f, 0.7f, 0.0f,
+        0.0f, 0.7f, 0.7f,
+        0.7f, 0.0f, 0.7f,
+        0.8f, 0.4f, 0.0f,
+        0.0f, 0.8f, 0.4f,
+        0.0f, 0.0f, 0.8f,
+        0.4f, 0.0f, 0.0f,
+        0.4f, 0.8f, 0.0f,
+        0.0f, 0.4f, 0.8f,
+        0.8f, 0.0f, 0.4f,
+    };
+
 
     // Use this for initialization
+    #region start
     void Start()
     {
         SetId(0, 1000, 2000, 3000);
@@ -52,20 +68,10 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Util.IsometrySelectedColor[i] = new Color(vx, vy, vz);
         }
     }
+    #endregion
 
-    private readonly float[] ColorCode = new float[]{ 
-        0.7f, 0.7f, 0.0f,
-        0.0f, 0.7f, 0.7f, 
-        0.7f, 0.0f, 0.7f,
-        0.8f, 0.4f, 0.0f,
-        0.0f, 0.8f, 0.4f,
-        0.0f, 0.0f, 0.8f,
-        0.4f, 0.0f, 0.0f,
-        0.4f, 0.8f, 0.0f,
-        0.0f, 0.4f, 0.8f,
-        0.8f, 0.0f, 0.4f,
-    };
 
+    
     void Update()
     {
         if (AppMgr.KeyOn)
@@ -81,11 +87,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             OnMouseDrag();
         }
         OnKeyCommand();
-        //else if (Input.GetMouseButtonUp(0))
-        //{
-        //    print("mousebuttonup 0");
-        //}
-        Util.SetIsometry();
+        Util.SetIsometry();//// whats this?
     }
 
     public static void SetId(int PId, int LId, int CId, int MId)
@@ -96,10 +98,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         ModuleId = MId;
     }
 
-    private float Hypot(float x, float y)
-    {
-        return Mathf.Sqrt(x * x + y * y);
-    }
 
     private int MouseOnPoints(Vector3 v)
     {
@@ -107,7 +105,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         if (pts == null) return -1;
         for (int i = 0; i < pts.Length; i++)
         {
-            double dist = Hypot(v.x - pts[i].Vec.x, v.y - pts[i].Vec.y);
+            double dist = Util.Hypot(v.x - pts[i].Vec.x, v.y - pts[i].Vec.y);
             //Debug.Log("dist - " + dist);
             if (dist < 0.25)
             {
@@ -151,7 +149,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {
             for (int i = 0; i < ci.Length; i++)
             {
-                float dist = Hypot(ci[i].CenterVec.x - v.x, ci[i].CenterVec.y - v.y);
+                float dist = Util.Hypot(ci[i].CenterVec.x - v.x, ci[i].CenterVec.y - v.y);
                 if (ci[i].Radius - 0.25 < dist && dist < ci[i].Radius + 0.25)
                 {
                     //Debug.Log("MouseOnCircle " + ci[i].Id);
@@ -305,6 +303,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             return -1;// 何もないところ
         }
     }
+
 
     void OnKey()
     {
@@ -828,7 +827,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         else if (ModeStep == 1)
         {// モード４ステップ１ならば、点 MouseUpVec を使って円を描く。
             //半径を計算する
-            float rd = Hypot(MouseUpVec.x - FirstClickVec.x, MouseUpVec.y - FirstClickVec.y);
+            float rd = Util.Hypot(MouseUpVec.x - FirstClickVec.x, MouseUpVec.y - FirstClickVec.y);
             Util.AddCircle(FirstClickId, rd, CircleId);
             // 新しい点をselected，そのほかの点は選択をはずす。
             Circle.MakeOneCircleSelected(CircleId);
@@ -1461,7 +1460,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         if (Camera.main == null) return;
         MouseUpVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         MouseUpVec.z = 0.0f;
-        if (Hypot(MouseDownVec.x - MouseUpVec.x, MouseDownVec.y - MouseUpVec.y) < 0.1)
+        if (Util.Hypot(MouseDownVec.x - MouseUpVec.x, MouseDownVec.y - MouseUpVec.y) < 0.1)
         {// クリックののちマウスアップ
             //ログの右上をクリック
             int MOL = MouseOnGameLog(MouseUpVec); 
