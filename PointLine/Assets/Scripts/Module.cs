@@ -44,7 +44,7 @@ public abstract class Module : Object
     }
 
     #region Point2Point
-    private void ModulePOINT_ON_POINT()
+    private float ModulePOINT_ON_POINT()
     {        //二つの頂点を1つにする
         if(Object1 != null && Object2 != null)
         {
@@ -53,24 +53,21 @@ public abstract class Module : Object
             if (p1 == null || p2 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
+            Active = true;
             Vector3 v1 = p1.Vec;
             Vector3 v2 = p2.Vec;
-            Vector3 v1New = 0.7f * v1 + 0.3f * v2;
-            Vector3 v2New = 0.3f * v1 + 0.7f * v2;
-            // debug
-            float err = (p1.Vec - v1New).magnitude + (p2.Vec - v2New).magnitude;
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
+            Vector3 v1New = 0.9f * v1 + 0.1f * v2;
+            Vector3 v2New = 0.1f * v1 + 0.9f * v2;
+            float err = (p1.Vec - v1New).magnitude * 2;
+            if (err > AppMgr.ConvergencyError) 
+                AppMgr.ConvergencyCount++;// delete in the future
             if (!p1.Fixed)
-            {
                 p1.Vec = v1New;
-            }
             if (!p2.Fixed)
-            {
                 p2.Vec = v2New;
-            }
+            return err;
         }
         else 
         {
@@ -91,6 +88,7 @@ public abstract class Module : Object
                 }
             }
             if (Object1 == null || Object2 == null) Active = false;
+            return 0f;
         }
     }
     #endregion
@@ -1247,12 +1245,14 @@ public abstract class Module : Object
 
 
 
-    public void ExecuteModule()
+    public float ExecuteModule()
     {
-        if (!Active) return;
+        if (!Active) 
+            return 0f;
+        float err = 0f;
         switch (Type) {
             case MENU.POINT_ON_POINT: 
-                ModulePOINT_ON_POINT();
+                err=ModulePOINT_ON_POINT();
                 break;
             case MENU.POINT_ON_LINE:
                 ModulePOINT_ON_LINE();
@@ -1291,16 +1291,17 @@ public abstract class Module : Object
                 Module_LOCUS();
                 break;
         }
+        return err;
     }
 
     void Update()
     {
-        if (AppMgr.ModuleOn) { // いつでもモジュールを切れるようにしておく。
-            for (int a = 0; a < 100; a++)
-            {
-                ExecuteModule();
-            }
-        }
+        //if (AppMgr.ModuleOn) { // いつでもモジュールを切れるようにしておく。
+        //    for (int a = 0; a < 100; a++)
+        //    {
+        //        ExecuteModule();
+        //    }
+        //}
         if (GameLog != null)
         {
             GameLog.GetComponent<Log>().Ratio1 = Ratio1;
@@ -1327,8 +1328,6 @@ public class Point2Point: Module
         point1 = p1;
         point2 = p2;
     }
-
-
     override public float Execute()
     {
         if (point1 != null && point2 != null)
@@ -1353,4 +1352,4 @@ public class Point2Point: Module
     }
 
 }
-}
+
