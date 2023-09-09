@@ -156,13 +156,13 @@ public class Module : MonoBehaviour {
             }
             if (!p21.Fixed)
             { //直線を点に近づける
-                p21.Vec += (Distance * 0.25f) * DVec;
-                err += Mathf.Abs(Distance) * 0.25f;
+                p21.Vec += (Distance * 0.5f) * DVec;
+                err += Mathf.Abs(Distance) * 0.5f;
             }
             if (!p22.Fixed)
             { //直線を点に近づける
-                p22.Vec += (Distance * 0.25f) * DVec;
-                err += Mathf.Abs(Distance) * 0.25f;
+                p22.Vec += (Distance * 0.5f) * DVec;
+                err += Mathf.Abs(Distance) * 0.5f;
             }
             return err;
         }
@@ -640,7 +640,7 @@ public class Module : MonoBehaviour {
     #endregion
 
 
-    private void ModuleCIRCLE_TANGENT_LINE()
+    private float ModuleCIRCLE_TANGENT_LINE()
     {//円を直線に接させる
         //Object1Id : 円：
         //Object2Id : 直線
@@ -652,7 +652,7 @@ public class Module : MonoBehaviour {
             if (CI1 == null || LN2 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Point p11 = CI1.CenterPoint.GetComponent<Point>();
             Point p21 = LN2.Point1.GetComponent<Point>();
@@ -660,7 +660,7 @@ public class Module : MonoBehaviour {
             if (p11 == null || p21 == null || p22 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             float Radius = CI1.Radius;
             Vector3 DVec = Rotate90(p22.Vec - p21.Vec);
@@ -672,21 +672,29 @@ public class Module : MonoBehaviour {
                 DVec *= -1f;
                 Distance *= -1f;
             }
-            float Delta = (Distance - Radius) * 0.16f;
-            // debug
-            float err = Mathf.Abs(Delta);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
+            float Delta = (Distance - Radius) * para;
+            float err = 0f;
             // 円の中心を直線に近づける
             if (!p11.Fixed)
-                p11.Vec -= Delta * DVec;
+            {
+                p11.Vec -= (Delta * 0.33f)* DVec;
+                err += Mathf.Abs(Delta * 0.33f);
+            }
             //円の半径を適切に変化させる
             CI1.Radius += Delta;
+            err += Mathf.Abs(Delta * 0.33f);
             // 直線を円に近づける
             if (!p21.Fixed)
-                p21.Vec += Delta * DVec;
+            {
+                p21.Vec += (Delta * 0.33f) * DVec;
+                err += Mathf.Abs(Delta * 0.33f);
+            }
             if (!p22.Fixed)
-                p22.Vec += Delta * DVec;
+            {
+                p22.Vec += (Delta * 0.33f) * DVec;
+                err += Mathf.Abs(Delta * 0.33f);
+            }
+            return err;
         }
         else
         {
@@ -712,10 +720,10 @@ public class Module : MonoBehaviour {
             }
             if (Object1 == null || Object2 == null) Active = false;
         }
-        return;
+        return 0f;
     }
 
-    private void ModuleCIRCLE_TANGENT_CIRCLE()
+    private float ModuleCIRCLE_TANGENT_CIRCLE()
     {//円を円に（外）接させる
         //Object1Id : 円１
         //Object2Id : 円２
@@ -728,14 +736,14 @@ public class Module : MonoBehaviour {
             if (CI1 == null || CI2 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Point p11 = CI1.CenterPoint.GetComponent<Point>();
             Point p21 = CI2.CenterPoint.GetComponent<Point>();
             if (p11 == null || p21 == null)
             {
                 Active = false;
-                return;
+                return 0f;
             }
             Vector3 c1c = p11.Vec;
             float c1r = CI1.Radius;
@@ -748,23 +756,29 @@ public class Module : MonoBehaviour {
             float DeltaIn = normD - Mathf.Abs(c1r - c2r);
             float DeltaOut = normD - (c1r + c2r);
             float Delta = 0f;
+            float err = 0f;
             if (Mathf.Abs(DeltaIn) > Mathf.Abs(DeltaOut))
             {// 外接していると思われる
-                Delta = DeltaOut * 0.125f;
-                // debug
-                float err = Mathf.Abs(Delta);
-                if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-                // debug
+                Delta = DeltaOut * para * 0.25f;
                 //円１の中心を動かす
                 if (!p11.Fixed)
+                {
                     p11.Vec += Delta * DVec12;
+                    err += Mathf.Abs(Delta);
+                }
                 //円２の中心を動かす
                 if (!p21.Fixed)
+                {
                     p21.Vec += Delta * DVec21;
+                    err += Mathf.Abs(Delta);
+                }
                 //円１の半径を調整する
                 CI1.Radius += Delta;
+                err += Mathf.Abs(Delta);
                 //円２の半径を調整する
                 CI2.Radius += Delta;
+                err += Mathf.Abs(Delta);
+                return err;
             }
             else
             {//内接していると思われる
@@ -778,36 +792,42 @@ public class Module : MonoBehaviour {
                 {
                     C1out = true;
                 }
-                Delta = DeltaIn * 0.125f;
-                // debug
-                float err = Mathf.Abs(Delta);
-                if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-                // debug
+                Delta = DeltaIn * para * 0.25f;
                 //円１の中心を動かす
                 if (!p11.Fixed)
+                {
                     p11.Vec += Delta * DVec12;
+                    err += Mathf.Abs(Delta);
+                }
                 //円２の中心を動かす
                 if (!p21.Fixed)
+                {
                     p21.Vec += Delta * DVec21;
+                    err += Mathf.Abs(Delta);
+                }
                 //円１の半径を調整する
                 if (C1out)
                 {
                     CI1.Radius += Delta;
+                    err += Mathf.Abs(Delta);
                 }
                 else
                 {
                     CI1.Radius -= Delta;
+                    err += Mathf.Abs(Delta);
                 }
                 //円２の半径を調整する
                 if (C1out)
                 {
                     CI2.Radius -= Delta;
+                    err += Mathf.Abs(Delta);
                 }
                 else
                 {
                     CI2.Radius += Delta;
+                    err += Mathf.Abs(Delta);
                 }
-
+                return err;
             }
         }
         else
@@ -830,13 +850,13 @@ public class Module : MonoBehaviour {
             }
             if (Object1 == null || Object2 == null) Active = false;
         }
-        return;
+        return 0f;
     }
 
-    private void ModuleADD_MIDPOINT()
+    private float ModuleADD_MIDPOINT()
     {
         int i1 = -1, i2 = -1, i3 = -1;
-        if (AppMgr.pts == null) return;
+        if (AppMgr.pts == null) return 0f;
         for (int i = 0; i < AppMgr.pts.Length; i++)
         {
             if (AppMgr.pts[i].Id == Object1Id)
@@ -854,6 +874,7 @@ public class Module : MonoBehaviour {
         }
         if(i1>=0 && i2>=0 && i3 >= 0)
         {
+            float err = 0f;
             if (Ratio1 == Ratio2 || Ratio1 == -Ratio2) { 
                 Vector3 v1 = AppMgr.pts[i1].Vec;
                 Vector3 v2 = AppMgr.pts[i2].Vec;
@@ -861,21 +882,29 @@ public class Module : MonoBehaviour {
                 Vector3 NewV1 = - v2 + 2.0f * v3;
                 Vector3 NewV2 = - v1 + 2.0f * v3;
                 Vector3 NewV3 = 0.5f * v1 + 0.5f * v2;
-                float Delta = 0.25f;
-                float Epsilon = 1.0f - Delta;
+                float Delta = para;
+                float Epsilon = 1.0f - para;
                 NewV1 = Delta * NewV1 + Epsilon * v1;
                 NewV2 = Delta * NewV2 + Epsilon * v2;
                 NewV3 = Delta * NewV3 + Epsilon * v3;
-                // debug
-                float err = (v1-NewV1).magnitude + (v2 - NewV2).magnitude + (v3 - NewV3).magnitude;
-                if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-                // debug
+
+                 
                 if (!AppMgr.pts[i1].Fixed)
+                {
                     AppMgr.pts[i1].Vec = NewV1;
+                    err += (v1 - NewV1).magnitude;
+                }
                 if (!AppMgr.pts[i2].Fixed)
+                {
                     AppMgr.pts[i2].Vec = NewV2;
+                    err += (v2 - NewV2).magnitude;
+                }
                 if (!AppMgr.pts[i3].Fixed)
+                {
                     AppMgr.pts[i3].Vec = NewV3;
+                    err += (v3 - NewV3).magnitude;
+                }
+                return err;
             }
             else
             {
@@ -885,27 +914,33 @@ public class Module : MonoBehaviour {
                 Vector3 NewV1 = (Ratio2==0)? v1 : (-Ratio1 * v2 + (Ratio2 + Ratio1) * v3) / Ratio2;
                 Vector3 NewV2 = (Ratio1==0)? v2 : (-Ratio2 * v1 + (Ratio2 + Ratio1) * v3) / Ratio1;
                 Vector3 NewV3 = (Ratio2 * v1 + Ratio1 * v2) / (Ratio2 + Ratio1);
-                float Delta = 0.25f;
-                float Epsilon = 1.0f - Delta;
+                float Delta = para;
+                float Epsilon = 1.0f - para;
                 NewV1 = Delta * NewV1 + Epsilon * v1;
                 NewV2 = Delta * NewV2 + Epsilon * v2;
                 NewV3 = Delta * NewV3 + Epsilon * v3;
-                // debug
-                float err = (v1 - NewV1).magnitude + (v2 - NewV2).magnitude + (v3 - NewV3).magnitude;
-                if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-                // debug
                 if (!AppMgr.pts[i1].Fixed)
+                {
                     AppMgr.pts[i1].Vec = NewV1;
+                    err += (v1 - NewV1).magnitude;
+                }
                 if (!AppMgr.pts[i2].Fixed)
+                {
                     AppMgr.pts[i2].Vec = NewV2;
+                    err += (v2 - NewV2).magnitude;
+                }
                 if (!AppMgr.pts[i3].Fixed)
+                {
                     AppMgr.pts[i3].Vec = NewV3;
+                    err += (v3 - NewV3).magnitude;
+                }
+                return err;
             }
         }
-
+        return 0f;
     }
 
-    private void ModuleANGLE()
+    private float ModuleANGLE()
     {
         gameObject.SetActive(Active);
         if (Object1 == null || Object2 == null || Object3 == null)
@@ -938,8 +973,9 @@ public class Module : MonoBehaviour {
         if (PA == null || PB == null || PC == null)
         {
             Active = false;
-            return;
+            return 0f;
         }
+        float err = 0f;
         {
             float Ax = PA.Vec.x, Ay = PA.Vec.y;
             float Bx = PB.Vec.x, By = PB.Vec.y;
@@ -951,7 +987,7 @@ public class Module : MonoBehaviour {
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * 0.1f;
+            float AngleError = (Angle - Constant) * para;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -960,14 +996,10 @@ public class Module : MonoBehaviour {
             }
             else 
             {
-                AngleError = (Angle + Constant) * 0.1f;
+                AngleError = (Angle + Constant) * para;
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
-            // debug
-            float err = Mathf.Abs(AngleError);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
             if (FixAngle)
                 //角を固定するときは点を動かす
             {
@@ -978,9 +1010,15 @@ public class Module : MonoBehaviour {
                 Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
                 Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
                 if (!PA.Fixed)
+                {
                     PA.Vec = newPAVec;
+                    err += Util.Magnitude(Ax - MidABx, Ay - MidABy) * Mathf.Abs(AngleError);
+                }
                 if (!PB.Fixed)
+                {
                     PB.Vec = newPBVec;
+                    err += Util.Magnitude(Bx - MidABx, By - MidABy) * Mathf.Abs(AngleError);
+                }
             }
             else　//角を固定しないときは表示を変える
             {
@@ -998,7 +1036,7 @@ public class Module : MonoBehaviour {
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * 0.1f;
+            float AngleError = (Angle - Constant) * para;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1011,31 +1049,34 @@ public class Module : MonoBehaviour {
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
-            // debug
-            float err = Mathf.Abs(AngleError);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
             if (FixAngle)
             {
-                float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
-                float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
                 float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
                 float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+                float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+                float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
                 Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
                 Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
                 if (!PB.Fixed)
+                {
                     PB.Vec = newPBVec;
+                    err += Util.Magnitude(Bx - MidCBx, By - MidCBy) * Mathf.Abs(AngleError);
+                }
                 if (!PC.Fixed)
+                {
                     PC.Vec = newPCVec;
+                    err += Util.Magnitude(Cx - MidCBx, Cy - MidCBy) * Mathf.Abs(AngleError);
+                }
             }
             else
             {
                 Constant = Mathf.Abs(Angle);
             }
         }
+        return err;
     }
 
-    private void ModuleBISECTOR()
+    private float ModuleBISECTOR()
     {
         gameObject.SetActive(Active);
         if (Object1 == null || Object2 == null)
@@ -1057,6 +1098,7 @@ public class Module : MonoBehaviour {
                 }
             }
             if (Object1 == null || Object2 == null) Active = false;
+            return 0f;
         }
         Module md1 = Object1.GetComponent<Module>();
         Module md2 = Object2.GetComponent<Module>();
@@ -1069,31 +1111,31 @@ public class Module : MonoBehaviour {
         if (M1PA == null || M1PB == null || M1PC == null || M2PA == null || M2PB == null || M2PC == null)
         {
             Active = false;
-            return;
+            return 0f;
         }
         float M2PAx = M2PA.Vec.x, M2PAy = M2PA.Vec.y;
         float M2PBx = M2PB.Vec.x, M2PBy = M2PB.Vec.y;
         float M2PCx = M2PC.Vec.x, M2PCy = M2PC.Vec.y;
-        float M2MidABx = M2PAx * 0.5f + M2PBx * 0.5f, M2MidABy = M2PAy * 0.5f + M2PBy * 0.5f;
-        float M2MidCBx = M2PCx * 0.5f + M2PBx * 0.5f, M2MidCBy = M2PCy * 0.5f + M2PBy * 0.5f;
+        //float M2MidABx = (M2PAx + M2PBx) * 0.5f, M2MidABy = (M2PAy + M2PBy) * 0.5f;
+        //float M2MidCBx = (M2PCx + M2PBx) * 0.5f, M2MidCBy = (M2PCy + M2PBy) * 0.5f;
         float M2DeclineBA = Mathf.Atan2(M2PAy - M2PBy, M2PAx - M2PBx);
         float M2DeclineBC = Mathf.Atan2(M2PCy - M2PBy, M2PCx - M2PBx);
         if (M2DeclineBC < M2DeclineBA - Mathf.PI) M2DeclineBC += Mathf.PI * 2f;
         if (M2DeclineBC > M2DeclineBA + Mathf.PI) M2DeclineBC -= Mathf.PI * 2f;
         float M2Angle = M2DeclineBC - M2DeclineBA;
         float Constant = Mathf.Abs(M2Angle);
+        float err = 0f;
         {
             float Ax = M1PA.Vec.x, Ay = M1PA.Vec.y;
             float Bx = M1PB.Vec.x, By = M1PB.Vec.y;
             float Cx = M1PC.Vec.x, Cy = M1PC.Vec.y;
-            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
-            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float MidABx = (Ax + Bx) * 0.5f, MidABy = (Ay + By) * 0.5f;
             float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
             float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * 0.1f;
+            float AngleError = (Angle - Constant) * para;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1102,37 +1144,38 @@ public class Module : MonoBehaviour {
             }
             else
             {
-                AngleError = (Angle + Constant) * 0.1f;
+                AngleError = (Angle + Constant) * para;
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
-            // debug
-            float err = Mathf.Abs(AngleError);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
             float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
             float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
             float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
             float NewBy = (Bx - MidABx) * Mathf.Sin(AngleError) + (By - MidABy) * Mathf.Cos(AngleError) + MidABy;
-            Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
-            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
+            Vector3 newPAVec = new(NewAx, NewAy, 0f);
+            Vector3 newPBVec = new(NewBx, NewBy, 0f);
             if (!M1PA.Fixed && !FixAngle)
+            {
                 M1PA.Vec = newPAVec;
+                err += Util.Magnitude(Ax - MidABx, Ay - MidABy) * Mathf.Abs(AngleError);
+            }
             if (!M1PB.Fixed && !FixAngle)
+            {
                 M1PB.Vec = newPBVec;
+                err += Util.Magnitude(Bx - MidABx, By - MidABy) * Mathf.Abs(AngleError);
+            }
         }
         {
             float Ax = M1PA.Vec.x, Ay = M1PA.Vec.y;
             float Bx = M1PB.Vec.x, By = M1PB.Vec.y;
             float Cx = M1PC.Vec.x, Cy = M1PC.Vec.y;
-            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
-            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float MidCBx = (Cx + Bx) * 0.5f, MidCBy = (Cy + By) * 0.5f;
             float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
             float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * 0.1f;
+            float AngleError = (Angle - Constant) * para;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1141,30 +1184,32 @@ public class Module : MonoBehaviour {
             }
             else
             {
-                AngleError = (Angle + Constant) * 0.1f;
+                AngleError = (Angle + Constant) * para;
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
-            // debug
-            float err = Mathf.Abs(AngleError);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
-            float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
-            float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
             float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
             float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
-            Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
-            Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
+            float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+            float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+            Vector3 newPBVec = new(NewBx, NewBy, 0f);
+            Vector3 newPCVec = new(NewCx, NewCy, 0f);
             if (!M1PB.Fixed && !FixAngle)
+            {
                 M1PB.Vec = newPBVec;
+                err += Util.Magnitude(Bx - MidCBx, By - MidCBy) * Mathf.Abs(AngleError);
+            }
             if (!M1PC.Fixed && !FixAngle)
+            {
                 M1PC.Vec = newPCVec;
+                err += Util.Magnitude(Cx - MidCBx, Cy - MidCBy) * Mathf.Abs(AngleError);
+            }
         }
         float M1PAx = M1PA.Vec.x, M1PAy = M1PA.Vec.y;
         float M1PBx = M1PB.Vec.x, M1PBy = M1PB.Vec.y;
         float M1PCx = M1PC.Vec.x, M1PCy = M1PC.Vec.y;
-        float M1MidABx = M1PAx * 0.5f + M1PBx * 0.5f, M1MidABy = M1PAy * 0.5f + M1PBy * 0.5f;
-        float M1MidCBx = M1PCx * 0.5f + M1PBx * 0.5f, M1MidCBy = M1PCy * 0.5f + M1PBy * 0.5f;
+        //float M1MidABx = (M1PAx + M1PBx) * 0.5f, M1MidABy = (M1PAy + M1PBy) * 0.5f;
+        //float M1MidCBx = (M1PCx + M1PBx) * 0.5f, M1MidCBy = (M1PCy + M1PBy) * 0.5f;
         float M1DeclineBA = Mathf.Atan2(M1PAy - M1PBy, M1PAx - M1PBx);
         float M1DeclineBC = Mathf.Atan2(M1PCy - M1PBy, M1PCx - M1PBx);
         if (M1DeclineBC < M1DeclineBA - Mathf.PI) M1DeclineBC += Mathf.PI * 2f;
@@ -1175,14 +1220,13 @@ public class Module : MonoBehaviour {
             float Ax = M2PA.Vec.x, Ay = M2PA.Vec.y;
             float Bx = M2PB.Vec.x, By = M2PB.Vec.y;
             float Cx = M2PC.Vec.x, Cy = M2PC.Vec.y;
-            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
-            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float MidABx = (Ax + Bx) * 0.5f, MidABy = (Ay + By) * 0.5f;
             float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
             float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * 0.1f;
+            float AngleError = (Angle - Constant) * para;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1191,14 +1235,10 @@ public class Module : MonoBehaviour {
             }
             else
             {
-                AngleError = (Angle + Constant) * 0.1f;
+                AngleError = (Angle + Constant) * para;
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
-            // debug
-            float err = Mathf.Abs(AngleError);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
             float NewAx = (Ax - MidABx) * Mathf.Cos(AngleError) - (Ay - MidABy) * Mathf.Sin(AngleError) + MidABx;
             float NewAy = (Ax - MidABx) * Mathf.Sin(AngleError) + (Ay - MidABy) * Mathf.Cos(AngleError) + MidABy;
             float NewBx = (Bx - MidABx) * Mathf.Cos(AngleError) - (By - MidABy) * Mathf.Sin(AngleError) + MidABx;
@@ -1206,22 +1246,27 @@ public class Module : MonoBehaviour {
             Vector3 newPAVec = new Vector3(NewAx, NewAy, 0f);
             Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
             if (!M2PA.Fixed && !FixAngle)
+            {
                 M2PA.Vec = newPAVec;
+                err += Util.Magnitude(Ax - MidABx, Ay - MidABy) * Mathf.Abs(AngleError);
+            }
             if (!M2PB.Fixed && !FixAngle)
+            {
                 M2PB.Vec = newPBVec;
+                err += Util.Magnitude(Bx - MidABx, By - MidABy) * Mathf.Abs(AngleError);
+            }
         }
         {
             float Ax = M2PA.Vec.x, Ay = M2PA.Vec.y;
             float Bx = M2PB.Vec.x, By = M2PB.Vec.y;
             float Cx = M2PC.Vec.x, Cy = M2PC.Vec.y;
-            float MidABx = Ax * 0.5f + Bx * 0.5f, MidABy = Ay * 0.5f + By * 0.5f;
-            float MidCBx = Cx * 0.5f + Bx * 0.5f, MidCBy = Cy * 0.5f + By * 0.5f;
+            float MidCBx = (Cx + Bx) * 0.5f, MidCBy = (Cy + By) * 0.5f;
             float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
             float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * 0.1f;
+            float AngleError = (Angle - Constant) * para;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1234,25 +1279,27 @@ public class Module : MonoBehaviour {
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
-            // debug
-            float err = Mathf.Abs(AngleError);
-            if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
-            // debug
-            float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
-            float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
             float NewBx = (Bx - MidCBx) * Mathf.Cos(-AngleError) - (By - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
             float NewBy = (Bx - MidCBx) * Mathf.Sin(-AngleError) + (By - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
+            float NewCx = (Cx - MidCBx) * Mathf.Cos(-AngleError) - (Cy - MidCBy) * Mathf.Sin(-AngleError) + MidCBx;
+            float NewCy = (Cx - MidCBx) * Mathf.Sin(-AngleError) + (Cy - MidCBy) * Mathf.Cos(-AngleError) + MidCBy;
             Vector3 newPBVec = new Vector3(NewBx, NewBy, 0f);
             Vector3 newPCVec = new Vector3(NewCx, NewCy, 0f);
             if (!M2PB.Fixed && !FixAngle)
+            {
                 M2PB.Vec = newPBVec;
+                err += Util.Magnitude(Bx - MidCBx, By - MidCBy) * Mathf.Abs(AngleError);
+            }
             if (!M2PC.Fixed && !FixAngle)
+            {
                 M2PC.Vec = newPCVec;
+                err += Util.Magnitude(Cx - MidCBx, Cy - MidCBy) * Mathf.Abs(AngleError);
+            }
         }
-
+        return err;
     }
 
-    private void Module_LOCUS()
+    private float Module_LOCUS()
     {
         gameObject.SetActive(Active);
         if (Object1 == null)
@@ -1279,62 +1326,51 @@ public class Module : MonoBehaviour {
             GameObject obj = Instantiate<GameObject>(prefab, ptVec, Quaternion.identity);
             obj.GetComponent<LocusDot>().parent = this;
         }
+        return 0f;
     }
 
-    public void ExecuteModule()
+    public float ExecuteModule()
     {
-        if (!Active) return;
+        if (!Active) return 0f;
         switch (Type) {
             case MENU.POINT_ON_POINT: 
-                ModulePOINT_ON_POINT();
-                break;
+                return ModulePOINT_ON_POINT();
             case MENU.POINT_ON_LINE:
-                ModulePOINT_ON_LINE();
-                break;
+                return ModulePOINT_ON_LINE();
             case MENU.POINT_ON_CIRCLE:
-                ModulePOINT_ON_CIRCLE();
-                break;
+                return ModulePOINT_ON_CIRCLE();
             case MENU.LINES_ISOMETRY:
-                ModuleLINES_ISOMETRY();
-                break;
+                return ModuleLINES_ISOMETRY();
             case MENU.LINES_PERPENDICULAR:
-                ModuleLINES_PERPENDICULAR();
-                break;
+                return ModuleLINES_PERPENDICULAR();
             case MENU.LINES_PARALLEL:
-                ModuleLINES_PARALLEL();
-                break;
+                return ModuleLINES_PARALLEL();
             case MENU.LINE_HORIZONTAL:
-                ModuleLINE_HORIZONTAL();
-                break;
+                return ModuleLINE_HORIZONTAL();
             case MENU.CIRCLE_TANGENT_LINE:
-                ModuleCIRCLE_TANGENT_LINE();
-                break;
+                return ModuleCIRCLE_TANGENT_LINE();
             case MENU.CIRCLE_TANGENT_CIRCLE:
-                ModuleCIRCLE_TANGENT_CIRCLE();
-                break;
+                return ModuleCIRCLE_TANGENT_CIRCLE();
             case MENU.ADD_MIDPOINT:
-                ModuleADD_MIDPOINT();
-                break;
+                return ModuleADD_MIDPOINT();
             case MENU.ANGLE:
-                ModuleANGLE();
-                break;
+                return ModuleANGLE();
             case MENU.BISECTOR:
-                ModuleBISECTOR();
-                break;
+                return ModuleBISECTOR();
             case MENU.ADD_LOCUS:
-                Module_LOCUS();
-                break;
+                return Module_LOCUS();
         }
+        return 0f;
     }
 
     void Update()
     {
-        if (AppMgr.ModuleOn) { // いつでもモジュールを切れるようにしておく。
-            for (int a = 0; a < 100; a++)
-            {
-                ExecuteModule();
-            }
-        }
+        //if (AppMgr.ModuleOn) { // いつでもモジュールを切れるようにしておく。
+        //    for (int a = 0; a < 100; a++)
+        //    {
+        //        ExecuteModule();
+        //    }
+        //}
         if (GameLog != null)
         {
             GameLog.GetComponent<Log>().Ratio1 = Ratio1;
