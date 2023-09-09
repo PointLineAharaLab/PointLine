@@ -11,7 +11,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     static int CircleId=2000;
     static int ModuleId=3000;
 
-    public int DraggedPointId=0;
+    public int DraggedObjectId = 0;
+    public int DraggedPointId = -1;
     private Vector3 MouseDownVec=Vector3.zero;
     private Vector3 MouseUpVec = Vector3.zero;
 
@@ -211,11 +212,11 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {
             Log lg  = Util.logs[i];
             if (lg.Show) {
-                if (lg.Position.x + 1.0f < v.x && v.x < lg.Position.x + 1.5f
-                    && lg.Position.y < v.y && v.y < lg.Position.y + 0.5)
-                {
-                    return i + 4500;
-                }
+                //if (lg.Position.x + 1.0f < v.x && v.x < lg.Position.x + 1.5f
+                //    && lg.Position.y < v.y && v.y < lg.Position.y + 0.5)
+                //{
+                //    return i + 4500;
+                //}
                 if (lg.Position.x - 1.5f < v.x && v.x < lg.Position.x + 1.5f
                     && lg.Position.y - 0.5 < v.y && v.y < lg.Position.y + 0.5)
                 {
@@ -240,6 +241,12 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             }
         }
         return false;
+    }
+    private int MousePointPosition()
+    {
+        Vector3 v = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        v.z = 0.0f;
+        return MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
     }
     private int MousePosition()
     {
@@ -685,7 +692,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         if (Camera.main == null) return;
         MouseDownVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         MouseDownVec.z = 0.0f;
-        DraggedPointId = MousePosition();
+        DraggedPointId = MousePointPosition();
+        DraggedObjectId = MousePosition();
         //print(DraggedPointId);
         DraggedGameLogStartTop = Util.StartTop;
         DraggedPreferencePosition = PreferenceDialog.GetComponent<Preference>().Position;
@@ -699,16 +707,16 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         MouseDragPosition.z = 0f;
         if (pts == null) return;
         if (!DrawOn) return;
-        if (DraggedPointId != -1)
+        if (DraggedObjectId != -1)
         {
             Vector3 v3 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             v3.z = 0.0f;
-            if(DraggedPointId == 5000)
+            if(DraggedObjectId == 5000)
             {//プリファレンスダイアログをドラッグ
                 PreferenceDialog.GetComponent<Preference>().Position = DraggedPreferencePosition + v3 - MouseDownVec;
                 PreferenceDialog.GetComponent<Preference>().SetScreenPosition();
             }
-            if (DraggedPointId >= 4000 && DraggedPointId<5000)
+            if (DraggedObjectId >= 4000 && DraggedObjectId < 5000)
             {// ログをドラッグ
                 Util.StartTop = DraggedGameLogStartTop + (v3.y - MouseDownVec.y);
                 int LL = Util.LogLength;
@@ -725,9 +733,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             {//点のドラッグ
                 if (pts[i].Id == DraggedPointId)
                 {
-                    //debug
-                    AppMgr.ConvergencyCount = 0;
-                    //debug
                     if (MouseDownVec - v3 != Vector3.zero)//0.768
                     {
                         pts[i].Vec = v3;
@@ -1465,8 +1470,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {// クリックののちマウスアップ
             //ログの右上をクリック
             int MOL = MouseOnGameLog(MouseUpVec); 
-            if(4500 <= MOL && MOL<5000){
-                PreferenceDialog.GetComponent<Preference>().SetData(Util.logs[MOL - 4500]);
+            if (4000 <= MOL && MOL < 4500)
+            {
+                PreferenceDialog.GetComponent<Preference>().SetData(Util.logs[MOL - 4000]);
                 PreferenceDialog.GetComponent<Preference>().show = true;
             }
             //アニメーション

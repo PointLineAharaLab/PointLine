@@ -195,14 +195,32 @@ public class AppMgr : MonoBehaviour {
         Module[] md = FindObjectsOfType<Module>();
         if (md != null)
         {
+            float err = 0f;
+            float previousErr = 0f;
+            AppMgr.ConvergencyCount = 0;
             for (int repeat = 0; repeat < 2000; repeat++)
             {
-                AppMgr.ConvergencyCount = 0;
+                previousErr = err;
+                err = 0f;
                 for (int i = 0; i < md.Length; i++)
                 {
                     if (md[i].Type != MENU.ADD_LOCUS)
                     {
-                        md[i].ExecuteModule();
+                        err += md[i].ExecuteModule();
+                    }
+                }
+                if (err < 0.00001)
+                {
+                    Debug.Log("Convergence");
+                    break;
+                }
+                if (err > previousErr)
+                {
+                    AppMgr.ConvergencyCount += 1;
+                    if (AppMgr.ConvergencyCount > 10)
+                    {
+                        Debug.Log("Conflict");
+                        break;
                     }
                 }
             }

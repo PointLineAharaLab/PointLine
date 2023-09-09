@@ -217,9 +217,10 @@ public class Module : MonoBehaviour {
             float dist = Vector3.Distance(p21.Vec, p1.Vec);
             float rad = c2.Radius;
             float delta = (dist - rad) * para * 0.33f;
-            float radNew = rad + delta;
             float err = Mathf.Abs(delta);
+            float radNew = rad + delta;
             c2.Radius = radNew;
+            //if (err>0.001) Debug.Log(c2.Radius+":"+ delta);
             Vector3 v2 = p1.Vec - p21.Vec;
             v2.Normalize();
             //if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
@@ -1368,7 +1369,7 @@ public class Module : MonoBehaviour {
         //if (AppMgr.ModuleOn) { // いつでもモジュールを切れるようにしておく。
         //    for (int a = 0; a < 100; a++)
         //    {
-        //        ExecuteModule();
+                ExecuteModule();
         //    }
         //}
         if (GameLog != null)
