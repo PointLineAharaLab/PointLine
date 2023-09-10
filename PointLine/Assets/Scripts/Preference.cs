@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class Preference : MonoBehaviour
@@ -14,6 +15,9 @@ public class Preference : MonoBehaviour
     public GUIStyle LabelStyle;
     public GUIStyle FieldStyle;
     public GUIStyle ButtonStyle;
+    public int selGridInt = 0;
+
+
     public float WorldHeight = 5;
     public int MaxFontSize = 20;
     float DialogWidth;
@@ -124,29 +128,15 @@ public class Preference : MonoBehaviour
         {
             float Left = MaxFontSize * 0.5f;
             float Top = MaxFontSize * 0.5f;
-            float Step = MaxFontSize * 1.5f;
-            float height = MaxFontSize * 1.5f;
+            float Step = MaxFontSize * 1.6f;
+            float height = MaxFontSize * 1.4f;
             if (ObjectType == "Point")//点に関するプリファレンス
             {
-                if (AppMgr.Japanese == 1)
-                {// Japanese
-                    PointPreferenceJapanese(Left, Top, Step, height);
-                }
-                else//English
-                {
-                    PointPreferenceEnglish(Left, Top, Step, height);
-                }
+                    PointPreference(Left, Top, Step, height, AppMgr.Japanese);
             }
             else if (ObjectType == "Line")
             {
-                if (AppMgr.Japanese == 1)
-                {// Japanese
-                    LinePreferenceJapanese(Left, Top, Step, height);
-                }
-                else//English
-                {
-                    LinePreferenceEnglish(Left, Top, Step, height);
-                }
+                LinePreference(Left, Top, Step, height, AppMgr.Japanese);
             }
             else if (ObjectType == "Circle")
             {
@@ -586,90 +576,117 @@ public class Preference : MonoBehaviour
     }
     #endregion
 
-    #region PointPreferences
-    void PointPreferenceJapanese(float Left, float Top, float Step, float height)
+    float getTextByte(string str)
     {
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "点 " + ObjectName, LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "名称 ", LabelStyle);
-        ObjectName = GUI.TextField(new Rect(Left + MaxFontSize * 2.5f, Top, DialogWidth - MaxFontSize * 2.5f, height), ObjectName, FieldStyle);
-        Top += Step;
+        Encoding sjisEnc = Encoding.GetEncoding("Shift_JIS");
+        return 0.5f * sjisEnc.GetByteCount(str) + 0.5f;
+    }
+
+    string labelAndTextField(float Left, float Top, float height, string text, string ObjectString)
+    {
+        GUIStyle LS = new GUIStyle(LabelStyle);
+        float textWidth = MaxFontSize * getTextByte(text);
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), text, LS);
+        ObjectString = GUI.TextField(new Rect(Left + textWidth, Top, DialogWidth - textWidth, height), ObjectString, FieldStyle);
+        return ObjectString;
+    }
+    bool labelAndButton(float Left, float Top, float widthRate, float height, string text, string buttonText, bool flag)
+    {
+        GUIStyle LS = new GUIStyle(LabelStyle);
         GUIStyle BS = new GUIStyle(ButtonStyle);
+        LS.fontSize = Mathf.Min(Mathf.FloorToInt(DialogWidth * widthRate / (getTextByte(text))), MaxFontSize);
+        BS.fontSize = Mathf.Min(Mathf.FloorToInt(DialogWidth * widthRate / (getTextByte(buttonText))), MaxFontSize);
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), text, LS);
+        if(GUI.Button(new Rect(Left + DialogWidth * widthRate, Top, DialogWidth * (1f- widthRate), height), buttonText, BS))
+            return !flag;
+        return flag;
+    }
+    bool HalfButton(float Left, float Top, float height, string message)
+    {
+        GUIStyle BS = new(ButtonStyle);
+        BS.fontSize = Mathf.Min(Mathf.FloorToInt(DialogWidth / 2 / getTextByte(message)), MaxFontSize);
+        return (GUI.Button(new Rect(Left, Top, DialogWidth/2, height), message, BS));
+    }
+    #region PointPreferences
+    void PointPreference(float Left, float Top, float Step, float height, int japanese)
+    {
+        string text="";
+        GUIStyle LS = new GUIStyle(LabelStyle);
+        GUIStyle BS = new GUIStyle(ButtonStyle);
+        if (japanese == 1)
+            text = "点 " + ObjectName;
+        else
+            text = "Point " + ObjectName;
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), text, LabelStyle);
+        Top += Step;
+        //
+        if (japanese == 1)
+            ObjectName = labelAndTextField(Left, Top, height, "名前：", ObjectName);
+        else
+            ObjectName = labelAndTextField(Left, Top, height, "Name: ", ObjectName);
+        Top += Step;
+        // 
+        // 
         if (ShowName)
         {
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "表示", LabelStyle);
-            if (GUI.Button(new Rect(Left + DialogWidth *0.5f, Top, DialogWidth *0.5f, height), "非表示", BS))
-            {
-                ShowName = false;
-            }
-            Top += Step;
+            if (japanese == 1) 
+                ShowName = labelAndButton(Left, Top, 0.5f, height, "名称表示", "→非表示", ShowName);
+            else
+                ShowName = labelAndButton(Left, Top, 0.5f, height, "ShowName", "-> Hide", ShowName);
         }
         else
         {
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "非表示", LabelStyle);
-            if (GUI.Button(new Rect(Left + DialogWidth *0.5f, Top, DialogWidth *0.5f, height), "表示", BS))
+            if (japanese == 1)
             {
-                ShowName = true;
+                ShowName = labelAndButton(Left, Top, 0.5f, height, "名称非表示", " →表示 ", ShowName);
             }
-            Top += Step;
+            else
+                ShowName = labelAndButton(Left, Top, 0.5f, height, "HideName", "-> Show", ShowName);
         }
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "(" + CoordX + "," + CoordY + ")", LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + MaxFontSize * 1.5f, Top, DialogWidth - MaxFontSize * 1.5f, height), CoordX, FieldStyle);
+        //
+        text = "(" + CoordX + "," + CoordY + ")";
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), text, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Y: ", LabelStyle);
-        CoordY = GUI.TextField(new Rect(Left + MaxFontSize * 1.5f, Top, DialogWidth - MaxFontSize * 1.5f, height), CoordY, FieldStyle);
+        //
+        CoordX = labelAndTextField(Left, Top, height, "X: ", CoordX);
+        Top += Step;
+        //
+        CoordY = labelAndTextField(Left, Top, height, "Y: ", CoordY);
         Top += Step;
         if (Fixed)
         {
-            BS = new GUIStyle(ButtonStyle);
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "固定", LabelStyle);
-            if (GUI.Button(new Rect(Left + DialogWidth *0.5f, Top, DialogWidth *0.5f, height), "可動にする", BS))
-            {
-                Fixed = false;
-            }
-            Top += Step;
+            if (japanese == 1)
+                Fixed = labelAndButton(Left, Top, 0.5f, height, "固定", "→可動", Fixed);
+            else
+                Fixed = labelAndButton(Left, Top, 0.5f, height, " Fixed ", "->Movable", Fixed);
         }
         else
         {
-            BS = new GUIStyle(ButtonStyle);
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 12);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "可動", LabelStyle);
-            if (GUI.Button(new Rect(Left + DialogWidth * 0.5f, Top, DialogWidth * 0.5f, height), "固定にする", BS))
-            {
-                Fixed = true;
-            }
-            Top += Step;
+            if (japanese == 1)
+                Fixed = labelAndButton(Left, Top, 0.5f, height, "可動", "→固定", Fixed);
+            else
+                Fixed = labelAndButton(Left, Top, 0.5f, height, "Movable", "-> Fixed", Fixed);
         }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
+        Top += Step;
+        //
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
         {
             Point pt = LogParent.parent.GetComponent<Point>();
             DeleteAPoint(pt.Id);
             show = false;
         }
         Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth * 0.5f, height), "Cancel", BS))
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
         {
-            show = false;
+                show = false;
         }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth * 0.5f, Top, DialogWidth * 0.5f, height), "OK", BS))
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
         {
             show = false;
             Point pt = LogParent.parent.GetComponent<Point>();
@@ -680,109 +697,10 @@ public class Preference : MonoBehaviour
         }
     }
 
-    void PointPreferenceEnglish(float Left, float Top, float Step, float height)
-    {
-        GUIStyle LS = new GUIStyle(LabelStyle);
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Point " + ObjectName, LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Name ", LabelStyle);
-        ObjectName = GUI.TextField(new Rect(Left + MaxFontSize * 3f, Top, DialogWidth - MaxFontSize * 3f, height), ObjectName, FieldStyle);
-        Top += Step;
-        GUIStyle BS = new GUIStyle(ButtonStyle);
-        if (ShowName)
-        {
-            BS = new GUIStyle(ButtonStyle);
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            LS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
-            if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Show Name", LS);
-            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Hide", BS))
-            {
-                ShowName = false;
-            }
-            Top += Step;
-        }
-        else
-        {
-            BS = new GUIStyle(ButtonStyle);
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            LS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
-            if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Hide Name", LS);
-            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Show", BS))
-            {
-                ShowName = true;
-            }
-            Top += Step;
-        }
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "(" + CoordX + "," + CoordY + ")", LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "X: ", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + MaxFontSize * 1.5f, Top, DialogWidth - MaxFontSize * 1.5f, height), CoordX, FieldStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Y: ", LabelStyle);
-        CoordY = GUI.TextField(new Rect(Left + MaxFontSize * 1.5f, Top, DialogWidth - MaxFontSize * 1.5f, height), CoordY, FieldStyle);
-        Top += Step;
-        if (Fixed)
-        {
-            BS = new GUIStyle(ButtonStyle);
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Fixed", LabelStyle);
-            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Free", BS))
-            {
-                Fixed = false;
-            }
-            Top += Step;
-        }
-        else
-        {
-            BS = new GUIStyle(ButtonStyle);
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 7);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Free", LabelStyle);
-            if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "Fixed", BS))
-            {
-                Fixed = true;
-            }
-            Top += Step;
-        }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
-        {
-            Point pt = LogParent.parent.GetComponent<Point>();
-            DeleteAPoint(pt.Id);
-            show = false;
-        }
-        Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
-        {
-            show = false;
-        }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
-        {
-            show = false;
-            Point pt = LogParent.parent.GetComponent<Point>();
-            pt.Fixed = Fixed;
-            pt.Vec = new Vector3(floatParse(CoordX), floatParse(CoordY), 0f);
-            pt.PointName = ObjectName;
-            pt.ShowPointName = ShowName;
-        }
-    }
     #endregion
 
     #region LinePreferences
-    void LinePreferenceJapanese(float Left, float Top, float Step, float height)
+    void LinePreference(float Left, float Top, float Step, float height, int japanese)
     {
         Point pt1 = LogParent.GetComponent<Log>().Object1.GetComponent<Point>();
         Point pt2 = LogParent.GetComponent<Log>().Object2.GetComponent<Point>();
