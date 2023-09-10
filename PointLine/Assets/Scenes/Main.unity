@@ -457,8 +457,8 @@ Transform:
   m_GameObject: {fileID: 474590757}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.5, y: 1.49, z: 0}
-  m_LocalScale: {x: 3, y: 4.5, z: 1}
+  m_LocalPosition: {x: -7.16, y: 1.49, z: 0}
+  m_LocalScale: {x: 3, y: 5.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 687776871}
@@ -754,9 +754,19 @@ MonoBehaviour:
   LogEnglishComment: 
   CoordX: 
   CoordY: 
+  PName1: 
+  PName2: 
+  PName3: 
+  LName1: 
+  LName2: 
+  CName1: 
+  CName2: 
+  EdgeLength: 
   Fixed: 0
   Delete: 0
   ShowName: 1
+  ShowLength: 1
+  FixLength: 1
   ShowConstant: 0
   Bracket: 0
   LogParent: {fileID: 0}

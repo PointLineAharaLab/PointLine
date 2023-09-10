@@ -17,12 +17,15 @@ public class Line : MonoBehaviour {
     public string LineName="";
 
     public bool Selected = false;
+    public bool ShowLength = false;
+    public bool FixLength = false;
     public int Isometry = -1;
+    public bool Bracket = false;
+    public string BracketText = "";
+    public float edgeLength = 0f;
     Color StandardColor = new Color(0.3f, 0.3f, 0.6f);
     Color SelectedColor = new Color(0.2f, 0.2f, 0.4f); 
     LineRenderer lr;
-    public bool Bracket = false;
-    public string BracketText = "";
     public enum BracketMarkType : int
     {
         SINGLE = 1,
@@ -136,6 +139,7 @@ public class Line : MonoBehaviour {
             else
                 rd.material.color = StandardColor;
         }
+        edgeLength = (Vec1 - Vec0).magnitude;
     }
 
     public static void AllLinesUnselected()

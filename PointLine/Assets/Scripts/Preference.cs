@@ -25,10 +25,16 @@ public class Preference : MonoBehaviour
     public string ObjectName = "";
     public string LogEnglishComment = "";
     public string CoordX = "", CoordY = "";
+    public string PName1 = "", PName2 = "", PName3 = "";
+    public string LName1 = "", LName2 = "";
+    public string CName1 = "", CName2 = "";
+    public string EdgeLength = "";
     string AngleConstant = "";
     public bool Fixed = false;
     public bool Delete = false;
     public bool ShowName = true;
+    public bool ShowLength = true;
+    public bool FixLength = true;
     public bool ShowConstant = false;
     public bool Bracket = false; // LineBracket
     public Log LogParent = null;
@@ -70,6 +76,13 @@ public class Preference : MonoBehaviour
         }
         else if (ObjectType == "Line")
         {
+            Point pt1 = lg.parent.GetComponent<Line>().Point1.GetComponent<Point>();
+            Point pt2 = lg.parent.GetComponent<Line>().Point2.GetComponent<Point>();
+            PName1 = pt1.PointName;
+            PName2 = pt2.PointName;
+            ShowLength = lg.parent.GetComponent<Line>().ShowLength;
+            FixLength = lg.parent.GetComponent<Line>().FixLength;
+            EdgeLength = ""+ Mathf.Round(lg.parent.GetComponent<Line>().edgeLength * 1000f) / 1000f;
             Bracket = lg.parent.GetComponent<Line>().Bracket;
         }
         else if (ObjectType == "Circle")
@@ -702,144 +715,93 @@ public class Preference : MonoBehaviour
     #region LinePreferences
     void LinePreference(float Left, float Top, float Step, float height, int japanese)
     {
-        Point pt1 = LogParent.GetComponent<Log>().Object1.GetComponent<Point>();
-        Point pt2 = LogParent.GetComponent<Log>().Object2.GetComponent<Point>();
-        float dist = (pt1.Vec - pt2.Vec).magnitude;
+        string text = "";
         GUI.Label(new Rect(Left, Top, DialogWidth, height), "線 " + ObjectName, LabelStyle);
         Top += Step;
+        //
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "辺長 " + Mathf.Round(dist * 1000f) / 1000f, LabelStyle);
+        //
+        PName1 = labelAndTextField(Left, Top, height, "P1: ", PName1);
         Top += Step;
-        GUIStyle LS = new GUIStyle(LabelStyle);
-        GUIStyle BS = new GUIStyle(ButtonStyle);
-        Line ln = LogParent.parent.GetComponent<Line>();
-        if (Bracket)
+        //
+        PName2 = labelAndTextField(Left, Top, height, "P1: ", PName2);
+        Top += Step;
+        //
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), "辺長 " , LabelStyle);
+        Top += Step;
+        //
+        if (ShowLength)
         {
-            LS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "ブラケットあり", LS);
-            if (GUI.Button(new Rect(Left + DialogWidth * 0.7f, Top, DialogWidth * 0.3f, height), "なし", BS))
-            {
-                Bracket = false;
-            }
-            Top += Step;
+            if (japanese == 1)
+                ShowLength = labelAndButton(Left, Top, 0.6f, height, "長さ表示", "→非表示", ShowLength);
+            else
+                ShowLength = labelAndButton(Left, Top, 0.6f, height, "Show len.", "-> Hide", ShowLength);
         }
         else
         {
-            LS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 11);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "ブラケットなし", LS);
-            if (GUI.Button(new Rect(Left + DialogWidth * 0.7f, Top, DialogWidth * 0.3f, height), "あり", BS))
-            {
-                Bracket = true;
-            }
-            Top += Step;
-        }
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
-        {
-            ln = LogParent.parent.GetComponent<Line>();
-            DeleteALine(ln.Id);
-            show = false;
+            if (japanese == 1)
+                ShowLength = labelAndButton(Left, Top, 0.6f, height, "長さ非表示", "→表示", ShowLength);
+            else
+                ShowLength = labelAndButton(Left, Top, 0.6f, height, "Hide len.", "-> Show", ShowLength);
         }
         Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        //
+        if (FixLength)
         {
-            show = false;
-        }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
-        {
-            show = false;
-            ln.Bracket = Bracket;
-            LineBracket lb = ln.child.GetComponent<LineBracket>();
-            lb.Active = Bracket;
-            ln.child.SetActive(Bracket);
-            if (lb.parent == null)
-            {
-                lb.parent = ln.gameObject;
-            }
-            if (lb.Point1 == null)
-            {
-                lb.Point1 = ln.Point1;
-            }
-            if (lb.Point2 == null)
-            {
-                lb.Point2 = ln.Point2;
-            }
-
-        }
-    }
-
-    void LinePreferenceEnglish(float Left, float Top, float Step, float height)
-    {
-        Point pt1 = LogParent.GetComponent<Log>().Object1.GetComponent<Point>();
-        Point pt2 = LogParent.GetComponent<Log>().Object2.GetComponent<Point>();
-        float dist = (pt1.Vec - pt2.Vec).magnitude;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Line " + ObjectName, LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Length " + Mathf.Round(dist * 1000f) / 1000f, LabelStyle);
-        Top += Step;
-        GUIStyle BS = new GUIStyle(ButtonStyle);
-        GUIStyle LS = new GUIStyle(LabelStyle);
-        Line ln = LogParent.parent.GetComponent<Line>();
-        if (Bracket)
-        {
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-            LS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Bracket ", LS);
-            if (GUI.Button(new Rect(Left + DialogWidth * 0.5f, Top, DialogWidth * 0.5f, height), "Delete", BS))
-            {
-                Bracket = false;
-            }
-            Top += Step;
+            if (japanese == 1)
+                ShowLength = labelAndButton(Left, Top, 0.6f, height, "長さ固定", "→非固定", ShowLength);
+            else
+                ShowLength = labelAndButton(Left, Top, 0.6f, height, "Fix len.", "->Unfix", ShowLength);
         }
         else
         {
-            BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-            LS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-            if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "No bracket ", LS);
-            if (GUI.Button(new Rect(Left + DialogWidth * 0.7f, Top, DialogWidth * 0.3f, height), "Add", BS))
-            {
-                Bracket = true;
-            }
-            Top += Step;
+            if (japanese == 1)
+                ShowLength = labelAndButton(Left, Top, 0.6f, height, "長さ非固定", "→固定", ShowLength);
+            else
+                ShowLength = labelAndButton(Left, Top, 0.6f, height, "Unfix len.", "->Fix", ShowLength);
         }
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
+        Top += Step;
+        //
+        EdgeLength = labelAndTextField(Left, Top, height, "X: ", EdgeLength);
+        Top += Step;
+        //
+        if (Bracket)
         {
-            ln = LogParent.parent.GetComponent<Line>();
-            DeleteALine(ln.Id);
+            if (japanese == 1)
+                Bracket = labelAndButton(Left, Top, 0.6f, height, "ブラケット", "→なし", Bracket);
+            else
+                Bracket = labelAndButton(Left, Top, 0.6f, height, "Bracket", "->Hide", Bracket);
+        }
+        else
+        {
+            if (japanese == 1)
+                Bracket = labelAndButton(Left, Top, 0.6f, height, "なし", "→あり", Bracket);
+            else
+                Bracket = labelAndButton(Left, Top, 0.6f, height, "No Bracket", "->Show", Bracket);
+        }
+        Top += Step;
+        //
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
+        {
+            Line ln = LogParent.parent.GetComponent<Line>();
+            DeleteAPoint(ln.Id);
             show = false;
         }
         Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
         {
             show = false;
         }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
         {
             show = false;
+            Line ln = LogParent.parent.GetComponent<Line>();
             ln.Bracket = Bracket;
             LineBracket lb = ln.child.GetComponent<LineBracket>();
             lb.Active = Bracket;
@@ -858,6 +820,7 @@ public class Preference : MonoBehaviour
             }
         }
     }
+
     #endregion
 
     #region CirclePreferences
