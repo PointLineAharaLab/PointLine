@@ -28,13 +28,15 @@ public class Preference : MonoBehaviour
     public string PName1 = "", PName2 = "", PName3 = "";
     public string LName1 = "", LName2 = "";
     public string CName1 = "", CName2 = "";
+    public string Radius = "";
     public string EdgeLength = "";
     string AngleConstant = "";
     public bool Fixed = false;
     public bool Delete = false;
     public bool ShowName = true;
     public bool ShowLength = true;
-    public bool FixLength = true;
+    public bool FixLength = false;
+    public bool FixRadius = false;
     public bool ShowConstant = false;
     public bool Bracket = false; // LineBracket
     public Log LogParent = null;
@@ -50,7 +52,7 @@ public class Preference : MonoBehaviour
     void Start()
     {
         float PreferenceX = -(WorldHeight / Screen.height * Screen.width) + 1.5f;
-        MaxFontSize = (int)Mathf.Floor(Screen.width / 45);
+        MaxFontSize = (int)Mathf.Floor(Screen.width / 60);
         WindowStyle.fontSize = MaxFontSize;
         FieldStyle.fontSize = MaxFontSize;
         LabelStyle.fontSize = MaxFontSize;
@@ -87,7 +89,11 @@ public class Preference : MonoBehaviour
         }
         else if (ObjectType == "Circle")
         {
-            CoordX = "" + Mathf.Round(1000f * lg.parent.GetComponent<Circle>().Radius) / 1000f;
+            Circle cr = lg.parent.GetComponent<Circle>();
+            Point pt = cr.CenterPoint.GetComponent<Point>();
+            PName1 = pt.PointName;
+            Radius = "" + Mathf.Round(1000f * cr.Radius) / 1000f;
+            FixRadius = cr.FixRadius;
         }
         else if (ObjectType == "Module")
         {
@@ -141,8 +147,8 @@ public class Preference : MonoBehaviour
         {
             float Left = MaxFontSize * 0.5f;
             float Top = MaxFontSize * 0.5f;
-            float Step = MaxFontSize * 1.6f;
-            float height = MaxFontSize * 1.4f;
+            float Step = MaxFontSize*1.3f;
+            float height = MaxFontSize * 1.1f;
             if (ObjectType == "Point")//点に関するプリファレンス
             {
                     PointPreference(Left, Top, Step, height, AppMgr.Japanese);
@@ -153,14 +159,7 @@ public class Preference : MonoBehaviour
             }
             else if (ObjectType == "Circle")
             {
-                if (AppMgr.Japanese == 1)
-                {// Japanese
-                    CirclePreferenceJapanese(Left, Top, Step, height);
-                }
-                else//English
-                {
-                    CirclePreferenceEnglish(Left, Top, Step, height);
-                }
+                CirclePreference(Left, Top, Step, height, AppMgr.Japanese);
             }
             else if (ObjectType == "Module")
             {
@@ -716,7 +715,10 @@ public class Preference : MonoBehaviour
     void LinePreference(float Left, float Top, float Step, float height, int japanese)
     {
         string text = "";
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "線 " + ObjectName, LabelStyle);
+        if (japanese == 1)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "線 " + ObjectName, LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Line  " + ObjectName, LabelStyle);
         Top += Step;
         //
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
@@ -725,10 +727,7 @@ public class Preference : MonoBehaviour
         PName1 = labelAndTextField(Left, Top, height, "P1: ", PName1);
         Top += Step;
         //
-        PName2 = labelAndTextField(Left, Top, height, "P1: ", PName2);
-        Top += Step;
-        //
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "辺長 " , LabelStyle);
+        PName2 = labelAndTextField(Left, Top, height, "P2: ", PName2);
         Top += Step;
         //
         if (ShowLength)
@@ -763,20 +762,20 @@ public class Preference : MonoBehaviour
         }
         Top += Step;
         //
-        EdgeLength = labelAndTextField(Left, Top, height, "X: ", EdgeLength);
+        EdgeLength = labelAndTextField(Left, Top, height, "辺長: ", EdgeLength);
         Top += Step;
         //
         if (Bracket)
         {
             if (japanese == 1)
-                Bracket = labelAndButton(Left, Top, 0.6f, height, "ブラケット", "→なし", Bracket);
+                Bracket = labelAndButton(Left, Top, 0.6f, height, "ﾌﾞﾗｹｯﾄあり", "→なし", Bracket);
             else
                 Bracket = labelAndButton(Left, Top, 0.6f, height, "Bracket", "->Hide", Bracket);
         }
         else
         {
             if (japanese == 1)
-                Bracket = labelAndButton(Left, Top, 0.6f, height, "なし", "→あり", Bracket);
+                Bracket = labelAndButton(Left, Top, 0.6f, height, "ﾌﾞﾗｹｯﾄなし", "→あり", Bracket);
             else
                 Bracket = labelAndButton(Left, Top, 0.6f, height, "No Bracket", "->Show", Bracket);
         }
@@ -824,42 +823,68 @@ public class Preference : MonoBehaviour
     #endregion
 
     #region CirclePreferences
-    void CirclePreferenceJapanese(float Left, float Top, float Step, float height)
+    void CirclePreference(float Left, float Top, float Step, float height, int japanese)
     {
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "円 " + ObjectName, LabelStyle);
+        Circle cr = LogParent.parent.GetComponent<Circle>();
+        if (japanese == 1)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "円 " + ObjectName, LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Circle " + ObjectName, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        //
+        string text = PName1 + "-(" + Radius + ")";
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), text, LabelStyle);
         Top += Step;
-        GUIStyle FS = new GUIStyle(FieldStyle);
-        FS.fontSize = Mathf.FloorToInt(DialogWidth / 2 / 4);
-        if (FS.fontSize > MaxFontSize) FS.fontSize = MaxFontSize;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "半径", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), CoordX, FS);
+        //
+        if (japanese == 1)
+            PName1 = labelAndTextField(Left, Top, height, "中心: ", PName1);
+        else
+            PName1 = labelAndTextField(Left, Top, height, "Center: ", PName1);
         Top += Step;
-        GUIStyle BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
+        //
+        if (japanese == 1)
+            Radius = labelAndTextField(Left, Top, height, "半径: ", Radius);
+        else
+            Radius = labelAndTextField(Left, Top, height, "Radius: ", Radius);
+        Top += Step;
+        //
+        if (FixRadius)
         {
-            Circle ci = LogParent.parent.GetComponent<Circle>();
-            DeleteACircle(ci.Id);
+            if (japanese == 1)
+                FixRadius = labelAndButton(Left, Top, 0.6f, height, "半径固定", "→非固定", FixRadius);
+            else
+                FixRadius = labelAndButton(Left, Top, 0.6f, height, "Fix rad.", "->Unfix", FixRadius);
+        }
+        else
+        {
+            if (japanese == 1)
+                FixRadius = labelAndButton(Left, Top, 0.6f, height, "半径非固定", "→固定", FixRadius);
+            else
+                FixRadius = labelAndButton(Left, Top, 0.6f, height, "Unfix rad.", "-> Fix", FixRadius);
+        }
+        Top += Step;
+        //
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
+        {
+            Line ln = LogParent.parent.GetComponent<Line>();
+            DeleteAPoint(ln.Id);
             show = false;
         }
         Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
         {
             show = false;
         }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
         {
-            Circle ci = LogParent.parent.GetComponent<Circle>();
-            ci.Radius = floatParse(CoordX);
+            cr = LogParent.parent.GetComponent<Circle>();
+            cr.Radius = floatParse(Radius);
+            cr.FixRadius = FixRadius;
             show = false;
         }
     }

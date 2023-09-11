@@ -17,6 +17,7 @@ public class Circle : MonoBehaviour {
 
     public bool Selected = false;
     public bool Active = true;
+    public bool FixRadius = false;
 
     Color StandardColor = new Color(0.2f, 0.0f, 0.0f);
     Color SelectedColor = new Color(0.5f, 0.5f, 0.5f);
