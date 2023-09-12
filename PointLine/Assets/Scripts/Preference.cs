@@ -765,21 +765,21 @@ public class Preference : MonoBehaviour
         EdgeLength = labelAndTextField(Left, Top, height, "辺長: ", EdgeLength);
         Top += Step;
         //
-        if (Bracket)
-        {
-            if (japanese == 1)
-                Bracket = labelAndButton(Left, Top, 0.6f, height, "ﾌﾞﾗｹｯﾄあり", "→なし", Bracket);
-            else
-                Bracket = labelAndButton(Left, Top, 0.6f, height, "Bracket", "->Hide", Bracket);
-        }
-        else
-        {
-            if (japanese == 1)
-                Bracket = labelAndButton(Left, Top, 0.6f, height, "ﾌﾞﾗｹｯﾄなし", "→あり", Bracket);
-            else
-                Bracket = labelAndButton(Left, Top, 0.6f, height, "No Bracket", "->Show", Bracket);
-        }
-        Top += Step;
+        //if (Bracket)
+        //{
+        //    if (japanese == 1)
+        //        Bracket = labelAndButton(Left, Top, 0.6f, height, "ﾌﾞﾗｹｯﾄあり", "→なし", Bracket);
+        //    else
+        //        Bracket = labelAndButton(Left, Top, 0.6f, height, "Bracket", "->Hide", Bracket);
+        //}
+        //else
+        //{
+        //    if (japanese == 1)
+        //        Bracket = labelAndButton(Left, Top, 0.6f, height, "ﾌﾞﾗｹｯﾄなし", "→あり", Bracket);
+        //    else
+        //        Bracket = labelAndButton(Left, Top, 0.6f, height, "No Bracket", "->Show", Bracket);
+        //}
+        //Top += Step;
         //
         if (japanese == 1)
             text = "削除";
@@ -907,8 +907,8 @@ public class Preference : MonoBehaviour
             text = "Destroy";
         if (HalfButton(Left, Top, height, text))
         {
-            Line ln = LogParent.parent.GetComponent<Line>();
-            DeleteAPoint(ln.Id);
+            Circle cn = LogParent.parent.GetComponent<Circle>();
+            DeleteACircle(cn.Id);
             show = false;
         }
         Top += Step;
@@ -922,7 +922,10 @@ public class Preference : MonoBehaviour
             cr = LogParent.parent.GetComponent<Circle>();
             cr.Radius = floatParse(Radius);
             cr.FixRadius = FixRadius;
+            if (FixRadius)
+                cr.FixedRadius = cr.Radius;
             show = false;
+            AppMgr.ExecuteAllModules();
         }
     }
     void CirclePreferenceEnglish(float Left, float Top, float Step, float height)

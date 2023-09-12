@@ -194,8 +194,10 @@ public class AppMgr : MonoBehaviour {
     {
         Module[] md = FindObjectsOfType<Module>();
         Line[] ln = FindObjectsOfType<Line>();
+        Circle[] cn = FindObjectsOfType<Circle>();
         int mdLength = md.Length;
         int lnLength = ln.Length;
+        int cnLength = cn.Length;
         float err = 0f;
         float previousErr = 0f;
         AppMgr.ConvergencyCount = 0;
@@ -213,6 +215,10 @@ public class AppMgr : MonoBehaviour {
             for (int i = 0; i < lnLength; i++)
             {
                 err += ln[i].ExecuteModule();
+            }
+            for (int i = 0; i < cnLength; i++)
+            {
+                err += cn[i].ExecuteModule();
             }
 
             if (err < 0.00001)

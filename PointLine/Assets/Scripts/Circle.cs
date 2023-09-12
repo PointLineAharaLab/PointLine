@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Circle : MonoBehaviour {
 
+    public int Id;
     public Vector3 CenterVec;
     public int CenterPointId=-1;
     public GameObject CenterPoint;
     public float Radius;
-    public int Id;
+    public float FixedRadius;
+    public float para = 0.1f;
     //float StartAngle;
     //float EndAngle;
     public GameObject parent = null;
@@ -111,5 +113,27 @@ public class Circle : MonoBehaviour {
             }
         }
     }
+
+    public float ExecuteModule()
+    {
+        if (Active)
+        {
+            if (!FixRadius)
+            {
+                FixedRadius = Radius;
+                return 0f;
+            }
+            else
+            {
+                float difference = (Radius - FixedRadius) * para;
+                //Debug.Log(pt1.Vec + ":" + v1 + ";" + difference);
+                Radius -= difference;
+                return difference;
+            }
+        }
+        return 0f;
+    }
+
+
 
 }

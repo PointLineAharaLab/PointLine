@@ -298,12 +298,10 @@ public class Line : MonoBehaviour {
             {
                 Point pt1 = Point1.GetComponent<Point>();
                 Point pt2 = Point2.GetComponent<Point>();
-                Debug.Log(edgeLength);
                 Vector3 v1 = pt2.Vec - pt1.Vec;
                 v1.Normalize();
                 float mag = (pt2.Vec - pt1.Vec).magnitude;
                 float difference = (mag - edgeLength) * para;
-                Debug.Log(pt1.Vec + ":" + v1 + ";" + difference);
                 if (!pt1.Fixed)
                 {
                     pt1.Vec += difference * v1;
