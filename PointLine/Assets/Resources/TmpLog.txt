@@ -1,5 +1,3 @@
-Point,-3.71088,0.4396421,0,0,False,True,A
-Circle,0,1.678704,2000,True
-Point,0.5961253,0.4694486,0,1,False,True,B
-Circle,1,1.9619,2001,True
-Module,10,2000,2001,0,3000,True,1,1,1.570796,False,False,True
+Point,-6.542474,1.959761,0,0,False,True,A
+Point,-4.038748,0.9314454,0,1,False,True,B
+Module,2,0,1,0,3000,True,1,1,1.570796,False,False,True

@@ -28,6 +28,7 @@ public class Preference : MonoBehaviour
     public string PName1 = "", PName2 = "", PName3 = "";
     public string LName1 = "", LName2 = "";
     public string CName1 = "", CName2 = "";
+    public string Ratio1 = "", Ratio2 = "";
     public string Radius = "";
     public string EdgeLength = "";
     string AngleConstant = "";
@@ -84,7 +85,7 @@ public class Preference : MonoBehaviour
             PName2 = pt2.PointName;
             ShowLength = lg.parent.GetComponent<Line>().ShowLength;
             FixLength = lg.parent.GetComponent<Line>().FixLength;
-            EdgeLength = ""+ Mathf.Round(lg.parent.GetComponent<Line>().edgeLength * 1000f) / 1000f;
+            EdgeLength = "" + Mathf.Round(lg.parent.GetComponent<Line>().edgeLength * 1000f) / 1000f;
             Bracket = lg.parent.GetComponent<Line>().Bracket;
         }
         else if (ObjectType == "Circle")
@@ -97,16 +98,77 @@ public class Preference : MonoBehaviour
         }
         else if (ObjectType == "Module")
         {
-            if (ObjectName == "中点" || ObjectName == "等長")
+            Module md = lg.parent.GetComponent<Module>();
+            if (md == null) return;
+            int ModuleType = md.Type;
+            if (ModuleType == MENU.POINT_ON_POINT)
             {
-                CoordX = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio1) / 10f;
-                CoordY = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Ratio2) / 10f;
-                Fixed = lg.parent.GetComponent<Module>().FixRatio;
+                PName1 = md.Object1.GetComponent<Point>().PointName;
+                PName2 = md.Object2.GetComponent<Point>().PointName;
             }
-            else if (ObjectName == "角度")
+            else if (ModuleType == MENU.POINT_ON_LINE)
             {
+                PName1 = md.Object1.GetComponent<Point>().PointName;
+                LName1 = md.Object2.GetComponent<Line>().LineName;
+            }
+            else if (ModuleType == MENU.POINT_ON_CIRCLE)
+            {
+                PName1 = md.Object1.GetComponent<Point>().PointName;
+                CName1 = md.Object2.GetComponent<Circle>().CircleName;
+            }
+            else if (ModuleType == MENU.ADD_MIDPOINT)
+            {
+                Ratio1 = "" + Mathf.Round(10f * md.Ratio1) / 10f;
+                Ratio2 = "" + Mathf.Round(10f * md.Ratio2) / 10f;
+            }
+            else if (ModuleType == MENU.LINES_ISOMETRY)
+            {
+                Ratio1 = "" + Mathf.Round(10f * md.Ratio1) / 10f;
+                Ratio2 = "" + Mathf.Round(10f * md.Ratio2) / 10f;
+                Fixed = md.FixRatio;
+            }
+            else if (ModuleType == MENU.RATIO_LENGTH)
+            {
+                Ratio1 = "" + Mathf.Round(10f * md.Ratio1) / 10f;
+                Ratio2 = "" + Mathf.Round(10f * md.Ratio2) / 10f;
+                Fixed = md.FixRatio;
+            }
+            else if (ModuleType == MENU.LINES_PERPENDICULAR)
+            {
+                LName1 = md.Object1.GetComponent<Point>().PointName;
+                LName2 = md.Object2.GetComponent<Line>().LineName;
+            }
+            else if (ModuleType == MENU.LINES_PARALLEL)
+            {
+                LName1 = md.Object1.GetComponent<Point>().PointName;
+                LName2 = md.Object2.GetComponent<Line>().LineName;
+            }
+            else if (ModuleType == MENU.LINE_HORIZONTAL)
+            {
+                LName1 = md.Object1.GetComponent<Point>().PointName;
+            }
+            else if (ModuleType == MENU.ANGLE)
+            {
+                PName1 = md.Object1.GetComponent<Point>().PointName;
+                PName2 = md.Object2.GetComponent<Point>().PointName;
+                PName3 = md.Object3.GetComponent<Point>().PointName;
                 Fixed = lg.parent.GetComponent<Module>().FixAngle;
                 AngleConstant = "" + Mathf.Round(10f * lg.parent.GetComponent<Module>().Constant * 180f / Mathf.PI) / 10f;
+            }
+            else if (ModuleType == MENU.BISECTOR)
+            {
+                PName1 = md.Object1.GetComponent<Module>().ModuleName;
+                PName2 = md.Object2.GetComponent<Module>().ModuleName;
+            }
+            else if (ModuleType == MENU.CIRCLE_TANGENT_LINE)
+            {
+                CName1 = md.Object1.GetComponent<Circle>().CircleName;
+                LName1 = md.Object2.GetComponent<Line>().LineName;
+            }
+            else if (ModuleType == MENU.CIRCLE_TANGENT_CIRCLE)
+            {
+                CName1 = md.Object1.GetComponent<Circle>().CircleName;
+                CName2 = md.Object2.GetComponent<Circle>().CircleName;
             }
         }
     }
@@ -974,20 +1036,52 @@ public class Preference : MonoBehaviour
 
     #region ModuleMidpointPreferences
 
-    void ModuleMidpointPreferenceJapanese(float Left, float Top, float Step, float height)
+    void ModuleMidpointPreference(float Left, float Top, float Step, float height, int japanese)
     {
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), ObjectName, LabelStyle);
+        if (japanese == 1)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分点 : " + ObjectName, LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "inner point : " + ObjectName, LabelStyle);
         Top += Step;
+        //
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分比(" + CoordX + " : " + CoordY + ")", LabelStyle);
+        //
+        if (japanese == 1) 
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分比(" + Ratio1 + " : " + Ratio2 + ")", LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "ratio(" + Ratio1 + " : " + Ratio2 + ")", LabelStyle);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "比1", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordX, FieldStyle);
+        //
+        if (japanese==1)
+            Ratio1 = labelAndTextField(Left, Top, height, "比1: ", Ratio1);
+        else
+            Ratio1 = labelAndTextField(Left, Top, height, "Ratio1: ", Ratio1);
         Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "比2", LabelStyle);
-        CoordY = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth - DialogWidth / 3, height), CoordY, FieldStyle);
+        //
+        if (japanese == 1)
+            Ratio1 = labelAndTextField(Left, Top, height, "比2: ", Ratio1);
+        else
+            Ratio1 = labelAndTextField(Left, Top, height, "Ratio2: ", Ratio1);
         Top += Step;
+        //
+        string text = "";
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
+        {
+            show = false;
+        }
         GUIStyle BS = new GUIStyle(ButtonStyle);
         BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
         if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
@@ -998,67 +1092,17 @@ public class Preference : MonoBehaviour
             show = false;
         }
         Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
+        //
         if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
         {
             show = false;
         }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
-            md.Ratio1 = floatParse(CoordX);
-            md.Ratio2 = floatParse(CoordY);
-        }
-    }
-    void ModuleMidpointPreferenceEnglish(float Left, float Top, float Step, float height)
-    {
-        if(CoordX == CoordY)
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Midpoint", LabelStyle);
-        else
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Div point", LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio(" + CoordX + ":" + CoordY + ")", LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 1", LabelStyle);
-        CoordX = GUI.TextField(new Rect(Left + DialogWidth * 0.4f, Top, DialogWidth - DialogWidth * 0.4f, height), CoordX, FieldStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Ratio 2", LabelStyle);
-        CoordY = GUI.TextField(new Rect(Left + DialogWidth * 0.4f, Top, DialogWidth - DialogWidth * 0.4f, height), CoordY, FieldStyle);
-        Top += Step;
-        GUIStyle BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
-        {
-            Module md = LogParent.parent.GetComponent<Module>();
-            DeleteAModule(md.Id);
-            show = false;
-        }
-        Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
-        {
-            show = false;
-        }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
-        {
-            show = false;
-            Module md = LogParent.parent.GetComponent<Module>();
-            md.Ratio1 = floatParse(CoordX);
-            md.Ratio2 = floatParse(CoordY);
+            md.Ratio1 = floatParse(Ratio1);
+            md.Ratio2 = floatParse(Ratio2);
         }
     }
     #endregion
