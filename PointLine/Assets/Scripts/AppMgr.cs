@@ -193,49 +193,53 @@ public class AppMgr : MonoBehaviour {
     public static void ExecuteAllModules()
     {
         Module[] md = FindObjectsOfType<Module>();
-        if (md != null)
+        Line[] ln = FindObjectsOfType<Line>();
+        int mdLength = md.Length;
+        int lnLength = ln.Length;
+        float err = 0f;
+        float previousErr = 0f;
+        AppMgr.ConvergencyCount = 0;
+        for (int repeat = 0; repeat < 2000; repeat++)
         {
-            float err = 0f;
-            float previousErr = 0f;
-            AppMgr.ConvergencyCount = 0;
-            for (int repeat = 0; repeat < 2000; repeat++)
+            previousErr = err;
+            err = 0f;
+            for (int i = 0; i < mdLength; i++)
             {
-                previousErr = err;
-                err = 0f;
-                for (int i = 0; i < md.Length; i++)
+                if (md[i].Type != MENU.ADD_LOCUS)
                 {
-                    if (md[i].Type != MENU.ADD_LOCUS)
-                    {
-                        err += md[i].ExecuteModule();
-                    }
-                }
-                if (err < 0.00001)
-                {
-                    Debug.Log("Convergence");
-                    break;
-                }
-                if (err > previousErr)
-                {
-                    AppMgr.ConvergencyCount += 1;
-                    if (AppMgr.ConvergencyCount > 10)
-                    {
-                        Debug.Log("Conflict");
-                        break;
-                    }
+                    err += md[i].ExecuteModule();
                 }
             }
-            //Debug.Log(AppMgr.ConvergencyCount);
-            for (int i = 0; i < md.Length; i++)
+            for (int i = 0; i < lnLength; i++)
             {
-                if (md[i].Type == MENU.ADD_LOCUS)
+                err += ln[i].ExecuteModule();
+            }
+
+            if (err < 0.00001)
+            {
+                Debug.Log("Convergence");
+                break;
+            }
+            if (err > previousErr)
+            {
+                AppMgr.ConvergencyCount += 1;
+                if (AppMgr.ConvergencyCount > 10)
                 {
-                    md[i].ExecuteModule();
+                    Debug.Log("Conflict");
+                    break;
                 }
             }
         }
+        //Debug.Log(AppMgr.ConvergencyCount);
+        for (int i = 0; i < md.Length; i++)
+        {
+            if (md[i].Type == MENU.ADD_LOCUS)
+            {
+                md[i].ExecuteModule();
+            }
+        }
+
     }
-
-
 
 }
 
@@ -272,7 +276,10 @@ public class Util
         return Mathf.Sqrt(x * x + y * y);
     }
 
-
+    public static float Round3(float a)
+    {
+        return Mathf.Round(a * 1000f) / 1000f;
+    }
     #region GetLogFolder
     private static void GetLogFolder()
     {

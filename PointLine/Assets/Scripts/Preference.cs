@@ -749,16 +749,16 @@ public class Preference : MonoBehaviour
         if (FixLength)
         {
             if (japanese == 1)
-                ShowLength = labelAndButton(Left, Top, 0.6f, height, "長さ固定", "→非固定", ShowLength);
+                FixLength = labelAndButton(Left, Top, 0.6f, height, "長さ固定", "→非固定", FixLength);
             else
-                ShowLength = labelAndButton(Left, Top, 0.6f, height, "Fix len.", "->Unfix", ShowLength);
+                FixLength = labelAndButton(Left, Top, 0.6f, height, "Fix len.", "->Unfix", FixLength);
         }
         else
         {
             if (japanese == 1)
-                ShowLength = labelAndButton(Left, Top, 0.6f, height, "長さ非固定", "→固定", ShowLength);
+                FixLength = labelAndButton(Left, Top, 0.6f, height, "長さ非固定", "→固定", FixLength);
             else
-                ShowLength = labelAndButton(Left, Top, 0.6f, height, "Unfix len.", "->Fix", ShowLength);
+                FixLength = labelAndButton(Left, Top, 0.6f, height, "Unfix len.", "->Fix", FixLength);
         }
         Top += Step;
         //
@@ -801,6 +801,43 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Line ln = LogParent.parent.GetComponent<Line>();
+            if (PName1 != ln.Point1.GetComponent<Point>().PointName)
+            {
+                for (int i=0; i<AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName1)
+                    {
+                        ln.Point1Id = AppMgr.pts[i].Id;
+                        ln.Point1 = AppMgr.pts[i].gameObject;
+                        LogParent.Object1Id = ln.Point1Id;
+                        LogParent.Object1 = ln.Point1;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+            if (PName2 != ln.Point1.GetComponent<Point>().PointName)
+            {
+                for (int i = 0; i < AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName2)
+                    {
+                        ln.Point2Id = AppMgr.pts[i].Id;
+                        ln.Point2 = AppMgr.pts[i].gameObject;
+                        LogParent.Object2Id = ln.Point2Id;
+                        LogParent.Object2 = ln.Point2;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+            ln.ShowLength = ShowLength;
+            ln.FixLength = FixLength;
+            float a = floatParse(EdgeLength);
+            if ( a>0 )
+            {
+                ln.edgeLength = a;
+            }
             ln.Bracket = Bracket;
             LineBracket lb = ln.child.GetComponent<LineBracket>();
             lb.Active = Bracket;

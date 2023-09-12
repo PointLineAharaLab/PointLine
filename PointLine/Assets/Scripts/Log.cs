@@ -65,6 +65,16 @@ public class Log : MonoBehaviour
         Selected = false;
     }
 
+    public void SetText2()
+    {
+        if (ObjectType == "Line")
+        {
+            Text2 = Object1.GetComponent<Point>().PointName + "-" + Object2.GetComponent<Point>().PointName;
+            if (parent.GetComponent<Line>().ShowLength)
+                Text2 += ("(len=" + Util.Round3(parent.GetComponent<Line>().edgeLength) + ")");
+        }
+    }
+
     private void Update()
     {
         //Debug.Log("Log of " + ObjectType+":"+ Screen.height);
@@ -84,7 +94,7 @@ public class Log : MonoBehaviour
                 if (Fixed)
                     Text1 += "(Fixed)";
             }
-            Text2 = "(" + Mathf.Round(Vec.x * 1000f) / 1000f + "," + Mathf.Round(Vec.y * 1000f) / 1000f + ")";
+            Text2 = "(" + Util.Round3(Vec.x) + "," + Util.Round3(Vec.y) + ")";
             Selected = parent.GetComponent<Point>().Selected;
             if (Selected)
             {
@@ -120,7 +130,9 @@ public class Log : MonoBehaviour
                 Text1 = "直線 " + PName;
             else
                 Text1 = "Line " + PName;
-            Text2 = Object1.GetComponent<Point>().PointName + "-" + Object2.GetComponent<Point>().PointName;
+            if (parent.GetComponent<Line>().FixLength)
+                Text1 += "(fix)";
+            SetText2();
             Selected = parent.GetComponent<Line>().Selected;
             if (Selected)
             {

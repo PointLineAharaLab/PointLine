@@ -19,10 +19,11 @@ public class Line : MonoBehaviour {
     public bool Selected = false;
     public bool ShowLength = false;
     public bool FixLength = false;
+    public float para = 0.1f;
     public int Isometry = -1;
     public bool Bracket = false;
     public string BracketText = "";
-    public float edgeLength = 0f;
+    public float edgeLength = 1.0f;
     Color StandardColor = new Color(0.3f, 0.3f, 0.6f);
     Color SelectedColor = new Color(0.2f, 0.2f, 0.4f); 
     LineRenderer lr;
@@ -139,7 +140,8 @@ public class Line : MonoBehaviour {
             else
                 rd.material.color = StandardColor;
         }
-        edgeLength = (Vec1 - Vec0).magnitude;
+        if(!FixLength)
+            edgeLength = (Vec1 - Vec0).magnitude;
     }
 
     public static void AllLinesUnselected()
@@ -281,6 +283,39 @@ public class Line : MonoBehaviour {
         {
             return false;
         }
+    }
+
+    public float ExecuteModule()
+    {
+        if (Active)
+        {
+            if (!FixLength)
+            {
+                edgeLength = (Vec0 - Vec1).magnitude;
+                return 0f;
+            }
+            else
+            {
+                Point pt1 = Point1.GetComponent<Point>();
+                Point pt2 = Point2.GetComponent<Point>();
+                Debug.Log(edgeLength);
+                Vector3 v1 = pt2.Vec - pt1.Vec;
+                v1.Normalize();
+                float mag = (pt2.Vec - pt1.Vec).magnitude;
+                float difference = (mag - edgeLength) * para;
+                Debug.Log(pt1.Vec + ":" + v1 + ";" + difference);
+                if (!pt1.Fixed)
+                {
+                    pt1.Vec += difference * v1;
+                }
+                if (!pt2.Fixed)
+                {
+                    pt2.Vec -= difference * v1;
+                }
+                return difference * 2;
+            }
+        }
+        return 0f;
     }
 
 }
