@@ -118,6 +118,19 @@ public class Preference : MonoBehaviour
             }
             else if (ModuleType == MENU.ADD_MIDPOINT)
             {
+                for (int i=0; i<AppMgr.pts.Length; i++)
+                {
+                    Point pt = AppMgr.pts[i];
+                    if (pt.Id == md.Object1Id)
+                        md.Object1 = pt.gameObject;
+                    if (pt.Id == md.Object2Id)
+                        md.Object2 = pt.gameObject;
+                    if (pt.Id == md.Object3Id)
+                        md.Object3 = pt.gameObject;
+                }
+                PName1 = md.Object1.GetComponent<Point>().PointName;
+                PName2 = md.Object2.GetComponent<Point>().PointName;
+                PName3 = md.Object3.GetComponent<Point>().PointName;
                 Ratio1 = "" + Mathf.Round(10f * md.Ratio1) / 10f;
                 Ratio2 = "" + Mathf.Round(10f * md.Ratio2) / 10f;
             }
@@ -225,16 +238,10 @@ public class Preference : MonoBehaviour
             }
             else if (ObjectType == "Module")
             {
-                if (ObjectName == "中点")
+                int ModuleType = LogParent.parent.GetComponent<Module>().Type;
+                if (ModuleType == MENU.ADD_MIDPOINT)
                 {
-                    if (AppMgr.Japanese == 1)
-                    {
-                        ModuleMidpointPreferenceJapanese(Left, Top, Step, height);
-                    }
-                    else
-                    {
-                        ModuleMidpointPreferenceEnglish(Left, Top, Step, height);
-                    }
+                    ModuleMidpointPreference(Left, Top, Step, height, AppMgr.Japanese);
                 }
                 else if (ObjectName == "等長")
                 {
@@ -1047,6 +1054,15 @@ public class Preference : MonoBehaviour
         GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
         Top += Step;
         //
+        PName1 = labelAndTextField(Left, Top, height, "P1: ", PName1);
+        Top += Step;
+        //
+        PName2 = labelAndTextField(Left, Top, height, "P2: ", PName2);
+        Top += Step;
+        //
+        PName3 = labelAndTextField(Left, Top, height, "P3: ", PName3);
+        Top += Step;
+        //
         if (japanese == 1) 
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分比(" + Ratio1 + " : " + Ratio2 + ")", LabelStyle);
         else
@@ -1082,25 +1098,55 @@ public class Preference : MonoBehaviour
         {
             show = false;
         }
-        GUIStyle BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 6);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "消去", BS))
-        {
-            Module md = LogParent.parent.GetComponent<Module>();
-            DeleteAModule(md.Id);
-            show = false;
-        }
-        Top += Step;
-        //
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
-        {
-            show = false;
-        }
         if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
         {
             show = false;
             Module md = LogParent.parent.GetComponent<Module>();
+            if (PName1 != md.Object1.GetComponent<Point>().PointName)
+            {
+                for (int i = 0; i < AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName1)
+                    {
+                        md.Object1Id = AppMgr.pts[i].Id;
+                        md.Object1 = AppMgr.pts[i].gameObject;
+                        LogParent.Object1Id = md.Object1Id;
+                        LogParent.Object1 = md.Object1;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+            if (PName2 != md.Object2.GetComponent<Point>().PointName && PName1 != PName2)
+            {
+                for (int i = 0; i < AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName2)
+                    {
+                        md.Object2Id = AppMgr.pts[i].Id;
+                        md.Object2 = AppMgr.pts[i].gameObject;
+                        LogParent.Object2Id = md.Object2Id;
+                        LogParent.Object2 = md.Object2;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+            if (PName3 != md.Object1.GetComponent<Point>().PointName && PName3 != PName1 && PName3 != PName2)
+            {
+                for (int i = 0; i < AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName3)
+                    {
+                        md.Object3Id = AppMgr.pts[i].Id;
+                        md.Object3 = AppMgr.pts[i].gameObject;
+                        LogParent.Object3Id = md.Object3Id;
+                        LogParent.Object3 = md.Object3;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
             md.Ratio1 = floatParse(Ratio1);
             md.Ratio2 = floatParse(Ratio2);
         }
