@@ -81,6 +81,31 @@ public class Line : MonoBehaviour {
         Isometry = -1;
     }
 
+    public Point GetPoint1OfLine()
+    {
+        for (int i=0; i<AppMgr.pts.Length; i++)
+        {
+            if (AppMgr.pts[i].Id == Point1Id)
+            {
+                Point1 = AppMgr.pts[i].gameObject;
+                return AppMgr.pts[i];
+            }
+        }
+        return null;
+    }
+    public Point GetPoint2OfLine()
+    {
+        for (int i = 0; i < AppMgr.pts.Length; i++)
+        {
+            if (AppMgr.pts[i].Id == Point2Id)
+            {
+                Point2 = AppMgr.pts[i].gameObject;
+                return AppMgr.pts[i];
+            }
+        }
+        return null;
+    }
+
     // Update is called once per frame
     void Update()
     {

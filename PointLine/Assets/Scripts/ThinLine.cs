@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThinLine : MonoBehaviour {
+public class ThinLine : MonoBehaviour
+{
 
     public int LineId = -1;// line
     public int PointId = -1;// point
     public GameObject Point1, Point2, Point3;
-    public  Vector3 Vec1, Vec2, Vec3;
+    public Vector3 Vec1, Vec2, Vec3;
     LineRenderer LR;
 
     public bool Active;
@@ -17,7 +18,8 @@ public class ThinLine : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         Active = true;
         LR = GetComponent<LineRenderer>();
 
@@ -28,13 +30,37 @@ public class ThinLine : MonoBehaviour {
         LR.SetPosition(2, Vec3);
     }
 
+    public Line GetLineOfThinLine()
+    {
+        for (int k = 0; k < AppMgr.lns.Length; k++)
+        {
+            if (LineId == AppMgr.lns[k].Id)
+            {
+                return AppMgr.lns[k];
+            }
+        }
+        return null;
+    }
+    public Point GetPoint1OfThinLine()
+    {
+        for (int k = 0; k < AppMgr.pts.Length; k++)
+        {
+            if (PointId == AppMgr.pts[k].Id)
+            {
+                Point1 = AppMgr.pts[k].gameObject;
+                return AppMgr.pts[k];
+            }
+        }
+        return null;
+    }
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         //if (AppMgr.pts == null) return;
         //if (AppMgr.lns == null) return;
         gameObject.SetActive(Active);
         ///Debug.Log(PointId);
-        if(Point1!=null && Point2 != null && Point3 != null)
+        if (Point1 != null && Point2 != null && Point3 != null)
         {
             Vec1 = Point1.GetComponent<Point>().transform.position;
             Vec1.z = 0.0f;
@@ -43,23 +69,24 @@ public class ThinLine : MonoBehaviour {
             Vec3 = Point3.GetComponent<Point>().transform.position;
             Vec3.z = 0.0f;
         }
-        else {
+        else
+        {
             GameObject[] OBJs = FindObjectsOfType<GameObject>();
             GameObject LineObj = null;
             Line LN = null;
-            for (int i=0; i<OBJs.Length; i++)
+            for (int i = 0; i < OBJs.Length; i++)
             {
                 LN = OBJs[i].GetComponent<Line>();
                 if (LN != null)
                 {
-                    if(LN.Id == LineId)
+                    if (LN.Id == LineId)
                     {
                         LineObj = OBJs[i];
                         break;
                     }
                 }
             }
-            if(LineObj  == null)
+            if (LineObj == null)
             {
                 Active = false;
                 LineId = -1;
@@ -92,7 +119,7 @@ public class ThinLine : MonoBehaviour {
                         }
                     }
                 }
-                if(Point1==null || Point2==null || Point3 == null)
+                if (Point1 == null || Point2 == null || Point3 == null)
                 {
                     Active = false;
                 }

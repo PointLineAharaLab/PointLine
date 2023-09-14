@@ -675,6 +675,47 @@ public class Util
     }
     #endregion
 
+    #region FindThinLine
+    public static ThinLine FindThinLineByPoint(int ptId)
+    {
+        GameObject[] objs = MonoBehaviour.FindObjectsOfType<GameObject>();
+        if (objs != null)
+        {
+            for (int k = 0; k < objs.Length; k++)
+            {
+                ThinLine tl = (ThinLine)objs[k].GetComponent("ThinLine");
+                if (tl != null)
+                {
+                    if (tl.PointId == ptId)
+                    {
+                        return tl;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    public static ThinLine FindThinLineByPointLine(Point pt, Line ln)
+    {
+        GameObject[] objs = MonoBehaviour.FindObjectsOfType<GameObject>();
+        if (objs != null)
+        {
+            for (int k = 0; k < objs.Length; k++)
+            {
+                ThinLine tl = (ThinLine)objs[k].GetComponent("ThinLine");
+                if (tl != null)
+                {
+                    if (tl.PointId == pt.Id && tl.LineId == ln.Id)
+                    {
+                        return tl;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    #endregion
+
     #region Logまわり
     public static void InitLog()
     {

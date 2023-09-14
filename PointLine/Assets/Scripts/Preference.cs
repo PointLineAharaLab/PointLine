@@ -243,6 +243,14 @@ public class Preference : MonoBehaviour
                 {
                     ModuleMidpointPreference(Left, Top, Step, height, AppMgr.Japanese);
                 }
+                if (ModuleType == MENU.POINT_ON_POINT)
+                {
+                    ModulePoint2PointPreference(Left, Top, Step, height, AppMgr.Japanese);
+                }
+                if (ModuleType == MENU.POINT_ON_LINE)
+                {
+                    ModulePoint2LinePreference(Left, Top, Step, height, AppMgr.Japanese);
+                }
                 else if (ObjectName == "等長")
                 {
                     if (AppMgr.Japanese == 1)
@@ -1046,7 +1054,7 @@ public class Preference : MonoBehaviour
     void ModuleMidpointPreference(float Left, float Top, float Step, float height, int japanese)
     {
         if (japanese == 1)
-            GUI.Label(new Rect(Left, Top, DialogWidth, height), "内分点 : " + ObjectName, LabelStyle);
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "モジュール : " + ObjectName, LabelStyle);
         else
             GUI.Label(new Rect(Left, Top, DialogWidth, height), "inner point : " + ObjectName, LabelStyle);
         Top += Step;
@@ -1149,6 +1157,168 @@ public class Preference : MonoBehaviour
             }
             md.Ratio1 = floatParse(Ratio1);
             md.Ratio2 = floatParse(Ratio2);
+        }
+    }
+    #endregion
+
+    #region Point2PointPreference
+    void ModulePoint2PointPreference(float Left, float Top, float Step, float height, int japanese)
+    {
+        if (japanese == 1)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "モジュール : " + ObjectName, LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Module : " + ObjectName, LabelStyle);
+        Top += Step;
+        //
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        //
+        PName1 = labelAndTextField(Left, Top, height, "P1: ", PName1);
+        Top += Step;
+        //
+        PName2 = labelAndTextField(Left, Top, height, "P2: ", PName2);
+        Top += Step;
+        //
+        string text = "";
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
+        {
+            show = false;
+        }
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            if (PName1 != md.Object1.GetComponent<Point>().PointName)
+            {
+                for (int i = 0; i < AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName1)
+                    {
+                        md.Object1Id = AppMgr.pts[i].Id;
+                        md.Object1 = AppMgr.pts[i].gameObject;
+                        LogParent.Object1Id = md.Object1Id;
+                        LogParent.Object1 = md.Object1;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+            if (PName2 != md.Object2.GetComponent<Point>().PointName && PName1 != PName2)
+            {
+                for (int i = 0; i < AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName2)
+                    {
+                        md.Object2Id = AppMgr.pts[i].Id;
+                        md.Object2 = AppMgr.pts[i].gameObject;
+                        LogParent.Object2Id = md.Object2Id;
+                        LogParent.Object2 = md.Object2;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region Point2LinePreference
+    void ModulePoint2LinePreference(float Left, float Top, float Step, float height, int japanese)
+    {
+        if (japanese == 1)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "モジュール : " + ObjectName, LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Module : " + ObjectName, LabelStyle);
+        Top += Step;
+        //
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        //
+        PName1 = labelAndTextField(Left, Top, height, "P1: ", PName1);
+        Top += Step;
+        //
+        LName1 = labelAndTextField(Left, Top, height, "L1: ", LName1);
+        Top += Step;
+        //
+        string text = "";
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
+        {
+            show = false;
+        }
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            if (PName1 != md.Object1.GetComponent<Point>().PointName)
+            {
+                ThinLine tl = Util.FindThinLineByPointLine(
+                    md.Object1.GetComponent<Point>(),
+                    md.Object2.GetComponent<Line>()
+                    );
+                for (int i = 0; i < AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName1)
+                    {
+                        md.Object1Id = AppMgr.pts[i].Id;
+                        md.Object1 = AppMgr.pts[i].gameObject;
+                        tl.PointId = md.Object1Id;
+                        tl.Point2 = AppMgr.pts[i].gameObject;
+                        LogParent.Object1Id = md.Object1Id;
+                        LogParent.Object1 = md.Object1;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+            if (LName1 != md.Object2.GetComponent<Line>().LineName)
+            {
+                ThinLine tl = Util.FindThinLineByPointLine(
+                    md.Object1.GetComponent<Point>(),
+                    md.Object2.GetComponent<Line>()
+                    );
+                for (int i = 0; i < AppMgr.lns.Length; i++)
+                {
+                    if (AppMgr.lns[i].LineName == LName1)
+                    {
+                        md.Object2Id = AppMgr.lns[i].Id;
+                        md.Object2 = AppMgr.lns[i].gameObject;
+                        LogParent.Object2Id = md.Object2Id;
+                        LogParent.Object2 = md.Object2;
+                        LogParent.SetText2();
+                        tl.LineId = md.Object2Id;
+                        tl.Point1 = AppMgr.lns[i].Point1;
+                        tl.Point3 = AppMgr.lns[i].Point2;
+
+
+                        break;
+
+                    }
+                }
+            }
         }
     }
     #endregion
