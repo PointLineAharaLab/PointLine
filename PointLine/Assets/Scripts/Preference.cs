@@ -243,13 +243,17 @@ public class Preference : MonoBehaviour
                 {
                     ModuleMidpointPreference(Left, Top, Step, height, AppMgr.Japanese);
                 }
-                if (ModuleType == MENU.POINT_ON_POINT)
+                else if (ModuleType == MENU.POINT_ON_POINT)
                 {
                     ModulePoint2PointPreference(Left, Top, Step, height, AppMgr.Japanese);
                 }
-                if (ModuleType == MENU.POINT_ON_LINE)
+                else if (ModuleType == MENU.POINT_ON_LINE)
                 {
                     ModulePoint2LinePreference(Left, Top, Step, height, AppMgr.Japanese);
+                }
+                else if (ModuleType == MENU.POINT_ON_CIRCLE)
+                {
+                    ModulePoint2CirclePreference(Left, Top, Step, height, AppMgr.Japanese);
                 }
                 else if (ObjectName == "等長")
                 {
@@ -1322,6 +1326,80 @@ public class Preference : MonoBehaviour
         }
     }
     #endregion
+
+    #region Point2CirclePreference
+    void ModulePoint2CirclePreference(float Left, float Top, float Step, float height, int japanese)
+    {
+        if (japanese == 1)
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "モジュール : " + ObjectName, LabelStyle);
+        else
+            GUI.Label(new Rect(Left, Top, DialogWidth, height), "Module : " + ObjectName, LabelStyle);
+        Top += Step;
+        //
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
+        Top += Step;
+        //
+        PName1 = labelAndTextField(Left, Top, height, "P : ", PName1);
+        Top += Step;
+        //
+        CName1 = labelAndTextField(Left, Top, height, "C : ", CName1);
+        Top += Step;
+        //
+        string text = "";
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
+        {
+            show = false;
+        }
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
+        {
+            show = false;
+            Module md = LogParent.parent.GetComponent<Module>();
+            if (PName1 != md.Object1.GetComponent<Point>().PointName)
+            {
+                for (int i = 0; i < AppMgr.pts.Length; i++)
+                {
+                    if (AppMgr.pts[i].PointName == PName1)
+                    {
+                        md.Object1Id = AppMgr.pts[i].Id;
+                        md.Object1 = AppMgr.pts[i].gameObject;
+                        LogParent.Object1Id = md.Object1Id;
+                        LogParent.Object1 = md.Object1;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+            if (CName1 != md.Object2.GetComponent<Circle>().CircleName)
+            {
+                for (int i = 0; i < AppMgr.cis.Length; i++)
+                {
+                    if (AppMgr.cis[i].CircleName == CName1)
+                    {
+                        md.Object2Id = AppMgr.cis[i].Id;
+                        md.Object2 = AppMgr.cis[i].gameObject;
+                        LogParent.Object2Id = md.Object2Id;
+                        LogParent.Object2 = md.Object2;
+                        LogParent.SetText2();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
 
     #region ModuleLocusPreferences
     void ModuleLocusPreferenceJapanese(float Left, float Top, float Step, float height)
