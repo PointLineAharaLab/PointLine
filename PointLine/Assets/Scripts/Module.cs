@@ -52,7 +52,6 @@ public class Module : MonoBehaviour {
             Vector3 v1New = (1f-para) * v1 + para * v2;
             Vector3 v2New = para * v1 + (1f - para) * v2;
             float err = 0;
-            //if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
             if (!p1.Fixed)
             {
                 p1.Vec = v1New;
@@ -220,10 +219,8 @@ public class Module : MonoBehaviour {
             float err = Mathf.Abs(delta);
             float radNew = rad + delta;
             c2.Radius = radNew;
-            //if (err>0.001) Debug.Log(c2.Radius+":"+ delta);
             Vector3 v2 = p1.Vec - p21.Vec;
             v2.Normalize();
-            //if (err > AppMgr.ConvergencyError) AppMgr.ConvergencyCount++;
             if (!p1.Fixed)
             {
                 p1.Vec = p1.Vec - delta * v2;
@@ -976,7 +973,25 @@ public class Module : MonoBehaviour {
             Active = false;
             return 0f;
         }
+        para = 0.1f;
         float err = 0f;
+        if (PA.Fixed && PC.Fixed)
+        {
+            float Ax = PA.Vec.x, Ay = PA.Vec.y;
+            float Bx = PB.Vec.x, By = PB.Vec.y;
+            float Cx = PC.Vec.x, Cy = PC.Vec.y;
+            float BA = Util.Magnitude(Ax - Bx, Ay - By);
+            float BC = Util.Magnitude(Cx - Bx, Cy - By);
+            float Mx = (Ax * BC + Cx * BA) / (BA + BC);
+            float My = (Ay * BC + Cy * BA) / (BA + BC);
+            float Dx = Bx - Mx, Dy = By - My;
+            float ND = Util.Magnitude(Dx, Dy);
+            if (ND < 0.01f) return 0f;
+            Dx /= ND;
+            Dy /= ND;
+
+        }
+
         {
             float Ax = PA.Vec.x, Ay = PA.Vec.y;
             float Bx = PB.Vec.x, By = PB.Vec.y;
@@ -1318,9 +1333,10 @@ public class Module : MonoBehaviour {
         }
         Point pt = Object1.GetComponent<Point>();
         Vector3 ptVec = pt.Vec;
-        if ((PreVec - ptVec).magnitude > 0.5f && AppMgr.ConvergencyCount == 0)
+        float difference = (PreVec - ptVec).magnitude;
+        Debug.Log("" + difference + ":" + AppMgr.ConvergencyCount);
+        if (difference > 0.05f && AppMgr.ConvergencyCount < 2)
         {
-            //Debug.Log("triggered");
             PreVec = ptVec;
             // LocusDotを追加する。
             GameObject prefab = Resources.Load<GameObject>("Prefabs/LocusDot");

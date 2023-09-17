@@ -76,35 +76,35 @@ public class AppMgr : MonoBehaviour {
 	void Update () {
         //ExecuteAllModules();
         Rescaling();
-        if (ConvergencyCount > 1000)
+        if (ConvergencyCount >= 5)
         {
             //頂点の一つを微動させる。
             pts = FindObjectsOfType<Point>();
             if (pts.Length > 0)
             {
                 int index = (int)UnityEngine.Random.Range(0, pts.Length);
-                Debug.Log("Point.index = " + index);
                 Point pt = pts[index];
-                Debug.Log("pt.transform = " + pt.transform.position);
-                float x = UnityEngine.Random.Range(-0.01f, 0.01f);
-                float y = UnityEngine.Random.Range(-0.01f, 0.01f);
-                Vector3 position = pt.transform.position;
-                position.x += x;
-                position.y += y;
-                pt.Vec = position;
-                pt.transform.position = position;
-                Debug.Log("pt.transform = " + pt.transform.position);
-                ExecuteAllModules();
+                if (pt.Fixed == false) { 
+                    float x = UnityEngine.Random.Range(-0.01f, 0.01f);
+                    float y = UnityEngine.Random.Range(-0.01f, 0.01f);
+                    Vector3 position = pt.transform.position;
+                    position.x += x;
+                    position.y += y;
+                    pt.Vec = position;
+                    pt.transform.position = position;
+                    //Debug.Log("pt.transform = " + pt.transform.position);
+                    ExecuteAllModules();
+                }
             }
             if (Japanese==1)
-                ConvergencyAlertText.GetComponent<TextMesh>().text = "競合(press Z)";
+                ConvergencyAlertText.GetComponent<TextMesh>().text = "図形の不合理";
             else 
-                ConvergencyAlertText.GetComponent<TextMesh>().text = "Conflict(press Z)";
+                ConvergencyAlertText.GetComponent<TextMesh>().text = "Conflict";
             ModuleOn = false;
         }
         else
         {
-            ConvergencyAlertText.GetComponent<TextMesh>().text = "";// ConvergencyCount.ToString();
+            ConvergencyAlertText.GetComponent<TextMesh>().text = "";// 
         }
     }
 
@@ -221,7 +221,7 @@ public class AppMgr : MonoBehaviour {
                 err += cn[i].ExecuteModule();
             }
 
-            if (err < 0.00001)
+            if (err < ConvergencyThreshold)
             {
                 Debug.Log("Convergence");
                 break;
@@ -229,6 +229,7 @@ public class AppMgr : MonoBehaviour {
             if (err > previousErr)
             {
                 AppMgr.ConvergencyCount += 1;
+                previousErr = err;
                 if (AppMgr.ConvergencyCount > 10)
                 {
                     Debug.Log("Conflict");
