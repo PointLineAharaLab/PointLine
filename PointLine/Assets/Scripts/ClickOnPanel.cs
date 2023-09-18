@@ -233,7 +233,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         //print(lg.Position);
         //print(v);
         if (lg.Position.x - 1.5f < v.x && v.x < lg.Position.x + 1.5f
-            && lg.Position.y + 1.5f < v.y && v.y < lg.Position.y + 2.25f)
+            && lg.Position.y - 2.25f < v.y && v.y < lg.Position.y + 2.25f)
         {
             if (lg.show)
             {
@@ -716,7 +716,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 PreferenceDialog.GetComponent<Preference>().Position = DraggedPreferencePosition + v3 - MouseDownVec;
                 PreferenceDialog.GetComponent<Preference>().SetScreenPosition();
             }
-            if (DraggedObjectId >= 4000 && DraggedObjectId < 5000)
+            else if (DraggedObjectId >= 4000 && DraggedObjectId < 5000)
             {// ログをドラッグ
                 Util.StartTop = DraggedGameLogStartTop + (v3.y - MouseDownVec.y);
                 int LL = Util.LogLength;
@@ -729,14 +729,17 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     Util.StartTop = -4f;
                 }
             }
-            for (int i = 0; i < pts.Length; i++)
-            {//点のドラッグ
-                if (pts[i].Id == DraggedPointId)
-                {
-                    if (MouseDownVec - v3 != Vector3.zero)//0.768
+            else
+            {
+                for (int i = 0; i < pts.Length; i++)
+                {//点のドラッグ
+                    if (pts[i].Id == DraggedPointId)
                     {
-                        pts[i].Vec = v3;
-                        ExecuteAllModules();
+                        if (MouseDownVec - v3 != Vector3.zero)//0.768
+                        {
+                            pts[i].Vec = v3;
+                            ExecuteAllModules();
+                        }
                     }
                 }
             }
@@ -1473,7 +1476,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             if (4000 <= MOL && MOL < 4500)
             {
                 PreferenceDialog.GetComponent<Preference>().SetData(Util.logs[MOL - 4000]);
+                Debug.Log("thru here");
                 PreferenceDialog.GetComponent<Preference>().show = true;
+                Debug.Log(PreferenceDialog.GetComponent<Preference>().show);
             }
             //アニメーション
             GameObject _prefab = Resources.Load<GameObject>("Prefabs/MouseDown");
