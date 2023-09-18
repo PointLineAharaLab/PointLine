@@ -975,7 +975,7 @@ public class Module : MonoBehaviour {
         }
         para = 0.1f;
         float err = 0f;
-        if (PA.Fixed && PC.Fixed)
+        if (PA.Fixed && !PB.Fixed && PC.Fixed)
         {
             float Ax = PA.Vec.x, Ay = PA.Vec.y;
             float Bx = PB.Vec.x, By = PB.Vec.y;
@@ -989,7 +989,16 @@ public class Module : MonoBehaviour {
             if (ND < 0.01f) return 0f;
             Dx /= ND;
             Dy /= ND;
-
+            float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+            float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+            if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
+            if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
+            float Angle = DeclineBC - DeclineBA;
+            float Error = (Mathf.Abs(Angle) - Constant) * para;
+            Dx *= Error;
+            Dy *= Error;
+            PB.Vec += new Vector3(Dx, Dy, 0f);
+            err += Error;
         }
 
         {

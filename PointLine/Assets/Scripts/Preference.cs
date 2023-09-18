@@ -1884,37 +1884,5 @@ public class Preference : MonoBehaviour
         }
     }
 
-    void ModulePreferenceEnglish(float Left, float Top, float Step, float height)
-    {
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text1, LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), LogParent.GetComponent<Log>().Text2, LabelStyle);
-        Top += Step;
-        GUIStyle BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
-        {
-            Module md = LogParent.parent.GetComponent<Module>();
-            DeleteAModule(md.Id);
-            show = false;
-        }
-        Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
-        {
-            show = false;
-        }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
-        {
-            show = false;
-            AppMgr.ExecuteAllModules();
-        }
-    }
     #endregion
 }
