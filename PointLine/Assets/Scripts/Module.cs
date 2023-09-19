@@ -982,25 +982,32 @@ public class Module : MonoBehaviour {
             float Cx = PC.Vec.x, Cy = PC.Vec.y;
             float BA = Util.Magnitude(Ax - Bx, Ay - By);
             float BC = Util.Magnitude(Cx - Bx, Cy - By);
+            float AC = Util.Magnitude(Ax - Cx, Ay - Cy);
             float Mx = (Ax * BC + Cx * BA) / (BA + BC);
             float My = (Ay * BC + Cy * BA) / (BA + BC);
             float Dx = Bx - Mx, Dy = By - My;
             float ND = Util.Magnitude(Dx, Dy);
-            if (ND < 0.01f) return 0f;
+            if (ND < 0.00001f) return 0f;
             Dx /= ND;
             Dy /= ND;
             float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
             float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
-            if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
-            if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float Error = (Mathf.Abs(Angle) - Constant) * para;
+            float PI = Mathf.PI;
+            if (Angle < -2*PI)
+                Angle += 2*PI;
+            if (Angle < 0)
+                Angle += 2*PI;
+            if (Angle >= 2*PI)
+                Angle -= 2*PI;
+            if (PI <= Angle && Angle < 2*PI)
+                Angle = 2*PI - Angle;
+            float Error = (Angle - Constant) * AC * 0.1f * para;
             Dx *= Error;
             Dy *= Error;
             PB.Vec += new Vector3(Dx, Dy, 0f);
-            err += Error;
+            return Mathf.Abs(Error);
         }
-
         {
             float Ax = PA.Vec.x, Ay = PA.Vec.y;
             float Bx = PB.Vec.x, By = PB.Vec.y;
