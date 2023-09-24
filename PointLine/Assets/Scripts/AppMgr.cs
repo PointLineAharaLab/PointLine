@@ -6,9 +6,6 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-//using GracesGames.Common.Scripts;
-//using GracesGames.SimpleFileBrowser.Scripts;
-//using GracesGames.SimpleFileBrowser.Scripts.UI;
 using SimpleFileBrowser;
 
 
@@ -543,34 +540,68 @@ public class Util
     #region AddModule
     public static string GetModuleNameByType(int type)
     {
-        switch (type)
+        if (AppMgr.Japanese == 1) { 
+            switch (type)
+            {
+                case MENU.POINT_ON_POINT:
+                    return "点 - 点";
+                case MENU.POINT_ON_LINE:
+                    return "点 - 直線";
+                case MENU.POINT_ON_CIRCLE:
+                    return "点 - 円";
+                case MENU.LINES_ISOMETRY:
+                    return "等長";//"辺長比"
+                case MENU.LINES_PERPENDICULAR:
+                    return "垂直";//"一定角"
+                case MENU.LINES_PARALLEL:
+                    return "平行";
+                case MENU.LINE_HORIZONTAL:
+                    return "水平";
+                case MENU.CIRCLE_TANGENT_LINE:
+                    return "円 - 直線";
+                case MENU.CIRCLE_TANGENT_CIRCLE:
+                    return "円 - 円";
+                case MENU.ADD_MIDPOINT:
+                    return "中点";//"内分点"
+                case MENU.ANGLE:
+                    return "角度";
+                case MENU.BISECTOR:
+                    return "角度 - 角度";
+                case MENU.ADD_LOCUS:
+                    return "軌跡";
+            }
+        }
+        else
         {
-            case MENU.POINT_ON_POINT:
-                return "点 - 点";
-            case MENU.POINT_ON_LINE:
-                return "点 - 直線";
-            case MENU.POINT_ON_CIRCLE:
-                return "点 - 円";
-            case MENU.LINES_ISOMETRY:
-                return "等長";//"辺長比"
-            case MENU.LINES_PERPENDICULAR:
-                return "垂直";//"一定角"
-            case MENU.LINES_PARALLEL:
-                return "平行";
-            case MENU.LINE_HORIZONTAL:
-                return "水平";
-            case MENU.CIRCLE_TANGENT_LINE:
-                return "円 - 直線";
-            case MENU.CIRCLE_TANGENT_CIRCLE:
-                return "円 - 円";
-            case MENU.ADD_MIDPOINT:
-                return "中点";//"内分点"
-            case MENU.ANGLE:
-                return "角度";
-            case MENU.BISECTOR:
-                return "角度 - 角度";
-            case MENU.ADD_LOCUS:
-                return "軌跡";
+            switch (type)
+            {
+                case MENU.POINT_ON_POINT:
+                    return "point - point";
+                case MENU.POINT_ON_LINE:
+                    return "point - line";
+                case MENU.POINT_ON_CIRCLE:
+                    return "point - circle";
+                case MENU.LINES_ISOMETRY:
+                    return "isometry";//"辺長比"
+                case MENU.LINES_PERPENDICULAR:
+                    return "perpendicular";//"一定角"
+                case MENU.LINES_PARALLEL:
+                    return "parallel";
+                case MENU.LINE_HORIZONTAL:
+                    return "horizontal";
+                case MENU.CIRCLE_TANGENT_LINE:
+                    return "circle - line";
+                case MENU.CIRCLE_TANGENT_CIRCLE:
+                    return "circle - circle";
+                case MENU.ADD_MIDPOINT:
+                    return "midpoint";//"内分点"
+                case MENU.ANGLE:
+                    return "angle";
+                case MENU.BISECTOR:
+                    return "angle - angle";
+                case MENU.ADD_LOCUS:
+                    return "locus";
+            }
         }
         return "";
     }

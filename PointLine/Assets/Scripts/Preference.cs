@@ -998,49 +998,6 @@ public class Preference : MonoBehaviour
             AppMgr.ExecuteAllModules();
         }
     }
-    void CirclePreferenceEnglish(float Left, float Top, float Step, float height)
-    {
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Circle " + ObjectName, LabelStyle);
-        Top += Step;
-        GUI.Label(new Rect(Left, Top, DialogWidth, height), "Center " + LogParent.Object1.GetComponent<Point>().PointName, LabelStyle);
-        Top += Step;
-        GUIStyle LS = new GUIStyle(LabelStyle);
-        LS.fontSize = Mathf.FloorToInt(DialogWidth / 3 / 3.5f);
-        if (LS.fontSize > MaxFontSize) LS.fontSize = MaxFontSize;
-        GUIStyle FS = new GUIStyle(FieldStyle);
-        FS.fontSize = Mathf.FloorToInt(DialogWidth * 2 / 3 / 4);
-        if (FS.fontSize > MaxFontSize) FS.fontSize = MaxFontSize;
-        GUI.Label(new Rect(Left, Top, DialogWidth / 3, height), "Radius", LS);
-        CoordX = GUI.TextField(new Rect(Left + DialogWidth / 3, Top, DialogWidth * 2 / 3, height), CoordX, FS);
-        Top += Step;
-        GUIStyle BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth, height), "Delete", BS))
-        {
-            Circle ci = LogParent.parent.GetComponent<Circle>();
-            DeleteACircle(ci.Id);
-            show = false;
-        }
-        Top += Step;
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 8);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left, Top, DialogWidth / 2, height), "Cancel", BS))
-        {
-            show = false;
-        }
-        BS = new GUIStyle(ButtonStyle);
-        BS.fontSize = Mathf.FloorToInt(DialogWidth / 4);
-        if (BS.fontSize > MaxFontSize) BS.fontSize = MaxFontSize;
-        if (GUI.Button(new Rect(Left + DialogWidth / 2, Top, DialogWidth / 2, height), "OK", BS))
-        {
-            Circle ci = LogParent.parent.GetComponent<Circle>();
-            ci.Radius = floatParse(CoordX);
-            show = false;
-            AppMgr.ExecuteAllModules();
-        }
-    }
     #endregion
 
     #region ModuleMidpointPreferences
