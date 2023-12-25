@@ -301,6 +301,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         if (MOP >= 0 && MOP < 4000)
         {// MOP番のオブジェクト
             Debug.Log("MOP = " + MOP);
+
             return MOP;
         }
         else if (ClickOnButton(Input.mousePosition))
