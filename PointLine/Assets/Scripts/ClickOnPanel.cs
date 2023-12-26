@@ -28,6 +28,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     public static float WorldHeight;
 
+    public GameObject Selector;
+
     // OnMouseDrag
     float DraggedGameLogStartTop = 0f;
     Vector3 DraggedPreferencePosition;
@@ -301,7 +303,35 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         if (MOP >= 0 && MOP < 4000)
         {// MOP番のオブジェクト
             Debug.Log("MOP = " + MOP);
-
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/SelectorDialog");
+            GameObject g_object = Line.Instantiate(prefab, v, Quaternion.identity, Selector.transform) as GameObject;
+            SelectorDialog sd_obj = g_object.GetComponent<SelectorDialog>();
+            for (int i = 0; i < AppMgr.pts.Length; i++)
+            {
+                if (AppMgr.pts[i].Id == MOP)
+                {
+                    sd_obj.Text1 = "点 " + AppMgr.pts[i].PointName;
+                }
+            }
+            for (int i = 0; i < AppMgr.lns.Length; i++)
+            {
+                if (AppMgr.lns[i].Id == MOP)
+                {
+                    string P1="", P2="";
+                    for (int j = 0; j < AppMgr.pts.Length; j++)
+                    {
+                        if (AppMgr.pts[j].Id == lns[i].Point1Id)
+                        {
+                            P1 = AppMgr.pts[j].PointName;
+                        }
+                        if (AppMgr.pts[j].Id == lns[i].Point2Id)
+                        {
+                            P2 = AppMgr.pts[j].PointName;
+                        }
+                    }
+                    sd_obj.Text1 = "直線 " + P1 + P2;
+                }
+            }
             return MOP;
         }
         else if (ClickOnButton(Input.mousePosition))

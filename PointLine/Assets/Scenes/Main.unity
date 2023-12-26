@@ -1048,6 +1048,7 @@ MonoBehaviour:
   DraggedPointId: 0
   MainCamera: {fileID: 519420028}
   PreferenceDialog: {fileID: 474590757}
+  Selector: {fileID: 1076026799}
 --- !u!61 &784430083
 BoxCollider2D:
   m_ObjectHideFlags: 0
