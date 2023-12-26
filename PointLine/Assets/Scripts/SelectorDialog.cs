@@ -7,6 +7,7 @@ public class SelectorDialog : MonoBehaviour
     public string Text1="";
     public bool Selected = false;
     public GameObject Text1obj;
+    public GameObject ParentObject;
     // Start is called before the first frame update
     void Start()
     {

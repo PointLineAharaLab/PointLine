@@ -231,6 +231,27 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
         return false;
     }
+
+    GameObject getObjectFromSelectorDialog(Vector3 v)
+    {
+        SelectorDialog[] objs = this.Selector.GetComponentsInChildren<SelectorDialog>();
+        Debug.Log("mousePosition = " + v);
+        for (int g=0; g<objs.Length; g++)
+        {
+            SelectorDialog sd = objs[g];
+            Debug.Log("selector transformation " + sd.gameObject.transform.position);
+            if (Mathf.Abs(sd.gameObject.transform.position.x - 0.5f - v.x) < 0.1)
+            {
+                if (Mathf.Abs(sd.gameObject.transform.position.y - v.y) < 0.1)
+                {
+                    Debug.Log("This one!");
+
+                }
+            }
+        }
+        return null;
+    }
+
     private int MousePointPosition()
     {
         Vector3 v = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -280,12 +301,13 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                         {
                             if (AppMgr.pts[p].Id == MOP)
                             {
+                                sd_obj.ParentObject = AppMgr.pts[p].gameObject;
                                 sd_obj.Text1 = "点 " + AppMgr.pts[p].PointName;
                             }
                         }
                     }
                     AppMgr.SelectorOn = true;
-                    AppMgr.DrawOn = true;
+                    AppMgr.DrawOn = false;
                 }
                 else MOP = mop[0];
             }
@@ -717,7 +739,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         MouseDownVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         MouseDownVec.z = 0.0f;
         DraggedPointId = MousePointPosition();
-        DraggedObjectId = getObjectFromMousePosition(true);
+        DraggedObjectId = getObjectFromMousePosition(false);
         //print(DraggedPointId);
         DraggedGameLogStartTop = Util.StartTop;
         DraggedPreferencePosition = PreferenceDialog.GetComponent<Preference>().Position;
@@ -1511,8 +1533,21 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             obj.Vec = MouseDownVec;
             //Point obj = g.GetComponent<Point>();
             Destroy(g, 1.2f);//モジュールの消去
+            int MOP = -1;
+            // click on the selector
+            if (AppMgr.SelectorOn)
+            {
+                GameObject selected_obj = getObjectFromSelectorDialog(MouseUpVec);
+                MOP = selected_obj.GetComponent<SelectorDialog>().ParentObject.GetComponent<Point>().Id;
+                AppMgr.SelectorOn = false;
+                AppMgr.DrawOn = true;
 
-            int MOP = getObjectFromMousePosition(false);
+                return;
+            }
+            else
+            {
+                MOP = getObjectFromMousePosition(true);
+            }
             //Debug.Log("MOP (OnMouseUp) = " + MOP);
             if (MOP == -2)
             {//モード切替
