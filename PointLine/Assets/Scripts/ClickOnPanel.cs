@@ -77,7 +77,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
         Util.SetGameLogPosition();
         if (Input.GetMouseButtonDown(0)){
-            OnMouseDown();
+            OnMyMouseDown();
         }
         else if (Input.GetMouseButton(0))
         {
@@ -104,33 +104,20 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         return Mathf.Sqrt(x * x + y * y);
     }
 
-    private int MouseOnPoints(Vector3 v)
+    private List<int> MouseOnPoints(Vector3 v)
     {
-        Point pt = null;
-        if (pts == null) return -1;
+        List<int> ret = new List<int>();
+        if (pts == null) return ret;
         for (int i = 0; i < pts.Length; i++)
         {
             double dist = Hypot(v.x - pts[i].Vec.x, v.y - pts[i].Vec.y);
             //Debug.Log("dist - " + dist);
             if (dist < 0.25)
             {
-                if (pts[i].Fixed)
-                {
-                    return pts[i].Id;
-                }
-                else
-                {
-                    pt = pts[i];
-                }
+                ret.Add(pts[i].Id);
             }
         }
-        if(pt == null) { 
-            return -1;
-        }
-        else
-        {
-            return pt.Id;
-        }
+        return ret;
     }
 
     private int MouseOnLines(Vector3 v)
@@ -248,9 +235,17 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     {
         Vector3 v = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         v.z = 0.0f;
-        return MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
+        List<int> mop = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
+        if (mop.Count>0)
+        {
+            return mop[0];
+        }
+        else
+        {
+            return -1;
+        }
     }
-    private int MousePosition()
+    private int getObjectFromMousePosition(bool getSelector)
     {
         Vector3 v = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         v.z = 0.0f;
@@ -270,7 +265,31 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         //Debug.Log("ClickRequire = " + AppMgr.ClickRequire);
         if (AppMgr.ClickRequire == AppMgr.CLICKREQ_POINT)
         {
-            MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
+            List<int> mop = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
+            if (mop.Count > 0)
+            {
+                if (getSelector)
+                {
+                    for (int m = 0; m < mop.Count; m++)
+                    {
+                        MOP = mop[m];
+                        GameObject prefab = Resources.Load<GameObject>("Prefabs/SelectorDialog");
+                        GameObject g_object = Line.Instantiate(prefab, v - new Vector3(0f, 0.5f * m, 0f), Quaternion.identity, Selector.transform) as GameObject;
+                        SelectorDialog sd_obj = g_object.GetComponent<SelectorDialog>();
+                        for (int p = 0; p < AppMgr.pts.Length; p++)
+                        {
+                            if (AppMgr.pts[p].Id == MOP)
+                            {
+                                sd_obj.Text1 = "点 " + AppMgr.pts[p].PointName;
+                            }
+                        }
+                    }
+                    AppMgr.SelectorOn = true;
+                    AppMgr.DrawOn = true;
+                }
+                else MOP = mop[0];
+            }
+            else MOP = -1;
         }
         else if (AppMgr.ClickRequire == AppMgr.CLICKREQ_LINE)
         {
@@ -286,7 +305,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
         if (MOP == -1)
         {
-            MOP = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
+            List<int> mop = new List<int>();
+            mop = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
+            if (mop.Count > 0) MOP = mop[0]; else MOP = -1;
             if (MOP == -1)
             {
                 MOP = MouseOnLines(v);// ラインをクリックしたかどうかのチェック
@@ -303,39 +324,11 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         if (MOP >= 0 && MOP < 4000)
         {// MOP番のオブジェクト
             Debug.Log("MOP = " + MOP);
-            GameObject prefab = Resources.Load<GameObject>("Prefabs/SelectorDialog");
-            GameObject g_object = Line.Instantiate(prefab, v, Quaternion.identity, Selector.transform) as GameObject;
-            SelectorDialog sd_obj = g_object.GetComponent<SelectorDialog>();
-            for (int i = 0; i < AppMgr.pts.Length; i++)
-            {
-                if (AppMgr.pts[i].Id == MOP)
-                {
-                    sd_obj.Text1 = "点 " + AppMgr.pts[i].PointName;
-                }
-            }
-            for (int i = 0; i < AppMgr.lns.Length; i++)
-            {
-                if (AppMgr.lns[i].Id == MOP)
-                {
-                    string P1="", P2="";
-                    for (int j = 0; j < AppMgr.pts.Length; j++)
-                    {
-                        if (AppMgr.pts[j].Id == lns[i].Point1Id)
-                        {
-                            P1 = AppMgr.pts[j].PointName;
-                        }
-                        if (AppMgr.pts[j].Id == lns[i].Point2Id)
-                        {
-                            P2 = AppMgr.pts[j].PointName;
-                        }
-                    }
-                    sd_obj.Text1 = "直線 " + P1 + P2;
-                }
-            }
             return MOP;
         }
         else if (ClickOnButton(Input.mousePosition))
         {
+            Debug.Log("Click a menu icon");
             return -2;//メニューを押した。
         }
         else
@@ -717,14 +710,14 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     }
 
 
-    public void OnMouseDown()
+    public void OnMyMouseDown()
     {
         if (!DrawOn) return;
         if (Camera.main == null) return;
         MouseDownVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         MouseDownVec.z = 0.0f;
         DraggedPointId = MousePointPosition();
-        DraggedObjectId = MousePosition();
+        DraggedObjectId = getObjectFromMousePosition(true);
         //print(DraggedPointId);
         DraggedGameLogStartTop = Util.StartTop;
         DraggedPreferencePosition = PreferenceDialog.GetComponent<Preference>().Position;
@@ -1519,7 +1512,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             //Point obj = g.GetComponent<Point>();
             Destroy(g, 1.2f);//モジュールの消去
 
-            int MOP = MousePosition();
+            int MOP = getObjectFromMousePosition(false);
             //Debug.Log("MOP (OnMouseUp) = " + MOP);
             if (MOP == -2)
             {//モード切替

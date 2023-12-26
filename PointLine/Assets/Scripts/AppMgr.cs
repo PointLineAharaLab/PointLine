@@ -21,6 +21,7 @@ public class AppMgr : MonoBehaviour {
 
     public static bool DrawOn = true;
     public static bool MenuOn = false;
+    public static bool SelectorOn = false;
     public static bool KeyOn = true;
     public static bool FileDialogOn = false;
 

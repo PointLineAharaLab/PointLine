@@ -90,7 +90,7 @@ TextMesh:
   m_Anchor: 0
   m_Alignment: 0
   m_TabSize: 4
-  m_FontSize: 8
+  m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: fd10ba5b4c2e99b4d9d446e9a87cc6b9, type: 3}
@@ -160,7 +160,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 04fc663c54375b648a80dcff192d5ad6, type: 2}
+  - {fileID: 2100000, guid: 5db4a0ccb4e2dde44b718bf945d78186, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
