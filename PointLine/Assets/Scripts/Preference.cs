@@ -688,7 +688,7 @@ public class Preference : MonoBehaviour
     void PointPreference(float Left, float Top, float Step, float height, int japanese)
     {
         string text = "";
-        string text2 = "";
+        //string text2 = "";
         GUIStyle LS = new GUIStyle(LabelStyle);
         GUIStyle BS = new GUIStyle(ButtonStyle);
         if (japanese == 1)

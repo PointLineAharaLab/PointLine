@@ -1,4 +1,7 @@
-Point,-3.358321,1.491754,0,0,False,True,A
-Point,-4.047976,0.2923537,0,1,False,True,B
-Point,-3.178411,2.586207,0,2,False,True,C
-Point,0.9745124,0.7871062,0,3,False,True,D
+Point,-4.402174,2.468944,0,0,False,True,A
+Point,0.7686333,0.2018632,0,1,False,True,B
+Line,0,1,1000,True
+Point,-3.346273,-0.8540376,0,2,False,True,C
+Point,-0.364907,2.34472,0,3,False,True,D
+Line,2,3,1001,True
+Point,-2.849379,0.7919252,0,4,False,True,E
