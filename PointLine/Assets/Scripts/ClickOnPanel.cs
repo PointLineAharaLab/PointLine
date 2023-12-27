@@ -232,7 +232,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         return false;
     }
 
-    GameObject getObjectFromSelectorDialog(Vector3 v)
+    SelectorDialog getObjectFromSelectorDialog(Vector3 v)
     {
         SelectorDialog[] objs = this.Selector.GetComponentsInChildren<SelectorDialog>();
         Debug.Log("mousePosition = " + v);
@@ -245,7 +245,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 if (Mathf.Abs(sd.gameObject.transform.position.y - v.y) < 0.1)
                 {
                     Debug.Log("This one!");
-
+                    return sd;
                 }
             }
         }
@@ -289,7 +289,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             List<int> mop = MouseOnPoints(v);// ポイントをクリックしたかどうかのチェック
             if (mop.Count > 0)
             {
-                if (getSelector)
+                if (getSelector && mop.Count > 1)
                 {
                     for (int m = 0; m < mop.Count; m++)
                     {
@@ -307,7 +307,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                         }
                     }
                     AppMgr.SelectorOn = true;
+                    Debug.Log("AppMgr.SelectorOn = true;");
                     AppMgr.DrawOn = false;
+                    MOP = -1;
                 }
                 else MOP = mop[0];
             }
@@ -734,7 +736,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     public void OnMyMouseDown()
     {
-        if (!DrawOn) return;
+        if (!AppMgr.DrawOn && !AppMgr.SelectorOn) return;
         if (Camera.main == null) return;
         MouseDownVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         MouseDownVec.z = 0.0f;
@@ -1508,13 +1510,16 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     public void OnMouseUp()
     {
-        if (!DrawOn) return;
+        Debug.Log("AppMgr.DrawOn="+ AppMgr.DrawOn+ "AppMgr.SelectorOn=" + AppMgr.SelectorOn);
+        if (!AppMgr.DrawOn && !AppMgr.SelectorOn) return;
         Vector3 mPs = Input.mousePosition;
         mPs.y = Screen.height - mPs.y;
         if (mPs.x < 110 && mPs.y < 90) return;
         if (Camera.main == null) return;
         MouseUpVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         MouseUpVec.z = 0.0f;
+        Debug.Log("MouseDownVec="+ MouseDownVec.ToString());
+        Debug.Log("MouseUpVec=" + MouseUpVec.ToString());
         if (Hypot(MouseDownVec.x - MouseUpVec.x, MouseDownVec.y - MouseUpVec.y) < 0.1)
         {// クリックののちマウスアップ
             //ログの右上をクリック
@@ -1522,7 +1527,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             if (4000 <= MOL && MOL < 4500)
             {
                 PreferenceDialog.GetComponent<Preference>().SetData(Util.logs[MOL - 4000]);
-                Debug.Log("thru here");
                 PreferenceDialog.GetComponent<Preference>().show = true;
                 Debug.Log(PreferenceDialog.GetComponent<Preference>().show);
             }
@@ -1537,16 +1541,27 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             // click on the selector
             if (AppMgr.SelectorOn)
             {
-                GameObject selected_obj = getObjectFromSelectorDialog(MouseUpVec);
-                MOP = selected_obj.GetComponent<SelectorDialog>().ParentObject.GetComponent<Point>().Id;
-                AppMgr.SelectorOn = false;
-                AppMgr.DrawOn = true;
-
-                return;
+                SelectorDialog selected_obj = getObjectFromSelectorDialog(MouseUpVec);
+                if (selected_obj != null) { 
+                    Debug.Log("selected_obj.ParentObject.GetComponent<Point>()" + selected_obj.ParentObject.GetComponent<Point>().ToString());
+                    MOP = selected_obj.ParentObject.GetComponent<Point>().Id;
+                    SelectorDialog[] objs = this.Selector.GetComponentsInChildren<SelectorDialog>();
+                    for (int gi = objs.Length - 1; gi >= 0; gi--)
+                    {
+                        Destroy(objs[gi].gameObject);
+                    }
+                    AppMgr.SelectorOn = false;
+                    AppMgr.DrawOn = true;
+                }
             }
             else
             {
+                Debug.Log("thru here2");
                 MOP = getObjectFromMousePosition(true);
+                if (AppMgr.SelectorOn)
+                {
+                    return;
+                }
             }
             //Debug.Log("MOP (OnMouseUp) = " + MOP);
             if (MOP == -2)

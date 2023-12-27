@@ -1,3 +1,4 @@
-Point,-3.703416,1.180124,0,0,False,True,A
-Point,-3.330745,1.288821,0,1,False,True,B
-Point,-2.709627,1.630435,0,2,False,True,C
+Point,-3.358321,1.491754,0,0,False,True,A
+Point,-4.047976,0.2923537,0,1,False,True,B
+Point,-3.178411,2.586207,0,2,False,True,C
+Point,0.9745124,0.7871062,0,3,False,True,D
