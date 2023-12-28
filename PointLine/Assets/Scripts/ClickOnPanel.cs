@@ -134,23 +134,23 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         return ret;
     }
 
-    private int MouseOnCircle(Vector3 v)
+    private List<int> MouseOnCircles(Vector3 v)
     {// 
-        if (cis == null) return -1;
+        List<int> ret = new List<int>();
+        if (cis == null) return ret;
         Circle[] ci = FindObjectsOfType<Circle>();
         if (ci != null)
         {
-            for (int i = 0; i < ci.Length; i++)
+            for (int c = 0; c < ci.Length; c++)
             {
-                float dist = Hypot(ci[i].CenterVec.x - v.x, ci[i].CenterVec.y - v.y);
-                if (ci[i].Radius - 0.25 < dist && dist < ci[i].Radius + 0.25)
+                float dist = Hypot(ci[c].CenterVec.x - v.x, ci[c].CenterVec.y - v.y);
+                if (ci[c].Radius - 0.25 < dist && dist < ci[c].Radius + 0.25)
                 {
-                    //Debug.Log("MouseOnCircle " + ci[i].Id);
-                    return ci[i].Id;
+                    ret.Add(ci[c].Id);
                 }
             }
         }
-        return -1;
+        return ret;
     }
 
     private int MouseOnAngle(Vector3 v)
@@ -241,7 +241,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {
             SelectorDialog sd = objs[g];
             Debug.Log("selector transformation " + sd.gameObject.transform.position);
-            if (Mathf.Abs(sd.gameObject.transform.position.x - 0.5f - v.x) < 0.5f)
+            if (Mathf.Abs(sd.gameObject.transform.position.x - 0.5f - v.x) < 1.0f)
             {
                 if (Mathf.Abs(sd.gameObject.transform.position.y - v.y) < 0.25f)
                 {
@@ -298,18 +298,18 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                         GameObject prefab = Resources.Load<GameObject>("Prefabs/SelectorDialog");
                         GameObject g_object = Line.Instantiate(prefab, v - new Vector3(0f, 0.5f * m, 0f), Quaternion.identity, Selector.transform) as GameObject;
                         SelectorDialog sd_obj = g_object.GetComponent<SelectorDialog>();
-                        for (int p = 0; p < AppMgr.pts.Length; p++)
+                        for (int p = 0; p < pts.Length; p++)
                         {
-                            if (AppMgr.pts[p].Id == MOP)
+                            if (pts[p].Id == MOP)
                             {
-                                sd_obj.ParentObject = AppMgr.pts[p].gameObject;
-                                sd_obj.Text1 = "点 " + AppMgr.pts[p].PointName;
+                                sd_obj.ParentObject = pts[p].gameObject;
+                                sd_obj.Text1 = "点 " + pts[p].PointName;
                             }
                         }
                     }
-                    AppMgr.SelectorOn = true;
-                    Debug.Log("AppMgr.SelectorOn = true;");
-                    AppMgr.DrawOn = false;
+                    SelectorOn = true;
+                    Debug.Log("SelectorOn = true;");
+                    DrawOn = false;
                     MOP = -1;
                 }
                 else MOP = mop[0];
@@ -338,11 +338,11 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                                 string Point2 = "*";
                                 for (int p = 0; p < pts.Length; p++)
                                 {
-                                    if (pts[p].Id == lns[l].GetComponent<Line>().Point1Id)
+                                    if (pts[p].Id == lns[l].Point1Id)
                                     {
                                         Point1 = pts[p].PointName;
                                     }
-                                    if (pts[p].Id == lns[l].GetComponent<Line>().Point2Id)
+                                    if (pts[p].Id == lns[l].Point2Id)
                                     {
                                         Point2 = pts[p].PointName;
                                     }
@@ -362,9 +362,45 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         }
         else if (AppMgr.ClickRequire == AppMgr.CLICKREQ_CIRCLE)
         {
-            MOP = MouseOnCircle(v);//サークルをクリックしたかどうかのチェック
+            List<int> mop = MouseOnCircles(v);// サークルをクリックしたかどうかのチェック
+            if (mop.Count > 0)
+            {
+                if (getSelector && mop.Count > 1)
+                {
+                    for (int m = 0; m < mop.Count; m++)
+                    {
+                        MOP = mop[m];
+                        GameObject prefab = Resources.Load<GameObject>("Prefabs/SelectorDialog");
+                        GameObject g_object = Line.Instantiate(prefab, v - new Vector3(0f, 0.5f * m, 0f), Quaternion.identity, Selector.transform) as GameObject;
+                        SelectorDialog sd_obj = g_object.GetComponent<SelectorDialog>();
+                        for (int c = 0; c < cis.Length; c++)
+                        {
+                            if (cis[c].Id == MOP)
+                            {
+                                sd_obj.ParentObject = cis[c].gameObject;
+                                string CenterPoint = "*";
+                                for (int p = 0; p < pts.Length; p++)
+                                {
+                                    if (pts[p].Id == cis[c].CenterPointId)
+                                    {
+                                        CenterPoint = pts[p].PointName;
+                                    }
+                                }
+                                string Radius = "(" + cis[c].Radius + ")";
+                                sd_obj.Text1 = "円 " + CenterPoint + Radius;
+                            }
+                        }
+                    }
+                    SelectorOn = true;
+                    Debug.Log("AppMgr.SelectorOn = true;");
+                    DrawOn = false;
+                    MOP = -1;
+                }
+                else MOP = mop[0];
+            }
+            else MOP = -1;
         }
-        else if (AppMgr.ClickRequire == AppMgr.CLICKREQ_ANGLE)
+        else if (ClickRequire == AppMgr.CLICKREQ_ANGLE)
         {
             MOP = MouseOnAngle(v);//角度をクリックしたかどうかのチェック
         }
@@ -379,7 +415,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 if (mop.Count > 0) MOP = mop[0]; else MOP = -1;
                 if (MOP == -1)
                 {
-                    MOP = MouseOnCircle(v);//サークルをクリックしたかどうかのチェック
+                    mop = MouseOnCircles(v);//サークルをクリックしたかどうかのチェック
+                    if (mop.Count > 0) MOP = mop[0]; else MOP = -1;
                     if (MOP == -1)
                     {
                         MOP = MouseOnAngle(v);//角度をクリックしたかどうかのチェック
@@ -1597,6 +1634,12 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     {
                         Debug.Log("parentLn=" + parentLn.ToString());
                         MOP = parentLn.Id;
+                    }
+                    Circle parentCi = selected_obj.ParentObject.GetComponent<Circle>();
+                    if (parentCi != null)
+                    {
+                        Debug.Log("parentLn=" + parentCi.ToString());
+                        MOP = parentCi.Id;
                     }
                     SelectorDialog[] objs = Selector.GetComponentsInChildren<SelectorDialog>();
                     for (int gi = objs.Length - 1; gi >= 0; gi--)
