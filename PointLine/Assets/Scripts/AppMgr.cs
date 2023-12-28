@@ -221,7 +221,7 @@ public class AppMgr : MonoBehaviour {
 
             if (err < ConvergencyThreshold)
             {
-                Debug.Log("Convergence");
+                //Debug.Log("Convergence");
                 break;
             }
             if (err > previousErr)

@@ -1350,7 +1350,7 @@ public class Module : MonoBehaviour {
         Point pt = Object1.GetComponent<Point>();
         Vector3 ptVec = pt.Vec;
         float difference = (PreVec - ptVec).magnitude;
-        Debug.Log("" + difference + ":" + AppMgr.ConvergencyCount);
+        //Debug.Log("" + difference + ":" + AppMgr.ConvergencyCount);
         if (difference > 0.05f && AppMgr.ConvergencyCount < 2)
         {
             PreVec = ptVec;

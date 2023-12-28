@@ -236,16 +236,16 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     SelectorDialog getObjectFromSelectorDialog(Vector3 v)
     {
         SelectorDialog[] objs = this.Selector.GetComponentsInChildren<SelectorDialog>();
-        Debug.Log("mousePosition = " + v);
+        //Debug.Log("mousePosition = " + v);
         for (int g=0; g<objs.Length; g++)
         {
             SelectorDialog sd = objs[g];
-            Debug.Log("selector transformation " + sd.gameObject.transform.position);
+            //Debug.Log("selector transformation " + sd.gameObject.transform.position);
             if (Mathf.Abs(sd.gameObject.transform.position.x - 0.5f - v.x) < 1.0f)
             {
                 if (Mathf.Abs(sd.gameObject.transform.position.y - v.y) < 0.25f)
                 {
-                    Debug.Log("This one!");
+                    Debug.Log("Your choice is" + sd.Text1);
                     return sd;
                 }
             }
@@ -1632,13 +1632,13 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     Line parentLn = selected_obj.ParentObject.GetComponent<Line>();
                     if (parentLn != null)
                     {
-                        Debug.Log("parentLn=" + parentLn.ToString());
+                        //Debug.Log("parentLn=" + parentLn.ToString());
                         MOP = parentLn.Id;
                     }
                     Circle parentCi = selected_obj.ParentObject.GetComponent<Circle>();
                     if (parentCi != null)
                     {
-                        Debug.Log("parentLn=" + parentCi.ToString());
+                        //Debug.Log("parentCi=" + parentCi.ToString());
                         MOP = parentCi.Id;
                     }
                     SelectorDialog[] objs = Selector.GetComponentsInChildren<SelectorDialog>();
