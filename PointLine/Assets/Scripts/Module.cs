@@ -16,7 +16,8 @@ public class Module : MonoBehaviour {
     public bool ShowConstant = false;//[10]
     public bool FixAngle = false;//角度を固定するかどうかのフラグ//[11]
     public bool FixRatio = true;//比を固定するかどうかのフラグ//[12]
-    public float para = 0.1f;
+    public float Parameter = 0.1f;
+    public float ParaWeight = 0.2f;
     public float err=0f;
 
     public GameObject Object1, Object2, Object3;
@@ -49,8 +50,8 @@ public class Module : MonoBehaviour {
             }
             Vector3 v1 = p1.Vec;
             Vector3 v2 = p2.Vec;
-            Vector3 v1New = (1f-para) * v1 + para * v2;
-            Vector3 v2New = para * v1 + (1f - para) * v2;
+            Vector3 v1New = (1f-Parameter) * v1 + Parameter * v2;
+            Vector3 v2New = Parameter * v1 + (1f - Parameter) * v2;
             float err = 0;
             if (!p1.Fixed)
             {
@@ -128,40 +129,95 @@ public class Module : MonoBehaviour {
         {
             Point p1 = Object1.GetComponent<Point>();
             Line l2 = Object2.GetComponent<Line>();
-            if(p1 == null || l2 == null)
+            if (p1 == null || l2 == null)
             {
                 Active = false;
                 return 0f;
             }
             Point p21 = l2.Point1.GetComponent<Point>();
             Point p22 = l2.Point2.GetComponent<Point>();
-            if(p21 == null || p22 == null)
+            if (p21 == null || p22 == null)
             {
                 Active = false;
                 return 0f;
             }
-            float Distance;
-            Vector3 DVec, PVec;
-            DVec = Rotate90(p22.Vec - p21.Vec);
-            DVec.Normalize();
-            PVec = p1.Vec - p21.Vec;
-            Distance = Vector3.Dot(DVec, PVec) * para;
+            float InnerT = Vector3.Dot(p1.Vec - p21.Vec, p22.Vec - p21.Vec) / Vector3.Dot(p22.Vec - p21.Vec, p22.Vec - p21.Vec);
             float err = 0f;
-            
-            if (!p1.Fixed)
-            {// 点を直線に近づける
-                p1.Vec -= (Distance * 0.5f) * DVec;
-                err += Mathf.Abs(Distance) * 0.5f;
+            if (0f <= InnerT && InnerT <= 1f)
+            {
+                float Distance;
+                Vector3 DVec, PVec;
+                DVec = Rotate90(p22.Vec - p21.Vec);
+                DVec.Normalize();
+                PVec = p1.Vec - p21.Vec;
+                Distance = Vector3.Dot(DVec, PVec) * Parameter;
+
+                if (!p1.Fixed)
+                {// 点を直線に近づける
+                    p1.Vec -= (Distance * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance) * 0.5f;
+                }
+                if (!p21.Fixed)
+                { //直線を点に近づける
+                    p21.Vec += (Distance * ParaWeight * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance * ParaWeight) * 0.5f;
+                }
+                if (!p22.Fixed)
+                { //直線を点に近づける
+                    p22.Vec += (Distance * ParaWeight * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance * ParaWeight) * 0.5f;
+                }
             }
-            if (!p21.Fixed)
-            { //直線を点に近づける
-                p21.Vec += (Distance * 0.5f) * DVec;
-                err += Mathf.Abs(Distance) * 0.5f;
+            else if (InnerT < 0f)
+            {
+                // p21 を 線分p1-p22へ近づける
+                float Distance;
+                Vector3 DVec, PVec;
+                DVec = Rotate90(p22.Vec - p1.Vec);
+                DVec.Normalize();
+                PVec = p21.Vec - p1.Vec;
+                Distance = Vector3.Dot(DVec, PVec) * Parameter;
+
+                if (!p21.Fixed)
+                {// 点を直線に近づける
+                    p21.Vec -= (Distance * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance) * 0.5f;
+                }
+                if (!p1.Fixed)
+                { //直線を点に近づける
+                    p1.Vec += (Distance * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance) * 0.5f;
+                }
+                if (!p22.Fixed)
+                { //直線を点に近づける
+                    p22.Vec += (Distance * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance) * 0.5f;
+                }
             }
-            if (!p22.Fixed)
-            { //直線を点に近づける
-                p22.Vec += (Distance * 0.5f) * DVec;
-                err += Mathf.Abs(Distance) * 0.5f;
+            else if (1f < InnerT) {
+                // p22 を 線分p21-p1へ近づける
+                float Distance;
+                Vector3 DVec, PVec;
+                DVec = Rotate90(p1.Vec - p21.Vec);
+                DVec.Normalize();
+                PVec = p22.Vec - p21.Vec;
+                Distance = Vector3.Dot(DVec, PVec) * Parameter;
+
+                if (!p22.Fixed)
+                {// 点を直線に近づける
+                    p22.Vec -= (Distance * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance) * 0.5f;
+                }
+                if (!p21.Fixed)
+                { //直線を点に近づける
+                    p21.Vec += (Distance * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance) * 0.5f;
+                }
+                if (!p1.Fixed)
+                { //直線を点に近づける
+                    p1.Vec += (Distance * 0.5f) * DVec;
+                    err += Mathf.Abs(Distance) * 0.5f;
+                }
             }
             return err;
         }
@@ -215,7 +271,7 @@ public class Module : MonoBehaviour {
             }
             float dist = Vector3.Distance(p21.Vec, p1.Vec);
             float rad = c2.Radius;
-            float delta = (dist - rad) * para * 0.33f;
+            float delta = (dist - rad) * Parameter * 0.33f;
             float err = Mathf.Abs(delta);
             float radNew = rad + delta;
             c2.Radius = radNew;
@@ -297,7 +353,7 @@ public class Module : MonoBehaviour {
             VecA.Normalize();
             VecB.Normalize();
             //Delta = (NormB - NormA) * 0.125f;//等長
-            Delta = (NormB * Ratio1 - NormA * Ratio2) / (Ratio1 + Ratio2) * para;//Ratioの値によって変わる
+            Delta = (NormB * Ratio1 - NormA * Ratio2) / (Ratio1 + Ratio2) * Parameter;//Ratioの値によって変わる
             //  線分の長さを等しくする
             if (FixRatio)// 比が固定されていれば
             {
@@ -395,7 +451,7 @@ public class Module : MonoBehaviour {
                 Delta += Mathf.PI / 2;
             else if (Delta >= -Mathf.PI * 2)
                 Delta += Mathf.PI * 3 / 2;
-            Delta *= para;
+            Delta *= Parameter;
             float CosDelta = Mathf.Cos(Delta);
             float SinDelta = Mathf.Sin(Delta);
             float x1c = (x11 + x12) * 0.5f;
@@ -501,7 +557,7 @@ public class Module : MonoBehaviour {
                 Delta += Mathf.PI;
             else
                 Delta += Mathf.PI * 2;
-            Delta *= para;
+            Delta *= Parameter;
             float CosDelta = Mathf.Cos(Delta);
             float SinDelta = Mathf.Sin(Delta);
             float x1c = (x11 + x12) * 0.5f;
@@ -594,7 +650,7 @@ public class Module : MonoBehaviour {
                 Delta += 0;
             else if (Delta >= -Mathf.PI * 3 / 2)
                 Delta += Mathf.PI;
-            Delta *= para;
+            Delta *= Parameter;
             float CosDelta = Mathf.Cos(Delta);
             float SinDelta = Mathf.Sin(Delta);
             float x1c = (x11 + x12) * 0.5f;
@@ -670,7 +726,7 @@ public class Module : MonoBehaviour {
                 DVec *= -1f;
                 Distance *= -1f;
             }
-            float Delta = (Distance - Radius) * para;
+            float Delta = (Distance - Radius) * Parameter;
             float err = 0f;
             // 円の中心を直線に近づける
             if (!p11.Fixed)
@@ -757,7 +813,7 @@ public class Module : MonoBehaviour {
             float err = 0f;
             if (Mathf.Abs(DeltaIn) > Mathf.Abs(DeltaOut))
             {// 外接していると思われる
-                Delta = DeltaOut * para * 0.25f;
+                Delta = DeltaOut * Parameter * 0.25f;
                 //円１の中心を動かす
                 if (!p11.Fixed)
                 {
@@ -790,7 +846,7 @@ public class Module : MonoBehaviour {
                 {
                     C1out = true;
                 }
-                Delta = DeltaIn * para * 0.25f;
+                Delta = DeltaIn * Parameter * 0.25f;
                 //円１の中心を動かす
                 if (!p11.Fixed)
                 {
@@ -880,11 +936,9 @@ public class Module : MonoBehaviour {
                 Vector3 NewV1 = - v2 + 2.0f * v3;
                 Vector3 NewV2 = - v1 + 2.0f * v3;
                 Vector3 NewV3 = 0.5f * v1 + 0.5f * v2;
-                float Delta = para;
-                float Epsilon = 1.0f - para;
-                NewV1 = Delta * NewV1 + Epsilon * v1;
-                NewV2 = Delta * NewV2 + Epsilon * v2;
-                NewV3 = Delta * NewV3 + Epsilon * v3;
+                NewV1 = Parameter * ParaWeight * NewV1 + (1.0f - Parameter * ParaWeight) * v1;
+                NewV2 = Parameter * ParaWeight * NewV2 + (1.0f - Parameter * ParaWeight) * v2;
+                NewV3 = Parameter * NewV3 + (1.0f - Parameter) * v3;
 
                  
                 if (!AppMgr.pts[i1].Fixed)
@@ -912,8 +966,8 @@ public class Module : MonoBehaviour {
                 Vector3 NewV1 = (Ratio2==0)? v1 : (-Ratio1 * v2 + (Ratio2 + Ratio1) * v3) / Ratio2;
                 Vector3 NewV2 = (Ratio1==0)? v2 : (-Ratio2 * v1 + (Ratio2 + Ratio1) * v3) / Ratio1;
                 Vector3 NewV3 = (Ratio2 * v1 + Ratio1 * v2) / (Ratio2 + Ratio1);
-                float Delta = para;
-                float Epsilon = 1.0f - para;
+                float Delta = Parameter;
+                float Epsilon = 1.0f - Parameter;
                 NewV1 = Delta * NewV1 + Epsilon * v1;
                 NewV2 = Delta * NewV2 + Epsilon * v2;
                 NewV3 = Delta * NewV3 + Epsilon * v3;
@@ -973,7 +1027,7 @@ public class Module : MonoBehaviour {
             Active = false;
             return 0f;
         }
-        para = 0.1f;
+        Parameter = 0.1f;
         float err = 0f;
         if (PA.Fixed && !PB.Fixed && PC.Fixed)
         {
@@ -1002,7 +1056,7 @@ public class Module : MonoBehaviour {
                 Angle -= 2*PI;
             if (PI <= Angle && Angle < 2*PI)
                 Angle = 2*PI - Angle;
-            float Error = (Angle - Constant) * AC * 0.1f * para;
+            float Error = (Angle - Constant) * AC * 0.1f * Parameter;
             Dx *= Error;
             Dy *= Error;
             PB.Vec += new Vector3(Dx, Dy, 0f);
@@ -1019,7 +1073,7 @@ public class Module : MonoBehaviour {
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * para;
+            float AngleError = (Angle - Constant) * Parameter;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1028,7 +1082,7 @@ public class Module : MonoBehaviour {
             }
             else 
             {
-                AngleError = (Angle + Constant) * para;
+                AngleError = (Angle + Constant) * Parameter;
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
@@ -1068,7 +1122,7 @@ public class Module : MonoBehaviour {
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * para;
+            float AngleError = (Angle - Constant) * Parameter;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1167,7 +1221,7 @@ public class Module : MonoBehaviour {
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * para;
+            float AngleError = (Angle - Constant) * Parameter;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1176,7 +1230,7 @@ public class Module : MonoBehaviour {
             }
             else
             {
-                AngleError = (Angle + Constant) * para;
+                AngleError = (Angle + Constant) * Parameter;
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
@@ -1207,7 +1261,7 @@ public class Module : MonoBehaviour {
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * para;
+            float AngleError = (Angle - Constant) * Parameter;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1216,7 +1270,7 @@ public class Module : MonoBehaviour {
             }
             else
             {
-                AngleError = (Angle + Constant) * para;
+                AngleError = (Angle + Constant) * Parameter;
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
@@ -1258,7 +1312,7 @@ public class Module : MonoBehaviour {
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * para;
+            float AngleError = (Angle - Constant) * Parameter;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {
@@ -1267,7 +1321,7 @@ public class Module : MonoBehaviour {
             }
             else
             {
-                AngleError = (Angle + Constant) * para;
+                AngleError = (Angle + Constant) * Parameter;
                 if (AngleError > MaxError) AngleError = MaxError;
                 if (AngleError < -MaxError) AngleError = -MaxError;
             }
@@ -1298,7 +1352,7 @@ public class Module : MonoBehaviour {
             if (DeclineBC < DeclineBA - Mathf.PI) DeclineBC += Mathf.PI * 2f;
             if (DeclineBC > DeclineBA + Mathf.PI) DeclineBC -= Mathf.PI * 2f;
             float Angle = DeclineBC - DeclineBA;
-            float AngleError = (Angle - Constant) * para;
+            float AngleError = (Angle - Constant) * Parameter;
             float MaxError = 0.02f;
             if (Angle >= 0)
             {

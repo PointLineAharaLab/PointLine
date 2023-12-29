@@ -1,0 +1,4 @@
+repository "PointLine@kazuaha63@cloud"
+  path "/"
+    br "/main"
+    co "/main"
