@@ -1455,7 +1455,7 @@ public class Module : MonoBehaviour {
         //if (AppMgr.ModuleOn) { // いつでもモジュールを切れるようにしておく。
         //    for (int a = 0; a < 100; a++)
         //    {
-                ExecuteModule();
+        //        ExecuteModule();
         //    }
         //}
         if (GameLog != null)

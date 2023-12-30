@@ -654,7 +654,7 @@ public class Util
             //ログをlogsに追加
             AddLog(lg);
             obj.GameLog = LogObj;
-            //AppMgr.ExecuteAllModules();// 念のためにモジュールを一度回してみる。
+            AppMgr.ExecuteAllModules();// 念のためにモジュールを一度回してみる。
         }
         return obj;
     }
