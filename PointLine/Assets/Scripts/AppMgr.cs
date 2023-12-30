@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using SimpleFileBrowser;
+using System.Reflection;
 
 
 public class AppMgr : MonoBehaviour {
@@ -38,8 +39,9 @@ public class AppMgr : MonoBehaviour {
 
     public static int ConvergencyCount=0;
     public GameObject ConvergencyAlertText;
+    public static GameObject ConvergencyAlert;
     public static float ConvergencyError = 0.0001f;
-    public static float ConvergencyThreshold = 0.00001f;
+    public static float ConvergencyThreshold = 0.000001f;
     public static bool ModuleOn = true;
 
     public static int ClickRequire = 0;// 1: point, 2: line, 3:circle, 4:angle
@@ -60,7 +62,7 @@ public class AppMgr : MonoBehaviour {
         LeftBottom = Camera.main.ScreenToWorldPoint(new Vector3(0f, 0f, 0f));
         RightUp = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0f));
         // set LogFolder.Tranform
-
+        AppMgr.ConvergencyAlert = ConvergencyAlertText;
 
     }
 
@@ -74,36 +76,6 @@ public class AppMgr : MonoBehaviour {
 	void Update () {
         //ExecuteAllModules();
         Rescaling();
-        if (ConvergencyCount >= 5)
-        {
-            //頂点の一つを微動させる。
-            pts = FindObjectsOfType<Point>();
-            if (pts.Length > 0)
-            {
-                int index = (int)UnityEngine.Random.Range(0, pts.Length);
-                Point pt = pts[index];
-                if (pt.Fixed == false) { 
-                    float x = UnityEngine.Random.Range(-0.01f, 0.01f);
-                    float y = UnityEngine.Random.Range(-0.01f, 0.01f);
-                    Vector3 position = pt.transform.position;
-                    position.x += x;
-                    position.y += y;
-                    pt.Vec = position;
-                    pt.transform.position = position;
-                    //Debug.Log("pt.transform = " + pt.transform.position);
-                    ExecuteAllModules();
-                }
-            }
-            if (Japanese==1)
-                ConvergencyAlertText.GetComponent<TextMesh>().text = "図形の不合理";
-            else 
-                ConvergencyAlertText.GetComponent<TextMesh>().text = "Conflict";
-            ModuleOn = false;
-        }
-        else
-        {
-            ConvergencyAlertText.GetComponent<TextMesh>().text = "";// 
-        }
     }
 
 
@@ -198,7 +170,23 @@ public class AppMgr : MonoBehaviour {
         int cnLength = cn.Length;
         float err = 0f;
         float previousErr = 0f;
-        AppMgr.ConvergencyCount = 0;
+        int ConvergencyCount = 0;
+        int PerturbationCount = 0;
+        pts = FindObjectsOfType<Point>();
+        for (int p = 0; p > pts.Length; p++) {
+            if (pts[p].Fixed == false) { 
+                //頂点を微動させる。
+                Point pt = pts[p];
+                float x = UnityEngine.Random.Range(-0.001f, 0.001f);
+                float y = UnityEngine.Random.Range(-0.001f, 0.001f);
+                Vector3 position = pt.transform.position;
+                position.x += x;
+                position.y += y;
+                pt.Vec = position;
+                pt.transform.position = position;
+            }
+        }
+        AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "";// 
         for (int repeat = 0; repeat < 2000; repeat++)
         {
             previousErr = err;
@@ -218,21 +206,23 @@ public class AppMgr : MonoBehaviour {
             {
                 err += cn[i].ExecuteModule();
             }
-
-            if (err < ConvergencyThreshold)
+            if (err >= previousErr)
             {
-                //Debug.Log("Convergence");
-                break;
-            }
-            if (err > previousErr)
-            {
-                AppMgr.ConvergencyCount += 1;
+                ConvergencyCount += 1;
                 previousErr = err;
-                if (AppMgr.ConvergencyCount > 10)
+                if (ConvergencyCount > 20)
                 {
-                    Debug.Log("Conflict");
-                    break;
+                    Debug.Log("Conflict" + ConvergencyCount + ":" + PerturbationCount);
+                    if (Japanese == 1)
+                        AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "図形の不合理";
+                    else
+                        AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "Conflict";
+                    ModuleOn = false;
                 }
+            }
+            if (err < 0.00001f)
+            {
+                break;
             }
         }
         //Debug.Log(AppMgr.ConvergencyCount);
