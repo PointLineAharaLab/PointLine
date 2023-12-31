@@ -1616,6 +1616,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         lns = null;
         cis = null;
         mds = null;
+        PointId = 0;
         Mode = MENU.DELETE_ALL;
         //Mode = 0;
         ModeStep = 0;
