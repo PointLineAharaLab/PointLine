@@ -558,14 +558,16 @@ public class Module : MonoBehaviour {
             else
                 Delta += Mathf.PI * 2;
             Delta *= Parameter;
-            float CosDelta = Mathf.Cos(Delta);
-            float SinDelta = Mathf.Sin(Delta);
             float x1c = (x11 + x12) * 0.5f;
             float y1c = (y11 + y12) * 0.5f;
             float x2c = (x21 + x22) * 0.5f;
             float y2c = (y21 + y22) * 0.5f;
             float err = 0f;
+            float magLN1 = Util.Magnitude(x11 - x12, y11 - y12);
+            float magLN2 = Util.Magnitude(x21 - x22, y21 - y22);
             Vector3 NewVec = Vector3.zero;
+            float CosDelta = Mathf.Cos(Delta * magLN2 / (magLN1 + magLN2));
+            float SinDelta = Mathf.Sin(Delta * magLN2 / (magLN1 + magLN2));
             NewVec.x = (x11 - x1c) * CosDelta - (y11 - y1c) * SinDelta + x1c;
             NewVec.y = +(x11 - x1c) * SinDelta + (y11 - y1c) * CosDelta + y1c;
             if (!p11.Fixed)
@@ -579,6 +581,8 @@ public class Module : MonoBehaviour {
                 p12.Vec = NewVec;
                 err += Util.Magnitude(x12 - x1c, y12 - y1c) * Mathf.Abs(Delta);
             }
+            CosDelta = Mathf.Cos(Delta * magLN1 / (magLN1 + magLN2));
+            SinDelta = Mathf.Sin(Delta * magLN1 / (magLN1 + magLN2));
             NewVec.x = (x21 - x2c) * CosDelta + (y21 - y2c) * SinDelta + x2c;
             NewVec.y = -(x21 - x2c) * SinDelta + (y21 - y2c) * CosDelta + y2c;
             if (!p21.Fixed)

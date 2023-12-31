@@ -993,9 +993,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             {
                 // 新しいモジュールの追加
                 Util.AddModule(MENU.POINT_ON_POINT, FirstClickId, SecondClickId, 0, ModuleId++);
-                AppMgr.ExecuteAllModules();
             }
             Mode = MENU.POINT_ON_POINT;
+            AppMgr.ExecuteAllModules();
             //Mode = 0;
             ModeStep = 0;
         }
@@ -1140,6 +1140,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 Util.SetIsometry();
             }
             Mode = MENU.LINES_ISOMETRY;
+            AppMgr.ExecuteAllModules();
             //Mode = 0;
             ModeStep = 0;
         }
@@ -1164,6 +1165,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 Util.SetIsometry();
             }
             Mode = MENU.LINES_ISOMETRY;
+            AppMgr.ExecuteAllModules();
             //Mode = 0;
             ModeStep = 0;
         }
@@ -1190,6 +1192,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 AppMgr.ExecuteAllModules();
             }
             Mode = MENU.LINES_PERPENDICULAR;
+            AppMgr.ExecuteAllModules();
             //Mode = 0;
             ModeStep = 0;
         }
@@ -1207,7 +1210,39 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {//モード８ステップ１ならば，「二つ目の線」をSecondClickIdに記録
             Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
             SecondClickId = MOP;
-            // 新しいモジュールの追加
+            //もし、二つの線分が連結していたならば、「直線上の点」に切り替える。
+            Line Line1=null, Line2=null;
+            for (int l=0; l<lns.Length; l++)
+            {
+                if (lns[l].Id == FirstClickId)
+                {
+                    Line1 = lns[l];
+                }
+                if (lns[l].Id == SecondClickId)
+                {
+                    Line2 = lns[l];
+                }
+            }
+            if (Line1!=null && Line2 != null)
+            {
+                if (Line1.Point1Id == Line2.Point1Id  || Line1.Point2Id == Line2.Point1Id)
+                {
+                    Util.AddModule(MENU.POINT_ON_LINE, Line2.Point2Id, Line1.Id, 0, ModuleId++);
+                    Mode = MENU.LINES_PARALLEL;
+                    AppMgr.ExecuteAllModules();
+                    ModeStep = 0;
+                    return;
+                }
+                else if (Line1.Point1Id == Line2.Point2Id || Line1.Point2Id == Line2.Point2Id)
+                {
+                    Util.AddModule(MENU.POINT_ON_LINE, Line2.Point1Id, Line1.Id, 0, ModuleId++);
+                    Mode = MENU.LINES_PARALLEL;
+                    AppMgr.ExecuteAllModules();
+                    ModeStep = 0;
+                    return;
+                }
+            } 
+            // さもなくば、新しいモジュールの追加
             Util.AddModule(MENU.LINES_PARALLEL, FirstClickId, SecondClickId, 0, ModuleId++);
             Mode = MENU.LINES_PARALLEL;
             AppMgr.ExecuteAllModules();
