@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 using SimpleFileBrowser;
 using System.Reflection;
+using UnityEngine.UIElements;
 
 
 public class AppMgr : MonoBehaviour {
@@ -187,7 +188,7 @@ public class AppMgr : MonoBehaviour {
             }
         }
         AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "";// 
-        for (int repeat = 0; repeat < 2000; repeat++)
+        for (int repeat = 0; repeat < 200; repeat++)
         {
             previousErr = err;
             err = 0f;
@@ -212,7 +213,7 @@ public class AppMgr : MonoBehaviour {
                 previousErr = err;
                 if (ConvergencyCount > 20)
                 {
-                    Debug.Log("Conflict" + ConvergencyCount + ":" + PerturbationCount);
+                    //Debug.Log("Conflict" + ConvergencyCount + ":" + PerturbationCount);
                     if (Japanese == 1)
                         AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "図形の不合理";
                     else
@@ -617,6 +618,7 @@ public class Util
             obj.ModuleName = GetModuleNameByType(type);
             obj.FixRatio = fixRatio;
             AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
+
             if (obj.Type == MENU.ADD_LOCUS)
             {
                 Point[] PTS = MonoBehaviour.FindObjectsOfType<Point>();
@@ -1024,7 +1026,7 @@ public class Util
             }
             catch (Exception e)
             {
-                Debug.Log(e.Message);
+                Debug.LogError(e.Message);
             }
         }
         else
@@ -1104,6 +1106,22 @@ public class Util
             int id = int.Parse(item[3]);
             bool act = bool.Parse(item[4]);
             Line ln = AddLine(o1, o2, id);
+            GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Point PT = OBJs[i].GetComponent<Point>();
+                if (PT != null)
+                {
+                    if (PT.Id == o1)
+                    {
+                        ln.Point1 = OBJs[i];
+                    }
+                    if (PT.Id == o2)
+                    {
+                        ln.Point2 = OBJs[i];
+                    }
+                }
+            }
             Log lg = ln.GameLog.GetComponent<Log>();
             lg.MakeLineLog(id, o1, o2, ln.parent, act, ln.LineName);
             return lg;
@@ -1115,6 +1133,19 @@ public class Util
             int id = int.Parse(item[3]);
             bool act = bool.Parse(item[4]);
             Circle ci = Util.AddCircle(o1, rad, id);
+            GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Point PT = OBJs[i].GetComponent<Point>();
+                if (PT != null)
+                {
+                    if (o1 == PT.Id)
+                    {
+                        ci.CenterPoint = OBJs[i];
+                        break;
+                    }
+                }
+            }
             Log lg = ci.GameLog.GetComponent<Log>();
             lg.MakeCircleLog(id, o1, rad, ci.parent, act, ci.CircleName);
             return lg;
@@ -1150,6 +1181,7 @@ public class Util
             MD.ShowConstant = showC;
             MD.FixAngle = fixA;
             MD.FixRatio = fixR;
+            //Debug.Log(MD.ToString());
             //ログ作成
             Log lg = MD.GameLog.GetComponent<Log>();
             lg.MakeModuleLog(id, mt, o1, o2, o3, MD.parent, act, MD.ModuleName);
