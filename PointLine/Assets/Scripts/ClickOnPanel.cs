@@ -589,6 +589,27 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 PreferenceDialog.GetComponent<Preference>().show = false;
             }
         }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log("Test Area");
+            GameObject Prefab = Resources.Load<GameObject>("Prefabs/AccessWeb");
+            GameObject Obj = Point.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity);
+            WebAcess wa = Obj.GetComponent<WebAcess>();
+            wa.SetAction("ReadWorkContent");
+            Debug.Log("Start0");
+            Debug.Log("Start0");
+            Debug.Log("Start0");
+            Debug.Log("Start0");
+            Debug.Log("Start0");
+
+            // Start メソッドを動かしたい。その終了後に以下を実行する。
+            //https://alicia-ing.com/programming/unity-database3/
+            //　https://gimo.jp/glossary/details/ienumerator.html
+            //string data = wa.ReturnData;
+            //Destroy(wa.gameObject);
+
+
+        }
     }
 
     void OnKeyAdd()
