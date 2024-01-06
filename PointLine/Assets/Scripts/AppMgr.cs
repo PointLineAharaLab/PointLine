@@ -27,6 +27,8 @@ public class AppMgr : MonoBehaviour {
     public static bool SelectorOn = false;
     public static bool KeyOn = true;
     public static bool FileDialogOn = false;
+    public static bool AccessWebOn = false;
+    public static bool AccessWebEnd = false;
 
     public static Point[] pts = null;
     public static Line[] lns = null;

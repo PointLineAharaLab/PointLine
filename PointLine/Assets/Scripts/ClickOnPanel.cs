@@ -71,6 +71,39 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     void Update()
     {
+        if (AppMgr.AccessWebOn)
+        {
+            // メッセージON;
+            if (Japanese == 1)
+                AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "ファイル読み込み";
+            else
+                AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "Load File";
+            //アクセス終了フラグONなら
+            if (AppMgr.AccessWebEnd)
+            {
+                //手続きを踏んでOFFにする。
+                AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "";
+                AppMgr.AccessWebOn = false;
+
+                WebAccess wa = FindObjectOfType<WebAccess>();
+                string Action = wa.Action;
+                string returnData = wa.ReturnData;
+                //Debug.Log(Action);
+                Destroy(wa.gameObject);
+                // 伴う作業
+                if (Action == "ReadWorkContent")
+                {
+                    Debug.Log(returnData);
+                    // Load data from returnData;
+                }
+                else if (Action == "ReadWorkList")
+                {
+                    Debug.Log(returnData);
+                    // Load data from returnData;
+                }
+
+            }
+        }
         if (AppMgr.KeyOn)
         {
             OnKey();
@@ -470,6 +503,10 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {
             OnKeyDelete();
         }
+        else if (FirstKey == "W")
+        {
+            OnKeyWeb();
+        }
     }
 
     void OnKeyFirst() {
@@ -496,6 +533,10 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.D))
         {
             FirstKey = "D";
+        }
+        else if (Input.GetKeyDown(KeyCode.W))
+        {
+            FirstKey = "W";
         }
         else if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -592,23 +633,12 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.C))
         {
             Debug.Log("Test Area");
+            AppMgr.AccessWebOn = true;
             GameObject Prefab = Resources.Load<GameObject>("Prefabs/AccessWeb");
             GameObject Obj = Point.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity);
-            WebAcess wa = Obj.GetComponent<WebAcess>();
-            wa.SetAction("ReadWorkContent");
-            Debug.Log("Start0");
-            Debug.Log("Start0");
-            Debug.Log("Start0");
-            Debug.Log("Start0");
-            Debug.Log("Start0");
-
-            // Start メソッドを動かしたい。その終了後に以下を実行する。
-            //https://alicia-ing.com/programming/unity-database3/
-            //　https://gimo.jp/glossary/details/ienumerator.html
-            //string data = wa.ReturnData;
-            //Destroy(wa.gameObject);
-
-
+            WebAccess wa = Obj.GetComponent<WebAccess>();
+            wa.SetAction("ReadWorkList", "aharalab");
+            //wa.SetAction("ReadWorkContent", "aharalab", "defalut", "00001");
         }
     }
 
@@ -834,7 +864,25 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     }
 
 
-    public void OnMyMouseDown()
+    void OnKeyWeb()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("Save file thru web (key)");
+        }
+        else if (Input.GetKeyDown(KeyCode.O))
+        {
+            Debug.Log("Open file thru web (key)");
+            AppMgr.AccessWebOn = true;
+            GameObject Prefab = Resources.Load<GameObject>("Prefabs/AccessWeb");
+            GameObject Obj = Point.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity);
+            WebAccess wa = Obj.GetComponent<WebAccess>();
+            wa.SetAction("ReadWorkList", "aharalab");
+
+        }
+    }
+
+public void OnMyMouseDown()
     {
         if (!AppMgr.DrawOn && !AppMgr.SelectorOn) return;
         if (Camera.main == null) return;

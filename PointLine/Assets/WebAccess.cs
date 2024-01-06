@@ -7,14 +7,14 @@ using UnityEngine.Networking;
 using static SimpleFileBrowser.FileBrowser;
 
 
-public class WebAcess : MonoBehaviour
+public class WebAccess : AppMgr
 {
     // データベースの情報を取得するためのURL
     private string URL = "https://aharalab.sakura.ne.jp/PointLine/postForm.php";
 
     public string ReturnData="";
-    private string Action = "None";
-    private string Id = "";
+    public string Action = "None";
+    private string Id = "aharalab";
     private string Title = "";
     private string WorkId = "00000";
     public bool Success = false;
@@ -34,13 +34,17 @@ public class WebAcess : MonoBehaviour
         if (Action == "ReadWorkContent")
         {
             form.AddField("Action", "ReadWorkContent");// ReadWorkList, ReadWorkContent, ReadListFromTag, WriteWork
-            form.AddField("Id", Id);
-            form.AddField("WorkTitle", Title);
+            form.AddField("userId", Id);
+            form.AddField("WorkId", WorkId);
         }
-
+        else if (Action== "ReadWorkList")
+        {
+            form.AddField("Action", "ReadWorkList");
+            form.AddField("userId", Id);
+        }
         // UnityWebRequestを作成してURL_SELECTのページにアクセス
         UnityWebRequest request = UnityWebRequest.Post(URL, form);
-
+        AppMgr.AccessWebEnd = false;
         yield return request.SendWebRequest();  // リクエストを送信し、レスポンスを待つ
 
 
@@ -56,8 +60,9 @@ public class WebAcess : MonoBehaviour
             // 改行タグを実際の改行文字に変換
             //string NewData = decodedData.Replace("<br>", "\n");
             Success = true;
-            Debug.Log("Success");
-            Debug.Log(ReturnData);
+            AppMgr.AccessWebEnd = true;
+            Debug.Log("AccessWebEnd");
+            //Debug.Log(ReturnData);
         }
         else
         {
