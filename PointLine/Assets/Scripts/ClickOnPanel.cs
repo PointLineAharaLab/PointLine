@@ -98,7 +98,20 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 }
                 else if (Action == "ReadWorkList")
                 {
-                    Debug.Log(returnData);
+                    string[] lines = returnData.Split(';', '\n');
+                    int lineLength = lines.Length;
+                    for (int i = 0; i<lineLength; i++)
+                    {
+                        if (lines[i].Length > 0)
+                        {
+                            GameObject prefab = Resources.Load<GameObject>("Prefabs/WorkList");
+                            GameObject obj = MonoBehaviour.Instantiate(prefab, new Vector3(-2.5f, 3.5f-0.5f * i, 0f), Quaternion.identity);
+                            //WorkListColumn wlc = obj.GetComponent<WorkListColumn>();
+                            TextMesh textMesh = obj.GetComponentInChildren<TextMesh>();
+                            textMesh.text = lines[i];
+                        }
+                    }
+                    //Debug.Log(returnData);
                     // Load data from returnData;
                 }
 
@@ -630,16 +643,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 PreferenceDialog.GetComponent<Preference>().show = false;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.C))
-        {
-            Debug.Log("Test Area");
-            AppMgr.AccessWebOn = true;
-            GameObject Prefab = Resources.Load<GameObject>("Prefabs/AccessWeb");
-            GameObject Obj = Point.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity);
-            WebAccess wa = Obj.GetComponent<WebAccess>();
-            wa.SetAction("ReadWorkList", "aharalab");
-            //wa.SetAction("ReadWorkContent", "aharalab", "defalut", "00001");
-        }
     }
 
     void OnKeyAdd()
@@ -869,6 +872,16 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             Debug.Log("Save file thru web (key)");
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log("Show List from web (key)");
+            AppMgr.AccessWebOn = true;
+            GameObject Prefab = Resources.Load<GameObject>("Prefabs/AccessWeb");
+            GameObject Obj = Point.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity);
+            WebAccess wa = Obj.GetComponent<WebAccess>();
+            wa.SetAction("ReadWorkList", "aharalab");
+
         }
         else if (Input.GetKeyDown(KeyCode.O))
         {
