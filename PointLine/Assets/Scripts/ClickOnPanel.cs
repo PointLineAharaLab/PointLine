@@ -100,15 +100,25 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                 {
                     string[] lines = returnData.Split(';', '\n');
                     int lineLength = lines.Length;
+                    int column = 0;
                     for (int i = 0; i<lineLength; i++)
                     {
                         if (lines[i].Length > 0)
                         {
-                            GameObject prefab = Resources.Load<GameObject>("Prefabs/WorkList");
-                            GameObject obj = MonoBehaviour.Instantiate(prefab, new Vector3(-2.5f, 3.5f-0.5f * i, 0f), Quaternion.identity);
-                            //WorkListColumn wlc = obj.GetComponent<WorkListColumn>();
-                            TextMesh textMesh = obj.GetComponentInChildren<TextMesh>();
-                            textMesh.text = lines[i];
+                            if (AppMgr.WorkListStart<=i && i<AppMgr.WorkListStart+8)
+                            {
+                                AppMgr.DrawOn = false;
+                                AppMgr.WorkListOn = true;
+                                GameObject prefab = Resources.Load<GameObject>("Prefabs/WorkList");
+                                GameObject obj = MonoBehaviour.Instantiate(prefab, new Vector3(-2.5f, Util.StartTop - 0.25f - 0.5f * column, 0f), Quaternion.identity);
+                                WorkListColumn wlc = obj.GetComponent<WorkListColumn>();
+                                string[] elements = lines[i].Split(',');
+                                wlc.WorkId = int.Parse(elements[0]);//ファイル固有の通し番号
+                                wlc.Id = 10000 + i;// リストとしての通し番号（クリック時に用いる。）
+                                TextMesh textMesh = obj.GetComponentInChildren<TextMesh>();
+                                textMesh.text = elements[1];
+                                column++;
+                            }
                         }
                     }
                     //Debug.Log(returnData);

@@ -29,13 +29,16 @@ public class AppMgr : MonoBehaviour {
     public static bool FileDialogOn = false;
     public static bool AccessWebOn = false;
     public static bool AccessWebEnd = false;
+    public static bool WorkListOn = false;
 
     public static Point[] pts = null;
     public static Line[] lns = null;
     public static Circle[] cis = null;
     public static Module[] mds = null;
-    public static AngleMark[] ams = null; 
+    public static AngleMark[] ams = null;
+    //public static WorkListColumn[] wlcs = null;
     public static string TmpFilename = null;
+    public static int WorkListStart = 0;
 
     public static Vector3 LeftBottom, RightUp;
 

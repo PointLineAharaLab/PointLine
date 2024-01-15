@@ -1,11 +1,1 @@
-Point,-2.644711,1.746507,0,0,True,True,A
-Point,-5.239521,-2.165668,0,1,True,True,B
-Point,1.247505,-2.62475,0,2,True,True,C
-Point,-3.297254,-1.24283,0,3,False,True,D
-Point,-2.970967,0.251833,0,4,False,True,E
-Module,12,3,0,4,3000,True,1,1,1.570796,False,False,True
-Point,-0.8617045,-1.186468,0,5,False,True,F
-Module,12,4,2,5,3001,True,1,1,1.570796,False,False,True
-Point,-3.05059,-1.676075,0,6,False,True,G
-Module,12,5,1,6,3002,True,1,1,1.570796,False,False,True
-Module,2,6,3,0,3003,True,1,1,1.570796,False,False,True
+Point,-3.955696,3.18038,0,0,False,True,A
