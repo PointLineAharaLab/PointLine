@@ -10,7 +10,10 @@ using UnityEngine.Networking;
 using SimpleFileBrowser;
 using System.Reflection;
 using UnityEngine.UIElements;
-
+using System.Xml.Linq;
+using System.Data;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 public class AppMgr : MonoBehaviour {
     /// <summary>
@@ -178,7 +181,7 @@ public class AppMgr : MonoBehaviour {
         float err = 0f;
         float previousErr = 0f;
         int ConvergencyCount = 0;
-        int PerturbationCount = 0;
+        //int PerturbationCount = 0;
         pts = FindObjectsOfType<Point>();
         for (int p = 0; p > pts.Length; p++) {
             if (pts[p].Fixed == false) { 
@@ -942,6 +945,10 @@ public class Util
             {
                 SaveTeXFileUsingPath(path);
             }
+            else if (ext.Contains("xml"))
+            {
+                SaveXmlFileUsingPath(path);
+            }
         }
         else
         {
@@ -966,7 +973,7 @@ public class Util
         //fb.OnFileSelect += SaveFileUsingPath;
         //string[] exts = {"txt", "png"};
         //string path = Crosstales.FB.FileBrowser.SaveFile("Save a PointLine file", "", "SamplePointLine",exts);
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Text Files", ".txt"), new FileBrowser.Filter("Image Files", ".png"), new FileBrowser.Filter("TeX Files", ".tex"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Text Files", ".txt"), new FileBrowser.Filter("Image Files", ".png"), new FileBrowser.Filter("TeX Files", ".tex"), new FileBrowser.Filter("Xml Files", ".xml"));
         FileBrowser.SetDefaultFilter(".txt");
         FileBrowser.ShowSaveDialog(onSaveSuccess, onCancel, FileBrowser.PickMode.FilesAndFolders, false, "",
             "SamplePointLine.txt", "Save PointLine File");
@@ -978,70 +985,214 @@ public class Util
         Debug.Log("" + paths[0]);
         SaveFileUsingPath(paths[0]);
     }
+    private static void SaveXmlFileUsingPath(string path)
+    {
+        XElement xml = new("PointLine");
+        for (int l = 0; l < LogLength; l++)
+        {
+            Log log = logs[l];
+            int id = log.Id;
+            //Debug.Log(""+ log.ObjectType);
+            if (log.Active == false)
+            {
+                ;
+            }
+            else if (log.ObjectType == "Point")
+            {
+                Point pt = null;
+                for (int k = 0; k < AppMgr.pts.Length; k++)
+                {
+                    if (AppMgr.pts[k].Id == id)
+                    {
+                        pt = AppMgr.pts[k];
+                        break;
+                    }
+                }
+                if (pt != null)
+                {
+                    XElement datas = new XElement("Object",
+                        new XElement("ObjectType", "Point"),
+                        new XElement("x", pt.Vec.x),
+                        new XElement("y", pt.Vec.y),
+                        new XElement("z", pt.Vec.z),
+                        new XElement("id", pt.Id),
+                        new XElement("fixed", pt.Fixed),
+                        new XElement("name", pt.PointName),
+                        new XElement("displayName", pt.ShowPointName),
+                        new XElement("active", pt.Active)
+                        );
+                    xml.Add(datas);
+                }
+            }
+            else if (log.ObjectType == "Line")
+            {
+                Line ln = null;
+                for (int k = 0; k < AppMgr.lns.Length; k++)
+                {
+                    if (AppMgr.lns[k].Id == id)
+                    {
+                        ln = AppMgr.lns[k];
+                        break;
+                    }
+                }
+                if (ln != null)
+                {
+                    XElement datas = new XElement("Object",
+                        new XElement("ObjectType", "Line"),
+                        new XElement("Point1Id", ln.Point1Id),
+                        new XElement("Point2Id", ln.Point2Id),
+                        new XElement("ShowLength", ln.ShowLength),
+                        new XElement("FixLength", ln.FixLength),
+                        new XElement("para", ln.para),
+                        new XElement("Isometry", ln.Isometry),
+                        new XElement("Bracket", ln.Bracket),
+                        new XElement("BracketText", ln.BracketText),
+                        new XElement("edgeLength", ln.edgeLength),
+                        new XElement("id", ln.Id),
+                        new XElement("name", ln.LineName),
+                        new XElement("active", ln.Active)
+                        );
+                    xml.Add(datas);
+                }
+            }
+            else if (log.ObjectType == "Circle")
+            {
+                Circle ci = null;
+                for (int k = 0; k < AppMgr.cis.Length; k++)
+                {
+                    if (AppMgr.cis[k].Id == id)
+                    {
+                        ci = AppMgr.cis[k];
+                        break;
+                    }
+                }
+                if (ci != null)
+                {
+                    XElement datas = new XElement("Object",
+                        new XElement("ObjectType", "Circle"),
+                        new XElement("CenterPointId", ci.CenterPointId),
+                        new XElement("Radius", ci.Radius),
+                        new XElement("FixedRadius", ci.FixedRadius),
+                        new XElement("para", ci.para),
+                        new XElement("FixRadius", ci.FixRadius),
+                        new XElement("id", ci.Id),
+                        new XElement("name", ci.CircleName),
+                        new XElement("active", ci.Active)
+                        );
+                    xml.Add(datas);
+                }
+            }
+            else if (log.ObjectType == "Module")
+            {
+                Module md = null;
+                for (int k = 0; k < AppMgr.mds.Length; k++)
+                {
+                    if (AppMgr.mds[k].Id == id)
+                    {
+                        md = AppMgr.mds[k];
+                        break;
+                    }
+                }
+                if (md != null)
+                {
+                    XElement datas = new XElement("Object",
+                        new XElement("ObjectType", "Module"),
+                        new XElement("Type", md.Type),
+                        new XElement("Object1Id", md.Object1Id),
+                        new XElement("Object2Id", md.Object2Id),
+                        new XElement("Object3Id", md.Object3Id),
+                        new XElement("Ratio1", md.Ratio1),
+                        new XElement("Ratio2", md.Ratio2),
+                        new XElement("Constant", md.Constant),
+                        new XElement("ShowConstant", md.ShowConstant),
+                        new XElement("FixAngle", md.FixAngle),
+                        new XElement("FixRatio", md.FixRatio),
+                        new XElement("Parameter", md.Parameter),
+                        new XElement("ParaWeight", md.ParaWeight),
+                        new XElement("id", md.Id),
+                        new XElement("name", md.ModuleName),
+                        new XElement("active", md.Active)
+                        );
+                    xml.Add(datas);
+                }
+            }
+        }
+        xml.Save(@path);
+        Debug.Log(xml);
+    }
 
-    #endregion
 
-    #region ファイルを開く
+            #endregion
+
+            #region ファイルを開く
 
     private static void LoadFileUsingPath(string path)
     {
-        ClickOnPanel.DeleteAll();
-        if (path != null && path.Length != 0)
+        string ext = path.Substring(path.Length - 4);
+        if (ext == ".xml")
         {
-            try
-            {
-                using (StreamReader reader = new StreamReader(path, false))
-                {
-                    InitLog();
-                    string str;
-                    int PId = -1, LId = -1, CId = -1, MId = -1;
-                    do
-                    {
-                        str = reader.ReadLine();
-                        if (str == null) break;//多分要らない。
-                        else
-                        {
-                            Log lg = GetLogFromString(str);
-                            //AddLog(lg);
-                            if (lg.ObjectType == "Point")
-                            {
-                                if (PId < lg.Id) PId = lg.Id;
-                            }
-                            else if (lg.ObjectType == "Line")
-                            {
-                                if (LId < lg.Id) LId = lg.Id;
-                            }
-                            else if (lg.ObjectType == "Circle")
-                            {
-                                if (CId < lg.Id) CId = lg.Id;
-                            }
-                            else if (lg.ObjectType == "Module")
-                            {
-                                if (MId < lg.Id) MId = lg.Id;
-                            }
-                        }
-                    }
-                    while (str != null);
-                    reader.Close();
-                    ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
-                    AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
-                    AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
-                    AppMgr.cis = MonoBehaviour.FindObjectsOfType<Circle>();
-                    AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
-            }
+            LoadXmlFileUsingPath(path);
         }
         else
         {
-            Debug.Log("Invalid path given");
+            ClickOnPanel.DeleteAll();
+            if (path != null && path.Length != 0)
+            {
+                try
+                {
+                    using (StreamReader reader = new StreamReader(path, false))
+                    {
+                        InitLog();
+                        string str;
+                        int PId = -1, LId = -1, CId = -1, MId = -1;
+                        do
+                        {
+                            str = reader.ReadLine();
+                            if (str == null) break;//多分要らない。
+                            else
+                            {
+                                Log lg = GetLogFromString(str);
+                                //AddLog(lg);
+                                if (lg.ObjectType == "Point")
+                                {
+                                    if (PId < lg.Id) PId = lg.Id;
+                                }
+                                else if (lg.ObjectType == "Line")
+                                {
+                                    if (LId < lg.Id) LId = lg.Id;
+                                }
+                                else if (lg.ObjectType == "Circle")
+                                {
+                                    if (CId < lg.Id) CId = lg.Id;
+                                }
+                                else if (lg.ObjectType == "Module")
+                                {
+                                    if (MId < lg.Id) MId = lg.Id;
+                                }
+                            }
+                        }
+                        while (str != null);
+                        reader.Close();
+                        ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
+                        AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
+                        AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
+                        AppMgr.cis = MonoBehaviour.FindObjectsOfType<Circle>();
+                        AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.Message);
+                }
+            }
+            else
+            {
+                Debug.Log("Invalid path given");
+            }
+            AppMgr.DrawOn = true;
+            AppMgr.KeyOn = true;
+            AppMgr.FileDialogOn = false;
         }
-        AppMgr.DrawOn = true;
-        AppMgr.KeyOn = true;
-        AppMgr.FileDialogOn = false;
     }
 
     public static bool OpenLogSelectFile()
@@ -1054,7 +1205,8 @@ public class Util
         //fb.OpenFilePanel(ext);
         //fb.OnFileSelect += LoadFileUsingPath;
         //string path = Crosstales.FB.FileBrowser.OpenSingleFile("Open a PointLine file", "", "txt");
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Text Files", ".txt"), new FileBrowser.Filter("Image Files", ".png"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Text Files", ".txt"), 
+            new FileBrowser.Filter("Image Files", ".png"), new FileBrowser.Filter("Xml Files", ".xml"));
         FileBrowser.SetDefaultFilter(".txt");
         FileBrowser.ShowLoadDialog(onLoadSuccess, onCancel, FileBrowser.PickMode.FilesAndFolders, false, "", "SamplePointLine.txt", "Open PointLine File");
         return false;
@@ -1208,6 +1360,181 @@ public class Util
         return new Log();
     }
 
+    private static void LoadXmlFileUsingPath(string path)
+    {
+        ClickOnPanel.DeleteAll();
+        if (path != null && path.Length != 0)
+        {
+            try
+            {
+                XElement xml = XElement.Load(@path);
+                IEnumerable<XElement> infos = from item in xml.Elements("Object") select item;
+                foreach (XElement info in infos)
+                {
+                    string objectType = info.Element("ObjectType").Value;
+                    if (objectType == "Point")
+                    {
+                        float vx = float.Parse(info.Element("x").Value);
+                        float vy = float.Parse(info.Element("y").Value);
+                        float vz = float.Parse(info.Element("z").Value);
+                        Vector3 vec = new Vector3(vx, vy, vz);
+                        int id = int.Parse(info.Element("id").Value);
+                        bool fxd = bool.Parse(info.Element("fixed").Value);
+                        bool act = bool.Parse(info.Element("active").Value);
+                        Point pt = Util.AddPoint(vec, id);//　この段階でログファイルも作り終わっている。
+                        pt.Fixed = fxd;
+                        string pname = "";
+                        if (info.Element("name") == null)
+                        {
+                            char[] name = { 'A' };
+                            name[0] = (char)('A' + id);
+                            pname = new string(name);
+                        }
+                        else
+                        {
+                            pname = info.Element("name").Value;
+                        }
+                        pt.PTobject.GetComponent<TextMesh>().text = pname;
+                        //Debug.Log(pt.PTobject.GetComponent<Text>().text);
+                        Log lg = pt.GameLog.GetComponent<Log>();
+                        lg.MakePointLog(id, vec, pt.parent, fxd, act, pname);
+                    }
+                    else if (objectType == "Line")
+                    {
+                        int o1 = int.Parse(info.Element("Point1Id").Value);
+                        int o2 = int.Parse(info.Element("Point2Id").Value);
+                        int id = int.Parse(info.Element("id").Value);
+                        bool act = bool.Parse(info.Element("active").Value);
+                        Line ln = AddLine(o1, o2, id);//　この段階でログファイルも作り終わっている。
+                        ln.LineName= info.Element("name").Value;
+                        GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
+                        ln.ShowLength = bool.Parse(info.Element("ShowLength").Value);
+                        ln.FixLength = bool.Parse(info.Element("FixLength").Value);
+                        ln.para = float.Parse(info.Element("para").Value);
+                        ln.Isometry = int.Parse(info.Element("Isometry").Value);
+                        ln.Bracket = bool.Parse(info.Element("Bracket").Value);
+                        ln.BracketText = info.Element("BracketText").Value;
+                        ln.edgeLength = float.Parse(info.Element("edgeLength").Value);
+                        for (int i = 0; i < OBJs.Length; i++)
+                        {
+                            Point PT = OBJs[i].GetComponent<Point>();
+                            if (PT != null)
+                            {
+                                if (PT.Id == o1)
+                                {
+                                    ln.Point1 = OBJs[i];
+                                }
+                                if (PT.Id == o2)
+                                {
+                                    ln.Point2 = OBJs[i];
+                                }
+                            }
+                        }
+                        Log lg = ln.GameLog.GetComponent<Log>();
+                        lg.MakeLineLog(id, o1, o2, ln.parent, act, ln.LineName);
+                    }
+                    else if (objectType == "Circle")
+                    {
+                        int o1 = int.Parse(info.Element("CenterPointId").Value);
+                        float rad = float.Parse(info.Element("Radius").Value);
+                        int id = int.Parse(info.Element("id").Value);
+                        bool act = bool.Parse(info.Element("active").Value);
+                        Circle ci = Util.AddCircle(o1, rad, id);
+                        ci.FixedRadius= float.Parse(info.Element("FixedRadius").Value); 
+                        ci.para = float.Parse(info.Element("para").Value); 
+                        ci.FixRadius = bool.Parse(info.Element("FixRadius").Value); 
+                        GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
+                        for (int i = 0; i < OBJs.Length; i++)
+                        {
+                            Point PT = OBJs[i].GetComponent<Point>();
+                            if (PT != null)
+                            {
+                                if (o1 == PT.Id)
+                                {
+                                    ci.CenterPoint = OBJs[i];
+                                    break;
+                                }
+                            }
+                        }
+                        Log lg = ci.GameLog.GetComponent<Log>();
+                        lg.MakeCircleLog(id, o1, rad, ci.parent, act, ci.CircleName);
+                    }
+                    else if (objectType == "Module")
+                    {
+                        int mt = int.Parse(info.Element("Type").Value);
+                        int o1 = int.Parse(info.Element("Object1Id").Value);
+                        int o2 = int.Parse(info.Element("Object2Id").Value);
+                        int o3 = int.Parse(info.Element("Object3Id").Value);
+                        int id = int.Parse(info.Element("id").Value);
+                        //オブジェクト作成
+                        Module MD = Util.AddModule(mt, o1, o2, o3, id);
+                        //パラメータ調整
+                        MD.Active = bool.Parse(info.Element("active").Value);
+                        MD.Ratio1 = float.Parse(info.Element("Ratio1").Value);
+                        MD.Ratio2 = float.Parse(info.Element("Ratio2").Value);
+                        MD.Constant = float.Parse(info.Element("Constant").Value   );
+                        MD.Parameter = float.Parse(info.Element("Parameter").Value   );
+                        MD.ParaWeight = float.Parse(info.Element("ParaWeight").Value   );
+                        MD.ShowConstant = (bool.Parse(info.Element("ShowConstant").Value) == true);
+                        MD.FixAngle = (bool.Parse(info.Element("FixAngle").Value) == true);
+                        MD.FixRatio = (bool.Parse(info.Element("FixRatio").Value) == true);
+                        //Debug.Log(MD.ToString());
+                        //ログ作成
+                        Log lg = MD.GameLog.GetComponent<Log>();
+                        lg.MakeModuleLog(id, mt, o1, o2, o3, MD.parent, MD.Active, MD.ModuleName);
+                        if (mt == MENU.LINES_PERPENDICULAR)
+                        {// 直交モジュールの時には直角マークを付ける。
+                            AddAngleMark(o1, o2, MD.gameObject);
+                        }
+                        else if (mt == MENU.ANGLE)
+                        {// 角度モジュールの時には角度マークを付ける。
+                            AddAngleMark(o1, o2, o3, MD.gameObject);
+                        }
+                        if (mt == MENU.POINT_ON_LINE)
+                        {// 点を直線上に、のときには補助線を付ける。
+                            AddThinLine(o1, o2);
+                        }
+                    }
+                }
+                int PId = -1, LId = -1, CId = -1, MId = -1;
+                AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
+                AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
+                AppMgr.cis = MonoBehaviour.FindObjectsOfType<Circle>();
+                AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
+                for (int k = 0; k < AppMgr.pts.Length; k++)
+                {
+                    if (PId <= AppMgr.pts[k].Id) PId = AppMgr.pts[k].Id+1;
+                }
+                for (int k = 0; k < AppMgr.lns.Length; k++)
+                {
+                    if (LId <= AppMgr.lns[k].Id) LId = AppMgr.lns[k].Id + 1;
+                }
+                for (int k = 0; k < AppMgr.pts.Length; k++)
+                {
+                    if (CId <= AppMgr.cis[k].Id) CId = AppMgr.cis[k].Id + 1;
+                }
+                for (int k = 0; k < AppMgr.mds.Length; k++)
+                {
+                    if (MId <= AppMgr.mds[k].Id) MId = AppMgr.mds[k].Id + 1;
+                }
+                ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        }
+        else
+        {
+            Debug.Log("Invalid path given");
+        }
+        AppMgr.DrawOn = true;
+        AppMgr.KeyOn = true;
+        AppMgr.FileDialogOn = false;
+    }
+
+
+
     #endregion
 
     #region TeX保存
@@ -1321,7 +1648,6 @@ public class Util
         AppMgr.KeyOn = true;
         AppMgr.FileDialogOn = false;
     }
-
 
     public static bool SaveTeXFileSelectFile()
     {
@@ -1715,4 +2041,18 @@ public class Util
         }
     }
     #endregion
+
+
+    public static void StirPoints()
+    {
+        AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
+        int ptsLen = AppMgr.pts.Length;
+        for (int p=0; p<ptsLen; p++)
+        {
+            float x = UnityEngine.Random.Range(-3f, 3f);
+            float y = UnityEngine.Random.Range(-3f, 3f);
+            AppMgr.pts[p].Vec = new Vector3(x, y, 0f);
+        }
+        AppMgr.ExecuteAllModules();
+    }
 }

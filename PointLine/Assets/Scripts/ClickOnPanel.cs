@@ -533,6 +533,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     }
 
     void OnKeyFirst() {
+        // unused
+        // (B),(C),E,G,H,I,J,K,M,N,R,U,V
         if (Input.GetKeyDown(KeyCode.A))
         {
             FirstKey = "A";
@@ -640,7 +642,11 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         {
             Util.DebugLog();
         }
-        else if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            Util.StirPoints();
+        }
+        else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             if (PreferenceDialog.GetComponent<Preference>().show) { 
                 PreferenceDialog.GetComponent<Preference>().EnterKeyDownProc();
@@ -1717,7 +1723,7 @@ public void OnMyMouseDown()
 
     public void OnMouseUp()
     {
-        Debug.Log("(AppMgr.DrawOn, AppMgr.SelectorOn)= (" + AppMgr.DrawOn + ", " + AppMgr.SelectorOn + ")");
+        //Debug.Log("(AppMgr.DrawOn, AppMgr.SelectorOn)= (" + AppMgr.DrawOn + ", " + AppMgr.SelectorOn + ")");
         if (!AppMgr.DrawOn && !AppMgr.SelectorOn) return;
         Vector3 mPs = Input.mousePosition;
         mPs.y = Screen.height - mPs.y;
