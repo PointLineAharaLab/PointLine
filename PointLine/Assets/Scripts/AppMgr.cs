@@ -15,6 +15,9 @@ using System.Data;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
+//using cv2;
+
+
 /// <summary>
 /// アプリケーションマネージャ
 /// </summary>
