@@ -1124,7 +1124,7 @@ public class Util
 
             #endregion
 
-            #region ファイルを開く
+    #region ファイルを開く
 
     private static void LoadFileUsingPath(string path)
     {
@@ -1241,17 +1241,20 @@ public class Util
             Point pt = Util.AddPoint(vec, id);//　この段階でログファイルも作り終わっている。
             pt.Fixed = fxd;
             string pname = "";
-            if (item.Length == 7)
+            if (item.Length > 7)
             {
+                pt.PTobject.GetComponent<TextMesh>().text = item[7];
+            }
+            else { 
                 char[] name = { 'A' };
                 name[0] = (char)('A' + id);
                 pname = new string(name);
+                pt.PTobject.GetComponent<TextMesh>().text = pname;
             }
-            else
+            if (item.Length > 8)
             {
-                pname = item[7];
+                pt.ShowPointName = bool.Parse(item[8]);
             }
-            pt.PTobject.GetComponent<TextMesh>().text = pname;
             //Debug.Log(pt.PTobject.GetComponent<Text>().text);
             Log lg = pt.GameLog.GetComponent<Log>();
             lg.MakePointLog(id, vec, pt.parent, fxd, act, pname);
@@ -1264,6 +1267,17 @@ public class Util
             int id = int.Parse(item[3]);
             bool act = bool.Parse(item[4]);
             Line ln = AddLine(o1, o2, id);
+            if (item.Length > 5)
+            {
+                ln.ShowLength = bool.Parse(item[5]);
+                ln.FixLength = bool.Parse(item[6]);
+                ln.para = float.Parse(item[7]);
+                ln.Isometry = int.Parse(item[8]);
+                ln.Bracket = bool.Parse(item[9]);
+                ln.BracketText = item[10];
+                ln.edgeLength = float.Parse(item[11]);
+                ln.LineName = item[12];
+            }
             GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
             for (int i = 0; i < OBJs.Length; i++)
             {
@@ -1291,6 +1305,13 @@ public class Util
             int id = int.Parse(item[3]);
             bool act = bool.Parse(item[4]);
             Circle ci = Util.AddCircle(o1, rad, id);
+            if (item.Length > 5)
+            {
+                ci.FixedRadius = float.Parse(item[5]);
+                ci.para = float.Parse(item[6]);
+                ci.FixRadius = bool.Parse(item[7]);
+                ci.CircleName = item[8];
+            }
             GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
             for (int i = 0; i < OBJs.Length; i++)
             {
@@ -1317,18 +1338,18 @@ public class Util
             int id = int.Parse(item[5]);
             bool act = bool.Parse(item[6]);
             float ra1 = 1f, ra2 = 1f, cst = Mathf.PI / 2;
-            if (item.Length >= 10)
+            if (item.Length > 7)
             {
                 ra1 = float.Parse(item[7]);
                 ra2 = float.Parse(item[8]);
                 cst = float.Parse(item[9]);
             }
             bool showC = true, fixA = false, fixR = false;
-            if (item.Length >= 13)
+            if (item.Length > 10)
             {
-                showC = (item[10] == "True");
-                fixA = (item[11] == "True");
-                fixR = (item[12] == "True");
+                showC = bool.Parse(item[10]);
+                fixA = bool.Parse(item[11]);
+                fixR = bool.Parse(item[12]);
             }
             //オブジェクト作成
             Module MD = Util.AddModule(mt, o1, o2, o3, id);
@@ -1339,8 +1360,14 @@ public class Util
             MD.ShowConstant = showC;
             MD.FixAngle = fixA;
             MD.FixRatio = fixR;
-            //Debug.Log(MD.ToString());
-            //ログ作成
+            if (item.Length > 13)
+            {
+                MD.Parameter = float.Parse(item[13]);
+                MD.ParaWeight = float.Parse(item[14]);
+                MD.ModuleName = item[15];
+            }
+                //Debug.Log(MD.ToString());
+                //ログ作成
             Log lg = MD.GameLog.GetComponent<Log>();
             lg.MakeModuleLog(id, mt, o1, o2, o3, MD.parent, act, MD.ModuleName);
             if (mt == MENU.LINES_PERPENDICULAR)

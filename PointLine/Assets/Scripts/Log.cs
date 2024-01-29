@@ -726,15 +726,18 @@ public class Log : MonoBehaviour
     {
         if(ObjectType == "Point")
         {
-            return "Point," + Vec.x + "," + Vec.y + "," + Vec.z + "," + Id + "," + Fixed + "," + Active + "," + PName;
+            Point pt = parent.GetComponent<Point>();
+            return "Point," + Vec.x + "," + Vec.y + "," + Vec.z + "," + Id + "," + Fixed + "," + Active + "," + PName + "," + pt.ShowPointName; 
         }
         else if(ObjectType == "Line")
         {
-            return "Line," + Object1Id + "," + Object2Id + "," + Id + "," + Active;
+            Line ln = parent.GetComponent<Line>();
+            return "Line," + Object1Id + "," + Object2Id + "," + Id + "," + Active + "," + ln.ShowLength + "," + ln.FixLength + "," + ln.para + "," + ln.Isometry + "," + ln.Bracket + "," + ln.BracketText + "," + ln.edgeLength + "," + ln.LineName;
         }
         else if (ObjectType == "Circle")
         {
-            return "Circle," + Object1Id + "," + Radius + "," + Id + "," + Active;
+            Circle ci = parent.GetComponent<Circle>();
+            return "Circle," + Object1Id + "," + Radius + "," + Id + "," + Active + "," + ci.FixedRadius + "," + ci.para + "," + ci.FixRadius + "," + ci.CircleName;
         }
         else if (ObjectType == "Module")
         {
@@ -742,7 +745,8 @@ public class Log : MonoBehaviour
             return "Module," + ModuleType + "," + Object1Id + "," + Object2Id + ","
                 + Object3Id + "," + Id + "," + Active + ","
                 + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant + ","
-                + md.ShowConstant + "," + md.FixAngle + "," + md.FixRatio;
+                + md.ShowConstant + "," + md.FixAngle + "," + md.FixRatio + ","
+                + md.Parameter + "," + md.ParaWeight + "," + md.ModuleName;
         }
         return "";
     }
