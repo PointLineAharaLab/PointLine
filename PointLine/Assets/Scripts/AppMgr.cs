@@ -1125,7 +1125,7 @@ public class Util
     }
 
 
-            #endregion
+    #endregion
 
     #region ファイルを開く
 
@@ -1135,6 +1135,10 @@ public class Util
         if (ext == ".xml")
         {
             LoadXmlFileUsingPath(path);
+        }
+        else if (ext == ".PNG" || ext == ".png" || ext == ".JPG" || ext == ".jpg")
+        {
+            LoadImageFileUsingPath(path);
         }
         else
         {
@@ -1563,7 +1567,10 @@ public class Util
         AppMgr.FileDialogOn = false;
     }
 
+    public static void LoadImageFileUsingPath(string path)
+    {
 
+    }
 
     #endregion
 
