@@ -108,6 +108,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                             if (AppMgr.WorkListStart<=i && i<AppMgr.WorkListStart+8)
                             {
                                 AppMgr.DrawOn = false;
+                                AppMgr.KeyOn = false;
                                 AppMgr.WorkListOn = true;
                                 GameObject prefab = Resources.Load<GameObject>("Prefabs/WorkList");
                                 GameObject obj = MonoBehaviour.Instantiate(prefab, new Vector3(-2.5f, Util.StartTop - 0.25f - 0.5f * column, 0f), Quaternion.identity);
@@ -608,6 +609,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Mode = 0;
             ModeStep = 0;
             MenuOn = false;
+            KeyOn = false;
         }
         else if (Input.GetKeyDown(KeyCode.O))
         {
@@ -622,6 +624,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Mode = 0;
             ModeStep = 0;
             MenuOn = false;
+            KeyOn = false;
         }
         else if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -699,6 +702,10 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
 
     void OnKeyCommand()
     {
+        if (!AppMgr.KeyOn)
+        {
+            return;
+        }
         if (Input.GetKey(KeyCode.UpArrow) || Input.GetAxis("Mouse ScrollWheel")>0)
         {//拡大
             if (!Util.FixDisplay)

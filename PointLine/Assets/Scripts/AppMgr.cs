@@ -15,6 +15,9 @@ using System.Data;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
+/// <summary>
+/// アプリケーションマネージャ
+/// </summary>
 public class AppMgr : MonoBehaviour {
     /// <summary>
     /// Language, 1:Japanese, 0:English
@@ -250,7 +253,7 @@ public class AppMgr : MonoBehaviour {
 
 
 
-/// 様々なユーティリティ. <summary>
+/// <summary> 様々なユーティリティ
 /// </summary>
 public class Util
 {

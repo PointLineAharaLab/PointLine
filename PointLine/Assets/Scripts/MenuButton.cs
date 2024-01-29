@@ -404,6 +404,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         Util.CopyLog("TmpLog.txt", "TmpSaveFile.txt");
         //モードを非描画モードにする。
         AppMgr.DrawOn = false;
+        AppMgr.KeyOn = false;
         DestroyMenuOnUI();
         CreateMenuOffUI();
         //保存ダイアログの描画＋ファイル保存
@@ -423,6 +424,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         AppMgr.FileDialogOn = true;
         //モードを非描画モードにする。
         AppMgr.DrawOn = false;
+        AppMgr.KeyOn = false;
         DestroyMenuOnUI();
         CreateMenuOffUI();
         Util.OpenLogSelectFile();
@@ -436,6 +438,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
     {
         Debug.Log("Save TeX file  (mouse)");
         AppMgr.DrawOn = false;
+        AppMgr.KeyOn = false;
         DestroyMenuOnUI();
         CreateMenuOffUI();
         Util.SaveTeXFileSelectFile();
