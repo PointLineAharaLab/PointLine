@@ -1427,11 +1427,13 @@ public class Module : MonoBehaviour {
 
     private float Module_Triangle()
     {
+        gameObject.SetActive(Active);
         return 0f;
     }
 
     private float Module_Quadrilateral()
     {
+        gameObject.SetActive(Active);
         return 0f;
     }
 

@@ -70,6 +70,8 @@ public class Menu : MonoBehaviour
         //4
         "ButtonTangentL2C(Clone)", 
         "ButtonTangentC2C(Clone)",
+        "ButtonTriangle(Clone)",
+        "ButtonQuadrilateral(Clone)",
         //5
         "ButtonFixPoint(Clone)", 
         "ButtonAddLocus(Clone)",
@@ -122,6 +124,13 @@ public class Menu : MonoBehaviour
     private string TextCIRLCE_TANGENT_LINE1 = " 円を直線に接させる: 直線を選択.";
     private string TextCIRLCE_TANGENT_CIRCLE0 = " 円を円に接させる: 円を選択.";
     private string TextCIRLCE_TANGENT_CIRCLE1 = " 円を円に接させる: もう一つ円を選択.";
+    private string TextTRIANGLE0 = " 三角形: 頂点を選択.";
+    private string TextTRIANGLE1 = " 三角形: もう一つ頂点を選択.";
+    private string TextTRIANGLE2 = " 三角形: 3つ目の頂点を選択.";
+    private string TextQUADRILATERAL0 = " 四角形: 頂点を選択.";
+    private string TextQUADRILATERAL1 = " 四角形: 2つ目の頂点を選択.";
+    private string TextQUADRILATERAL2 = " 四角形: 3つ目の頂点を選択.";
+    private string TextQUADRILATERAL3 = " 四角形: 4つ目の頂点を選択.";
     private string TextFIX_POINT1 = " 点を固定する : 頂点を選択.";
     private string TextADD_LOCUS0 = " 軌跡を追加: 頂点を選択.";
     private string TextDELETE_POINT0 = " 点を消去する: 頂点を選択.";
@@ -176,6 +185,13 @@ public class Menu : MonoBehaviour
             TextCIRLCE_TANGENT_LINE1 = " Make a circle tangent to a line: Select a line.";
             TextCIRLCE_TANGENT_CIRCLE0 = " Make a circle tangent to a circle: Select a circle.";
             TextCIRLCE_TANGENT_CIRCLE1 = " Make a circle tangent to a circle: Select another circle.";
+            TextTRIANGLE0 = " Triangle: Select a point.";
+            TextTRIANGLE1 = " Triangle: Select the second point.";
+            TextTRIANGLE2 = " Triangle: Select the third point.";
+            TextQUADRILATERAL0 = " Quadrilateral: Select a point.";
+            TextQUADRILATERAL1 = " Quadrilateral: Select the second point.";
+            TextQUADRILATERAL2 = " Quadrilateral: Select the 3rd point.";
+            TextQUADRILATERAL3 = " Quadrilateral: Select the 4th point.";
             TextFIX_POINT1 = " Fix/Unfix a point : Select a point.";
             TextADD_LOCUS0 = " Add a locus : Select a point.";
             TextDELETE_POINT0 = " Delete a point : Select a point.";
@@ -425,6 +441,45 @@ public class Menu : MonoBehaviour
                     AppMgr.ClickRequire = AppMgr.CLICKREQ_CIRCLE;
                 }
                 break;
+            case MENU.TRIANGLE:
+                if (AppMgr.ModeStep == 0)
+                {
+                    GUILabel(TextTRIANGLE0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                }
+                else if (AppMgr.ModeStep == 1)
+                {
+                    GUILabel(TextTRIANGLE1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                }
+                else
+                {
+                    GUILabel(TextTRIANGLE2);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                }
+                break;
+            case MENU.QUADRILATERAL:
+                if (AppMgr.ModeStep == 0)
+                {
+                    GUILabel(TextQUADRILATERAL0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                }
+                else if (AppMgr.ModeStep == 1)
+                {
+                    GUILabel(TextQUADRILATERAL1);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                }
+                else if (AppMgr.ModeStep == 2)
+                {
+                    GUILabel(TextQUADRILATERAL2);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                }
+                else
+                {
+                    GUILabel(TextQUADRILATERAL3);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                }
+                break;
             case MENU.FIX_POINT:// fix/unfix a point.
                 GUILabel(TextFIX_POINT1);
                 AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
@@ -480,6 +535,8 @@ public class Menu : MonoBehaviour
                 go[i].name == "ButtonBisector(Clone)"||
                 go[i].name == "ButtonTangentL2C(Clone)" ||
                 go[i].name == "ButtonTangentC2C(Clone)" ||
+                go[i].name == "ButtonTriangle(Clone)" ||
+                go[i].name == "ButtonQuadrilateral(Clone)" ||
                 go[i].name == "ButtonFixPoint(Clone)" ||
                 go[i].name == "ButtonAddLocus(Clone)" ||
                 go[i].name == "ButtonDeletePoint(Clone)" ||
@@ -518,6 +575,8 @@ public class Menu : MonoBehaviour
         CreateBisectorButton();
         CreateTangentL2CButton();
         CreateTangentC2CButton();
+        CreateTriangleButton();
+        CreateQuadrilateralButton();
         CreateFixPointButton();
         CreateAddLocusButton(); 
         CreateDeletePointButton();
@@ -701,6 +760,20 @@ public class Menu : MonoBehaviour
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
+    public void CreateTriangleButton()
+    {
+        // Triangle button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonTriangle");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 4, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+    }
+    public void CreateQuadrilateralButton()
+    {
+        // Quadrilateral button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonQuadrilateral");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 4, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+    }
     public void CreateFixPointButton()
     {
         // FixPoint button

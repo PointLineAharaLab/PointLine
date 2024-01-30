@@ -1467,7 +1467,78 @@ public void OnMyMouseDown()
         }
 
     }
-
+    private void MakeATriangle(int MOP)
+    {
+        if (ModeStep == 0 && 0 <= MOP && MOP < 1000)
+        {
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 0 <= MOP && MOP < 1000)
+        {
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
+            if (FirstClickId != MOP) { 
+                SecondClickId = MOP;
+                ModeStep = 2;
+            }
+        }
+        else if (ModeStep == 2 && 0 <= MOP && MOP < 1000)
+        {
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
+            if (FirstClickId != MOP && SecondClickId != MOP)
+            {
+                ThirdClickId = MOP;
+                Module MD = Util.AddModule(MENU.TRIANGLE, FirstClickId, SecondClickId, MOP, ModuleId++);
+                MD.PolygonOption = 0;
+                Mode = MENU.TRIANGLE;
+                AppMgr.ExecuteAllModules();
+                //Mode = 0;
+                ModeStep = 0;
+            }
+        }
+    }
+    private void MakeAQuadrilateral(int MOP)
+    {
+        if (ModeStep == 0 && 0 <= MOP && MOP < 1000)
+        {
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
+            FirstClickId = MOP;
+            ModeStep = 1;
+        }
+        else if (ModeStep == 1 && 0 <= MOP && MOP < 1000)
+        {
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
+            if (FirstClickId != MOP)
+            {
+                SecondClickId = MOP;
+                ModeStep = 2;
+            }
+        }
+        else if (ModeStep == 2 && 0 <= MOP && MOP < 1000)
+        {
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
+            if (FirstClickId != MOP && SecondClickId != MOP)
+            {
+                ThirdClickId = MOP;
+                ModeStep = 3;
+            }
+        }
+        else if (ModeStep == 3 && 0 <= MOP && MOP < 1000)
+        {
+            Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
+            if (FirstClickId != MOP && SecondClickId != MOP && ThirdClickId != MOP)
+            {
+                Module MD = Util.AddModule(MENU.TRIANGLE, FirstClickId, SecondClickId, ThirdClickId, ModuleId++);
+                MD.Object4Id = MOP;
+                MD.PolygonOption = 0;
+                Mode = MENU.QUADRILATERAL;
+                AppMgr.ExecuteAllModules();
+                //Mode = 0;
+                ModeStep = 0;
+            }
+        }
+    }
     private void MakeAPointFixed(int MOP)
     {//モード１１ステップ０ならば，「一つ目の点」のMOPから
      // 該当する点のFixedフラグを反転させる。
@@ -1879,6 +1950,34 @@ public void OnMyMouseDown()
                 else if (Mode == MENU.POINT_ON_CIRCLE && ModeStep == 0)
                 {//点を円に載せるのに、まず点を選ぶ
                     MakeAPointOnCircle(MOP);
+                }
+                else if (Mode == MENU.TRIANGLE && ModeStep == 0)
+                {//三角形を追加するのに、まず点を選ぶ
+                    MakeATriangle(MOP);
+                }
+                else if (Mode == MENU.TRIANGLE && ModeStep == 1)
+                {//三角形を追加するのに、まず点を選ぶ
+                    MakeATriangle(MOP);
+                }
+                else if (Mode == MENU.TRIANGLE && ModeStep == 2)
+                {//三角形を追加するのに、まず点を選ぶ
+                    MakeATriangle(MOP);
+                }
+                else if (Mode == MENU.QUADRILATERAL && ModeStep == 0)
+                {//四角形を追加するのに、まず点を選ぶ
+                    MakeAQuadrilateral(MOP);
+                }
+                else if (Mode == MENU.QUADRILATERAL && ModeStep == 1)
+                {//四角形を追加するのに、まず点を選ぶ
+                    MakeAQuadrilateral(MOP);
+                }
+                else if (Mode == MENU.QUADRILATERAL && ModeStep == 2)
+                {//四角形を追加するのに、まず点を選ぶ
+                    MakeAQuadrilateral(MOP);
+                }
+                else if (Mode == MENU.QUADRILATERAL && ModeStep == 3)
+                {//四角形を追加するのに、まず点を選ぶ
+                    MakeAQuadrilateral(MOP);
                 }
                 else if (Mode == MENU.FIX_POINT)
                 {//点を固定するのに、点を選ぶ
