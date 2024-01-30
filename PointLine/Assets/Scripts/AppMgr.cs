@@ -1107,6 +1107,7 @@ public class Util
                         new XElement("Object1Id", md.Object1Id),
                         new XElement("Object2Id", md.Object2Id),
                         new XElement("Object3Id", md.Object3Id),
+                        new XElement("Object4Id", md.Object4Id),
                         new XElement("Ratio1", md.Ratio1),
                         new XElement("Ratio2", md.Ratio2),
                         new XElement("Constant", md.Constant),
@@ -1345,6 +1346,7 @@ public class Util
             int o1 = int.Parse(item[2]);
             int o2 = int.Parse(item[3]);
             int o3 = int.Parse(item[4]);
+            int o4 = -1;
             int id = int.Parse(item[5]);
             bool act = bool.Parse(item[6]);
             float ra1 = 1f, ra2 = 1f, cst = Mathf.PI / 2;
@@ -1376,10 +1378,14 @@ public class Util
                 MD.ParaWeight = float.Parse(item[14]);
                 MD.ModuleName = item[15];
             }
-                //Debug.Log(MD.ToString());
-                //ログ作成
+            if (item.Length > 16) { 
+                MD.Object4Id = o4 = int.Parse(item[16]);
+                MD.PolygonOption = int.Parse(item[17]);
+            }
+            //Debug.Log(MD.ToString());
+            //ログ作成
             Log lg = MD.GameLog.GetComponent<Log>();
-            lg.MakeModuleLog(id, mt, o1, o2, o3, MD.parent, act, MD.ModuleName);
+            lg.MakeModuleLog(id, mt, o1, o2, o3, o4, MD.parent, act, MD.ModuleName);
             if (mt == MENU.LINES_PERPENDICULAR)
             {// 直交モジュールの時には直角マークを付ける。
                 AddAngleMark(o1, o2, MD.gameObject);
@@ -1402,7 +1408,7 @@ public class Util
         ClickOnPanel.DeleteAll();
         if (path != null && path.Length != 0)
         {
-            try
+            //try
             {
                 XElement xml = XElement.Load(@path);
                 IEnumerable<XElement> infos = from item in xml.Elements("Object") select item;
@@ -1501,7 +1507,8 @@ public class Util
                         int mt = int.Parse(info.Element("Type").Value);
                         int o1 = int.Parse(info.Element("Object1Id").Value);
                         int o2 = int.Parse(info.Element("Object2Id").Value);
-                        int o3 = int.Parse(info.Element("Object3Id").Value);
+                        int o3 = (info.Element("Object3Id")!=null)? int.Parse(info.Element("Object3Id").Value):-1;
+                        int o4 = (info.Element("Object4Id")!=null)? int.Parse(info.Element("Object4Id").Value):-1;
                         int id = int.Parse(info.Element("id").Value);
                         //オブジェクト作成
                         Module MD = Util.AddModule(mt, o1, o2, o3, id);
@@ -1518,7 +1525,7 @@ public class Util
                         //Debug.Log(MD.ToString());
                         //ログ作成
                         Log lg = MD.GameLog.GetComponent<Log>();
-                        lg.MakeModuleLog(id, mt, o1, o2, o3, MD.parent, MD.Active, MD.ModuleName);
+                        lg.MakeModuleLog(id, mt, o1, o2, o3, o4, MD.parent, MD.Active, MD.ModuleName);
                         if (mt == MENU.LINES_PERPENDICULAR)
                         {// 直交モジュールの時には直角マークを付ける。
                             AddAngleMark(o1, o2, MD.gameObject);
@@ -1533,7 +1540,7 @@ public class Util
                         }
                     }
                 }
-                int PId = -1, LId = -1, CId = -1, MId = -1;
+                int PId = 0, LId = 1000, CId = 2000, MId = 3000;
                 AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
                 AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
                 AppMgr.cis = MonoBehaviour.FindObjectsOfType<Circle>();
@@ -1546,7 +1553,7 @@ public class Util
                 {
                     if (LId <= AppMgr.lns[k].Id) LId = AppMgr.lns[k].Id + 1;
                 }
-                for (int k = 0; k < AppMgr.pts.Length; k++)
+                for (int k = 0; k < AppMgr.cis.Length; k++)
                 {
                     if (CId <= AppMgr.cis[k].Id) CId = AppMgr.cis[k].Id + 1;
                 }
@@ -1554,12 +1561,12 @@ public class Util
                 {
                     if (MId <= AppMgr.mds[k].Id) MId = AppMgr.mds[k].Id + 1;
                 }
-                ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
+                ClickOnPanel.SetId(PId, LId, CId, MId);
             }
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
-            }
+            //catch (Exception e)
+            //{
+            //    Debug.LogError(e.Message);
+            //}
         }
         else
         {

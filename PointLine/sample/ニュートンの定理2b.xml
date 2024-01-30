@@ -14,8 +14,8 @@
   <Object>
     <ObjectType>Circle</ObjectType>
     <CenterPointId>0</CenterPointId>
-    <Radius>1.75549412</Radius>
-    <FixedRadius>1.75549412</FixedRadius>
+    <Radius>1.75549459</Radius>
+    <FixedRadius>1.75549459</FixedRadius>
     <para>0.1</para>
     <FixRadius>false</FixRadius>
     <id>2000</id>
@@ -132,6 +132,7 @@
     <Object1Id>2000</Object1Id>
     <Object2Id>1000</Object2Id>
     <Object3Id>0</Object3Id>
+    <Object4Id>-1</Object4Id>
     <Ratio1>1</Ratio1>
     <Ratio2>1</Ratio2>
     <Constant>1.570796</Constant>
@@ -161,6 +162,7 @@
     <Object1Id>1</Object1Id>
     <Object2Id>3</Object2Id>
     <Object3Id>8</Object3Id>
+    <Object4Id>-1</Object4Id>
     <Ratio1>1</Ratio1>
     <Ratio2>1</Ratio2>
     <Constant>1.570796</Constant>
@@ -190,6 +192,7 @@
     <Object1Id>2</Object1Id>
     <Object2Id>4</Object2Id>
     <Object3Id>9</Object3Id>
+    <Object4Id>-1</Object4Id>
     <Ratio1>1</Ratio1>
     <Ratio2>1</Ratio2>
     <Constant>1.570796</Constant>
@@ -208,6 +211,7 @@
     <Object1Id>2000</Object1Id>
     <Object2Id>1001</Object2Id>
     <Object3Id>0</Object3Id>
+    <Object4Id>-1</Object4Id>
     <Ratio1>1</Ratio1>
     <Ratio2>1</Ratio2>
     <Constant>1.570796</Constant>
@@ -226,6 +230,7 @@
     <Object1Id>2000</Object1Id>
     <Object2Id>1002</Object2Id>
     <Object3Id>0</Object3Id>
+    <Object4Id>-1</Object4Id>
     <Ratio1>1</Ratio1>
     <Ratio2>1</Ratio2>
     <Constant>1.570796</Constant>
@@ -244,6 +249,7 @@
     <Object1Id>2000</Object1Id>
     <Object2Id>1003</Object2Id>
     <Object3Id>0</Object3Id>
+    <Object4Id>-1</Object4Id>
     <Ratio1>1</Ratio1>
     <Ratio2>1</Ratio2>
     <Constant>1.570796</Constant>

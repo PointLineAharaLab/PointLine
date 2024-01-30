@@ -38,7 +38,8 @@ public class MENU
     public const int SAVE = 19;
     public const int OPEN = 20;
     public const int SAVE_TEX = 21;
-
+    public const int TRIANGLE = 28;
+    public const int QUADRILATERAL = 29;
 }
 
 

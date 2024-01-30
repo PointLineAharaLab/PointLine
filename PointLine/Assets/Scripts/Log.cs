@@ -37,7 +37,8 @@ public class Log : MonoBehaviour
     public int Object1Id = -1;
     public int Object2Id = -1;
     public int Object3Id = -1;
-    public GameObject Object1, Object2, Object3;
+    public int Object4Id = -1;
+    public GameObject Object1, Object2, Object3, Object4;
     public float Ratio1, Ratio2, Constant;
     //AngleMark
     //public int Object1Id = -1;
@@ -570,7 +571,7 @@ public class Log : MonoBehaviour
 
     void FindObjects4Module()
     {
-        Object1 = Object2 = Object3 = null;
+        Object1 = Object2 = Object3 = Object4 = null;
         GameObject[] OBJs = FindObjectsOfType<GameObject>();
         for (int i = 0; i < OBJs.Length; i++)
         {
@@ -588,6 +589,10 @@ public class Log : MonoBehaviour
                 if (pt.Id == Object3Id)
                 {
                     Object3 = OBJs[i];
+                }
+                if (pt.Id == Object4Id)
+                {
+                    Object4 = OBJs[i];
                 }
             }
             Line ln = OBJs[i].GetComponent<Line>();
@@ -641,13 +646,14 @@ public class Log : MonoBehaviour
         }
     }
 
-    public void MakeModuleLog(int _id, int _mt, int _o1, int _o2, int _o3, GameObject _pa, bool _active, string _pname)
+    public void MakeModuleLog(int _id, int _mt, int _o1, int _o2, int _o3, int _o4, GameObject _pa, bool _active, string _pname)
     {
         ObjectType = "Module";
         Id = _id;
         Object1Id = _o1;
         Object2Id = _o2;
         Object3Id = _o3;
+        Object4Id = _o4;
         FindObjects4Module();
         ModuleType = _mt;
         parent = _pa;
@@ -688,7 +694,7 @@ public class Log : MonoBehaviour
     }
     public void MakeModuleLog(Module md)
     {
-        MakeModuleLog(md.Id, md.Type, md.Object1Id, md.Object2Id, md.Object3Id, md.parent, md.Active, md.ModuleName);
+        MakeModuleLog(md.Id, md.Type, md.Object1Id, md.Object2Id, md.Object3Id, md.Object4Id, md.parent, md.Active, md.ModuleName);
     }
 
     public void MakeObjectFromLog(Log _l)
@@ -742,11 +748,12 @@ public class Log : MonoBehaviour
         else if (ObjectType == "Module")
         {
             Module md = parent.GetComponent<Module>();
-            return "Module," + ModuleType + "," + Object1Id + "," + Object2Id + ","
-                + Object3Id + "," + Id + "," + Active + ","
-                + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant + ","
-                + md.ShowConstant + "," + md.FixAngle + "," + md.FixRatio + ","
-                + md.Parameter + "," + md.ParaWeight + "," + md.ModuleName;
+            return "Module," + ModuleType + "," + Object1Id + "," + Object2Id + ","//0,1,2,3
+                + Object3Id + "," + Id + "," + Active + ","//4,5,6
+                + md.Ratio1 + "," + md.Ratio2 + "," + md.Constant + ","//7,8,9
+                + md.ShowConstant + "," + md.FixAngle + "," + md.FixRatio + ","//10,11,12
+                + md.Parameter + "," + md.ParaWeight + "," + md.ModuleName + ","//13,14,15
+                + md.Object4Id + "," + md.PolygonOption;//16,17
         }
         return "";
     }

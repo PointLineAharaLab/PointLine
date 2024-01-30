@@ -16,16 +16,18 @@ public class Module : MonoBehaviour {
     public bool ShowConstant = false;//[10]
     public bool FixAngle = false;//角度を固定するかどうかのフラグ//[11]
     public bool FixRatio = true;//比を固定するかどうかのフラグ//[12]
-    public float Parameter = 0.1f;
-    public float ParaWeight = 0.2f;
+    public float Parameter = 0.1f;//[13]
+    public float ParaWeight = 0.2f;//[14]
+    public string ModuleName = "";//[15]
+    public int Object4Id = -1;//[16]
+    public int PolygonOption = 0;//[17]
     public float err=0f;
 
-    public GameObject Object1, Object2, Object3;
+    public GameObject Object1, Object2, Object3, Object4;
 
     public GameObject parent = null;
     public GameObject GameLog = null;
-    public string ModuleName = "";
-    
+
 
     public Vector3 PreVec;// 軌跡を描くための変数
 
@@ -697,7 +699,7 @@ public class Module : MonoBehaviour {
     }
     #endregion
 
-
+    #region CIRCLE_TANGENT_LINE
     private float ModuleCIRCLE_TANGENT_LINE()
     {//円を直線に接させる
         //Object1Id : 円：
@@ -781,11 +783,12 @@ public class Module : MonoBehaviour {
         return 0f;
     }
 
+    #endregion
+
+    #region CIRCLE_TANGENT_CIRCLE
+    /// <summary>円を円に（外）接させる,    Object1Id : 円１,    Object2Id : 円２    円と中心を探す</summary>
     private float ModuleCIRCLE_TANGENT_CIRCLE()
-    {//円を円に（外）接させる
-        //Object1Id : 円１
-        //Object2Id : 円２
-        // 円と中心を探す
+    {
         gameObject.SetActive(Active);
         if (Object1 != null && Object2 != null)
         {
@@ -910,6 +913,8 @@ public class Module : MonoBehaviour {
         }
         return 0f;
     }
+    #endregion
+
 
     private float ModuleADD_MIDPOINT()
     {
@@ -1420,6 +1425,16 @@ public class Module : MonoBehaviour {
         return 0f;
     }
 
+    private float Module_Triangle()
+    {
+        return 0f;
+    }
+
+    private float Module_Quadrilateral()
+    {
+        return 0f;
+    }
+
     public float ExecuteModule()
     {
         if (!Active) return 0f;
@@ -1450,6 +1465,10 @@ public class Module : MonoBehaviour {
                 return ModuleBISECTOR();
             case MENU.ADD_LOCUS:
                 return Module_LOCUS();
+            case MENU.TRIANGLE:
+                return Module_Triangle();
+            case MENU.QUADRILATERAL:
+                return Module_Quadrilateral();
         }
         return 0f;
     }
