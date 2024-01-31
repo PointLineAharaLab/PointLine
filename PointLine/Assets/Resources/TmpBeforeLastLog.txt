@@ -1,3 +1,3 @@
-Point,-3.645833,-0.1488096,0,0,False,True,A,True
-Point,-1.473214,1.086309,0,1,False,True,B,True
-Point,0.133929,-1.175595,0,2,False,True,C,True
+Point,-0.6410256,-0.08012831,0,0,False,True,A,True
+Point,-3.814102,1.201923,0,1,False,True,B,True
+Point,-3.333333,-0.9935898,0,2,False,True,C,True

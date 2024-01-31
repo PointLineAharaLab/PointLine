@@ -568,6 +568,10 @@ public class Util
                     return "円 - 直線";
                 case MENU.CIRCLE_TANGENT_CIRCLE:
                     return "円 - 円";
+                case MENU.TRIANGLE:
+                    return "三角形";
+                case MENU.QUADRILATERAL:
+                    return "四角形";
                 case MENU.ADD_MIDPOINT:
                     return "中点";//"内分点"
                 case MENU.ANGLE:
@@ -600,6 +604,10 @@ public class Util
                     return "circle - line";
                 case MENU.CIRCLE_TANGENT_CIRCLE:
                     return "circle - circle";
+                case MENU.TRIANGLE:
+                    return "triangle";
+                case MENU.QUADRILATERAL:
+                    return "quadrilateral";
                 case MENU.ADD_MIDPOINT:
                     return "midpoint";//"内分点"
                 case MENU.ANGLE:

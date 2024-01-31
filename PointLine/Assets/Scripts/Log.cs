@@ -341,6 +341,38 @@ public class Log : MonoBehaviour
                     Text2 = "" + GetPNameByParentObject(Object1) + " tangents to " + GetPNameByParentObject(Object2) + "";
                 }
             }
+            else if (PName == "三角形")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "三角形";
+                    // 三角形、二等辺三角形、正三角形、鋭角三角形、鈍角三角形
+                    Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " " +
+                        GetPNameByParentObject(Object3) + " ";
+                }
+                else
+                {
+                    Text1 = "Triangle";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " "
+                        + GetPNameByParentObject(Object3) + "";
+                }
+            }
+            else if (PName == "四角形")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "四角形";
+                    // 凸四角形、正方形、長方形、ひし形、平行四辺形、等脚台形、
+                    Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " " +
+                        GetPNameByParentObject(Object3) + " " + GetPNameByParentObject(Object4) + " ";
+                }
+                else
+                {
+                    Text1 = "Quadrilateral";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " "
+                        + GetPNameByParentObject(Object3) + " " + GetPNameByParentObject(Object4) + " ";
+                }
+            }
             else if (PName == "中点")
             {
                 if (AppMgr.Japanese == 1)
@@ -717,6 +749,7 @@ public class Log : MonoBehaviour
         else if(_l.ObjectType == "Module")
         {
             Module MD = Util.AddModule(_l.ModuleType, _l.Object1Id, _l.Object2Id, _l.Object3Id, _l.Id);
+            MD.Object4Id = _l.Object4Id;//optional
             if(_l.ModuleType == MENU.LINES_PERPENDICULAR)
             {
                 Util.AddAngleMark(_l.Object1Id, _l.Object2Id, MD.gameObject);
