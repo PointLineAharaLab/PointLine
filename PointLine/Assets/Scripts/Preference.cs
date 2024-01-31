@@ -40,6 +40,7 @@ public class Preference : MonoBehaviour
     public bool FixRadius = false;
     public bool ShowConstant = false;
     public bool Bracket = false; // LineBracket
+    public int PolygonType = 0; // Triangle, Quadrilateral
     public Log LogParent = null;
     public GameObject Parent = null;
 
@@ -183,6 +184,10 @@ public class Preference : MonoBehaviour
                 CName1 = md.Object1.GetComponent<Circle>().CircleName;
                 CName2 = md.Object2.GetComponent<Circle>().CircleName;
             }
+            else if (ModuleType == MENU.TRIANGLE || ModuleType == MENU.QUADRILATERAL)
+            {
+                PolygonType = LogParent.parent.GetComponent<Module>().PolygonOption;
+            }
             else
             {
                 ;
@@ -271,7 +276,15 @@ public class Preference : MonoBehaviour
                 {
                     ModuleLocusPreference(Left, Top, Step, height, AppMgr.Japanese);
                 }
-                else 
+                else if (ModuleType == MENU.TRIANGLE)
+                {
+                    ModuleTrianglePreference(Left, Top, Step, height, AppMgr.Japanese);
+                }
+                else if (ModuleType == MENU.QUADRILATERAL)
+                {
+                    //ModuleQuadrilateralPreference(Left, Top, Step, height, AppMgr.Japanese);
+                }
+                else
                 {
                     ModulePreference(Left, Top, Step, height, AppMgr.Japanese);
                 }
@@ -672,7 +685,7 @@ public class Preference : MonoBehaviour
         GUIStyle LS = new GUIStyle(LabelStyle);
         GUIStyle BS = new GUIStyle(ButtonStyle);
         LS.fontSize = Mathf.Min(Mathf.FloorToInt(DialogWidth * widthRate / (getTextByte(text))), MaxFontSize);
-        BS.fontSize = Mathf.Min(Mathf.FloorToInt(DialogWidth * widthRate / (getTextByte(buttonText))), MaxFontSize);
+        BS.fontSize = Mathf.Min(Mathf.FloorToInt(DialogWidth * (1f - widthRate) / (getTextByte(buttonText))), MaxFontSize);
         GUI.Label(new Rect(Left, Top, DialogWidth, height), text, LS);
         if(GUI.Button(new Rect(Left + DialogWidth * widthRate, Top, DialogWidth * (1f- widthRate), height), buttonText, BS))
             return !flag;
@@ -1351,6 +1364,72 @@ public class Preference : MonoBehaviour
     }
     #endregion
 
+    #region TrianglePreference
+    void ModuleTrianglePreference(float Left, float Top, float Step, float height, int japanese)
+    {
+        string text = "";
+        if (japanese == 1)
+        {
+            text = "三角形:";
+            //type = LogParent.parent.GetComponent<Module>().PolygonOption;
+            if (PolygonType == 0) text += "正三角形";
+            else if (PolygonType == 1) text += "鋭角三角形";
+            else if (PolygonType == 2) text += "鈍角三角形";
+            else if (PolygonType == 3) text += "条件なし";
+        }
+        else
+        {
+            if (PolygonType == 0) text = "Regular triangle";
+            else if (PolygonType == 1) text = "Acute triangle";
+            else if (PolygonType == 2) text = "Obtuse triangle";
+            else if (PolygonType == 3) text = "Triangle without rule";
+        }
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), text, LabelStyle);
+        Top += Step;
+        if (japanese == 1)
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "→正三角形", false)==true)? 0:PolygonType;
+        else
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "-> square", false) == true) ? 1 : PolygonType;
+        Top += Step;
+        if (japanese == 1)
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "→鋭角三角形", false) == true) ? 1 : PolygonType;
+        else
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "-> acute", false) == true) ? 0 : PolygonType;
+        Top += Step;
+        if (japanese == 1)
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "→鈍角三角形", false) == true) ? 2 : PolygonType;
+        else
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "-> obtuse", false) == true) ? 2 : PolygonType;
+        Top += Step;
+        if (japanese == 1)
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "→条件なし", false) == true) ? 3 : PolygonType;
+        else
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "->without rule", false) == true) ? 3 : PolygonType;
+        Top += Step;
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
+        {
+            show = false;
+        }
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
+        {
+            show = false;
+            LogParent.parent.GetComponent<Module>().PolygonOption = PolygonType;
+            AppMgr.ExecuteAllModules();
+        }
+    }
+    #endregion
 
     #region ModuleLocusPreferences
     void ModuleLocusPreference(float Left, float Top, float Step, float height, int japanese)
