@@ -1425,6 +1425,28 @@ public class Module : MonoBehaviour {
         return 0f;
     }
 
+
+    private float MakeShortSegmentLonger(Point pt1, Point pt2, float Constant)
+    {
+        Vector3 v1 = pt2.Vec - pt1.Vec;
+        float mag = v1.magnitude;
+        if (mag < Constant)
+        {
+            v1.Normalize();
+            float para = 0.1f;
+            float difference = (mag - Constant) * para;
+            if (!pt1.Fixed)
+            {
+                pt1.Vec += difference * v1;
+            }
+            if (!pt2.Fixed)
+            {
+                pt2.Vec -= difference * v1;
+            }
+            return difference * 2;
+        }
+        return 0f;
+    }
     private float MakeNarrowAngleWider(Point pt1, Point pt2, Point pt3, float Limiter)
     {
         float Ax = pt1.Vec.x, Ay = pt1.Vec.y;
@@ -1525,12 +1547,7 @@ public class Module : MonoBehaviour {
             float err = 0f;
             if (PolygonOption == 0)
             {
-                err += MakeNarrowAngleWider(pt2, pt1, pt3, 59f * Mathf.PI / 180f);
-                err += MakeNarrowAngleWider(pt3, pt2, pt1, 59f * Mathf.PI / 180f);
-                err += MakeNarrowAngleWider(pt1, pt3, pt2, 59f * Mathf.PI / 180f);
-                err += MakeWideAngleNarrower(pt2, pt1, pt3, 61f * Mathf.PI / 180f);
-                err += MakeWideAngleNarrower(pt3, pt2, pt1, 61f * Mathf.PI / 180f);
-                err += MakeWideAngleNarrower(pt1, pt3, pt2, 61f * Mathf.PI / 180f);
+
             }
             else if (PolygonOption == 1)
             {
@@ -1543,7 +1560,11 @@ public class Module : MonoBehaviour {
                 err += MakeNarrowAngleWider(pt2, pt1, pt3, 95f * Mathf.PI / 180f);
 
             }
-            // if angle BAC < 5degree then the module makes this angle wider.
+            //
+            //err += MakeShortSegmentLonger(pt1, pt2, 0.4f);
+            //err += MakeShortSegmentLonger(pt2, pt3, 0.4f);
+            //err += MakeShortSegmentLonger(pt3, pt1, 0.4f);
+            // if angle BAC < 15 degree then the module makes this angle wider.
             err += MakeNarrowAngleWider(pt2, pt1, pt3, 14f * Mathf.PI / 180f);
             err += MakeNarrowAngleWider(pt3, pt2, pt1, 14f * Mathf.PI / 180f);
             err += MakeNarrowAngleWider(pt1, pt3, pt2, 14f * Mathf.PI / 180f);
