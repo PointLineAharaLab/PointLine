@@ -1425,9 +1425,130 @@ public class Module : MonoBehaviour {
         return 0f;
     }
 
+    private float MakeNarrowAngleWider(Point pt1, Point pt2, Point pt3, float Limiter)
+    {
+        float Ax = pt1.Vec.x, Ay = pt1.Vec.y;
+        float Bx = pt2.Vec.x, By = pt2.Vec.y;
+        float Cx = pt3.Vec.x, Cy = pt3.Vec.y;
+        float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+        float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+        float Angle = DeclineBC - DeclineBA;
+        float PI = Mathf.PI;
+        if (Angle <= -PI)
+            Angle += 2 * PI;
+        if (Angle >= PI)
+            Angle -= 2 * PI;
+        Angle = Mathf.Abs(Angle);
+        if (Angle < Limiter)
+        {
+            float BA = Util.Magnitude(Ax - Bx, Ay - By);
+            float BC = Util.Magnitude(Cx - Bx, Cy - By);
+            float AC = Util.Magnitude(Ax - Cx, Ay - Cy);
+            float Mx = (Ax * BC + Cx * BA) / (BA + BC);
+            float My = (Ay * BC + Cy * BA) / (BA + BC);
+            float Dx = Bx - Mx, Dy = By - My;
+            float ND = Util.Magnitude(Dx, Dy);
+            if (ND < 0.00001f) return 0f;
+            Dx /= ND;
+            Dy /= ND;
+            float Error = (Angle - Limiter) * AC * 0.1f * Parameter;
+            Dx *= Error;
+            Dy *= Error;
+            if (pt2.Fixed == false)
+            {
+                pt2.Vec += new Vector3(Dx, Dy, 0f);
+                return Mathf.Abs(Error);
+            }
+        }
+        return 0f;
+    }
+    private float MakeWideAngleNarrower(Point pt1, Point pt2, Point pt3, float Limiter)
+    {
+        float Ax = pt1.Vec.x, Ay = pt1.Vec.y;
+        float Bx = pt2.Vec.x, By = pt2.Vec.y;
+        float Cx = pt3.Vec.x, Cy = pt3.Vec.y;
+        float DeclineBA = Mathf.Atan2(Ay - By, Ax - Bx);
+        float DeclineBC = Mathf.Atan2(Cy - By, Cx - Bx);
+        float Angle = DeclineBC - DeclineBA;
+        float PI = Mathf.PI;
+        if (Angle <= -PI)
+            Angle += 2 * PI;
+        if (Angle >= PI)
+            Angle -= 2 * PI;
+        Angle = Mathf.Abs(Angle);
+        if (Angle > Limiter)
+        {
+            float BA = Util.Magnitude(Ax - Bx, Ay - By);
+            float BC = Util.Magnitude(Cx - Bx, Cy - By);
+            float AC = Util.Magnitude(Ax - Cx, Ay - Cy);
+            float Mx = (Ax * BC + Cx * BA) / (BA + BC);
+            float My = (Ay * BC + Cy * BA) / (BA + BC);
+            float Dx = Bx - Mx, Dy = By - My;
+            float ND = Util.Magnitude(Dx, Dy);
+            if (ND < 0.00001f) return 0f;
+            Dx /= ND;
+            Dy /= ND;
+            float Error = (Angle - Limiter) * AC * 0.1f * Parameter;
+            Dx *= Error;
+            Dy *= Error;
+            if (pt2.Fixed == false)
+            {
+                pt2.Vec += new Vector3(Dx, Dy, 0f);
+                return Mathf.Abs(Error);
+            }
+        }
+        return 0f;
+    }
     private float Module_Triangle()
     {
         gameObject.SetActive(Active);
+        if (Object1 == null || Object2 == null || Object3 == null)
+        {
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Point PT = OBJs[i].GetComponent<Point>();
+                if (PT != null && PT.Id == Object1Id)
+                    Object1 = OBJs[i];
+                if (PT != null && PT.Id == Object2Id)
+                    Object2 = OBJs[i];
+                if (PT != null && PT.Id == Object3Id)
+                    Object3 = OBJs[i];
+            }
+            if (Object1 == null || Object2 == null || Object3 == null) 
+                Active = false;
+        }
+        if (Active) {
+            Point pt1 = Object1.GetComponent<Point>();
+            Point pt2 = Object2.GetComponent<Point>();
+            Point pt3 = Object3.GetComponent<Point>();
+            float err = 0f;
+            if (PolygonOption == 0)
+            {
+                err += MakeNarrowAngleWider(pt2, pt1, pt3, 59f * Mathf.PI / 180f);
+                err += MakeNarrowAngleWider(pt3, pt2, pt1, 59f * Mathf.PI / 180f);
+                err += MakeNarrowAngleWider(pt1, pt3, pt2, 59f * Mathf.PI / 180f);
+                err += MakeWideAngleNarrower(pt2, pt1, pt3, 61f * Mathf.PI / 180f);
+                err += MakeWideAngleNarrower(pt3, pt2, pt1, 61f * Mathf.PI / 180f);
+                err += MakeWideAngleNarrower(pt1, pt3, pt2, 61f * Mathf.PI / 180f);
+            }
+            else if (PolygonOption == 1)
+            {
+                err += MakeWideAngleNarrower(pt2, pt1, pt3, 85f * Mathf.PI / 180f);
+                err += MakeWideAngleNarrower(pt3, pt2, pt1, 85f * Mathf.PI / 180f);
+                err += MakeWideAngleNarrower(pt1, pt3, pt2, 85f * Mathf.PI / 180f);
+            }
+            else if (PolygonOption == 2)
+            {
+                err += MakeNarrowAngleWider(pt2, pt1, pt3, 95f * Mathf.PI / 180f);
+
+            }
+            // if angle BAC < 5degree then the module makes this angle wider.
+            err += MakeNarrowAngleWider(pt2, pt1, pt3, 14f * Mathf.PI / 180f);
+            err += MakeNarrowAngleWider(pt3, pt2, pt1, 14f * Mathf.PI / 180f);
+            err += MakeNarrowAngleWider(pt1, pt3, pt2, 14f * Mathf.PI / 180f);
+            return err;
+        }
         return 0f;
     }
 

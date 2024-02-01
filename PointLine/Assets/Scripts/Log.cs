@@ -40,6 +40,7 @@ public class Log : MonoBehaviour
     public int Object4Id = -1;
     public GameObject Object1, Object2, Object3, Object4;
     public float Ratio1, Ratio2, Constant;
+    public int PolygonOption = 0;
     //AngleMark
     //public int Object1Id = -1;
     //public int Object2Id = -1;
@@ -343,16 +344,47 @@ public class Log : MonoBehaviour
             }
             else if (PName == "三角形")
             {
+                PolygonOption = parent.GetComponent<Module>().PolygonOption;
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "三角形";
-                    // 三角形、二等辺三角形、正三角形、鋭角三角形、鈍角三角形
+                    if (PolygonOption == 0)
+                    {
+                        Text1 = "正三角形";
+                    }
+                    else if (PolygonOption == 1)
+                    {
+                        Text1 = "鋭角三角形";
+                    }
+                    else if (PolygonOption == 2)
+                    {
+                        Text1 = "鈍角三角形";
+                    }
+                    else
+                    {
+                        Text1 = "条件なし三角形";
+                    }
+                    // 三角形、正三角形、鋭角三角形、鈍角三角形
                     Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " " +
                         GetPNameByParentObject(Object3) + " ";
                 }
                 else
                 {
-                    Text1 = "Triangle";
+                    if (PolygonOption == 0)
+                    {
+                        Text1 = "Regular triangle";
+                    }
+                    else if (PolygonOption == 1)
+                    {
+                        Text1 = "Acute triangle";
+                    }
+                    else if (PolygonOption == 2)
+                    {
+                        Text1 = "Obtuse triangle";
+                    }
+                    else
+                    {
+                        Text1 = "Triangle without rule";
+                    }
                     Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " "
                         + GetPNameByParentObject(Object3) + "";
                 }
