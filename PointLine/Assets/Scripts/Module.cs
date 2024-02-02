@@ -1618,9 +1618,105 @@ public class Module : MonoBehaviour {
         return 0f;
     }
 
+    private float MaketwoSegmentsIsometric(Point pt1, Point pt2, Point pt3, Point pt4)
+    {
+        Vector3 v12 = pt2.Vec - pt1.Vec;
+        float mag12 = v12.magnitude;
+        Vector3 v34 = pt4.Vec - pt3.Vec;
+        float mag34 = v34.magnitude;
+        float mean = (mag12 + mag34) / 2f;
+        float err = 0f;
+        float para = 0.1f;
+        {
+            v12.Normalize();
+            float difference = (mag12 - mean) * para;
+            if (!pt1.Fixed)
+            {
+                pt1.Vec += difference * v12;
+            }
+            if (!pt2.Fixed)
+            {
+                pt2.Vec -= difference * v12;
+            }
+            err += difference * 2;
+        }
+        v12 = pt2.Vec - pt1.Vec;
+        mag12 = v12.magnitude;
+        v34 = pt4.Vec - pt3.Vec;
+        mag34 = v34.magnitude;
+        mean = (mag12 + mag34) / 2f;
+        {
+            v34.Normalize();
+            float difference = (mag34 - mean) * para;
+            if (!pt3.Fixed)
+            {
+                pt3.Vec += difference * v34;
+            }
+            if (!pt4.Fixed)
+            {
+                pt4.Vec -= difference * v34;
+            }
+            err += difference * 2;
+        }
+        return err;
+    }
+
     private float Module_Quadrilateral()
     {
         gameObject.SetActive(Active);
+        if (Object1 == null || Object2 == null || Object3 == null || Object4 == null)
+        {
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Point PT = OBJs[i].GetComponent<Point>();
+                if (PT != null && PT.Id == Object1Id)
+                    Object1 = OBJs[i];
+                if (PT != null && PT.Id == Object2Id)
+                    Object2 = OBJs[i];
+                if (PT != null && PT.Id == Object3Id)
+                    Object3 = OBJs[i];
+                if (PT != null && PT.Id == Object4Id)
+                    Object4 = OBJs[i];
+            }
+            if (Object1 == null || Object2 == null || Object3 == null || Object4 == null)
+                Active = false;
+        }
+        if (Active)
+        {
+            Point pt1 = Object1.GetComponent<Point>();
+            Point pt2 = Object2.GetComponent<Point>();
+            Point pt3 = Object3.GetComponent<Point>();
+            Point pt4 = Object4.GetComponent<Point>();
+            float err = 0f;
+            if (PolygonOption == 0)
+            {
+                err += MaketwoSegmentsIsometric(pt1, pt2, pt4, pt3);
+                err += MaketwoSegmentsIsometric(pt1, pt4, pt2, pt3);
+                err += MaketwoSegmentsIsometric(pt1, pt2, pt1, pt4);
+                err += MaketwoSegmentsIsometric(pt4, pt3, pt2, pt3);
+                err += MaketwoSegmentsIsometric(pt1, pt3, pt2, pt4);
+            }
+            else if (PolygonOption == 1)
+            {
+                err += MaketwoSegmentsIsometric(pt1, pt2, pt4, pt3);
+                err += MaketwoSegmentsIsometric(pt1, pt4, pt2, pt3);
+                err += MaketwoSegmentsIsometric(pt1, pt3, pt2, pt4);
+            }
+            else if (PolygonOption == 2)
+            {
+                err += MaketwoSegmentsIsometric(pt1, pt2, pt4, pt3);
+                err += MaketwoSegmentsIsometric(pt1, pt4, pt2, pt3);
+                err += MaketwoSegmentsIsometric(pt1, pt2, pt1, pt4);
+                err += MaketwoSegmentsIsometric(pt4, pt3, pt2, pt3);
+            }
+            else if (PolygonOption == 3)
+            {
+                err += MaketwoSegmentsIsometric(pt1, pt2, pt4, pt3);
+                err += MaketwoSegmentsIsometric(pt1, pt4, pt2, pt3);
+            }
+            return err;
+        }
         return 0f;
     }
 

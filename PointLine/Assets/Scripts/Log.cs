@@ -391,6 +391,7 @@ public class Log : MonoBehaviour
             }
             else if (PName == "四角形")
             {
+                PolygonOption = parent.GetComponent<Module>().PolygonOption;
                 if (AppMgr.Japanese == 1)
                 {
                     if (PolygonOption == 0) 
@@ -404,6 +405,7 @@ public class Log : MonoBehaviour
                     else 
                         Text1 = "凸四角形";
                     // 凸四角形、正方形、長方形、ひし形、平行四辺形、等脚台形、
+                    //Debug.Log("Here it is!");
                     Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " "
                         + GetPNameByParentObject(Object3) + " " + GetPNameByParentObject(Object4) + " ";
                 }
@@ -798,7 +800,7 @@ public class Log : MonoBehaviour
         }
         else if(_l.ObjectType == "Module")
         {
-            Module MD = Util.AddModule(_l.ModuleType, _l.Object1Id, _l.Object2Id, _l.Object 3Id, _l.Id);
+            Module MD = Util.AddModule(_l.ModuleType, _l.Object1Id, _l.Object2Id, _l.Object3Id, _l.Id);
             MD.Object4Id = _l.Object4Id;//optional
             if(_l.ModuleType == MENU.LINES_PERPENDICULAR)
             {

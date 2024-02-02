@@ -282,7 +282,7 @@ public class Preference : MonoBehaviour
                 }
                 else if (ModuleType == MENU.QUADRILATERAL)
                 {
-                    //ModuleQuadrilateralPreference(Left, Top, Step, height, AppMgr.Japanese);
+                    ModuleQuarilateralPreference(Left, Top, Step, height, AppMgr.Japanese);
                 }
                 else
                 {
@@ -1425,6 +1425,7 @@ public class Preference : MonoBehaviour
         if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
         {
             show = false;
+            LogParent.GetComponent<Log>().PolygonOption = PolygonType;
             LogParent.parent.GetComponent<Module>().PolygonOption = PolygonType;
             AppMgr.ExecuteAllModules();
         }
@@ -1494,6 +1495,7 @@ public class Preference : MonoBehaviour
         if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
         {
             show = false;
+            LogParent.GetComponent<Log>().PolygonOption = PolygonType;
             LogParent.parent.GetComponent<Module>().PolygonOption = PolygonType;
             AppMgr.ExecuteAllModules();
         }
