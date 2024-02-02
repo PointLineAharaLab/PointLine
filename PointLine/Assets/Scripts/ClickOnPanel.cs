@@ -1529,9 +1529,12 @@ public void OnMyMouseDown()
             Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
             if (FirstClickId != MOP && SecondClickId != MOP && ThirdClickId != MOP)
             {
-                Module MD = Util.AddModule(MENU.TRIANGLE, FirstClickId, SecondClickId, ThirdClickId, ModuleId++);
+                Module MD = Util.AddModule(MENU.QUADRILATERAL, FirstClickId, SecondClickId, ThirdClickId, ModuleId++);
                 MD.Object4Id = MOP;
                 MD.PolygonOption = 0;
+                if (MD.GameLog!=null)
+                    MD.GameLog.GetComponent<Log>().Object4Id = MOP;
+                    MD.GameLog.GetComponent<Log>().PolygonOption = 0;
                 Mode = MENU.QUADRILATERAL;
                 AppMgr.ExecuteAllModules();
                 //Mode = 0;

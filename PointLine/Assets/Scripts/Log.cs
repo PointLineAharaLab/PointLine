@@ -185,7 +185,7 @@ public class Log : MonoBehaviour
         }
         else if (ObjectType == "Module")
         {
-            if(Object1 == null || Object2 == null)
+            if(Object1 == null || Object2 == null || Object3 == null || Object4 == null)
             {
                 FindObjects4Module();
             }
@@ -393,14 +393,32 @@ public class Log : MonoBehaviour
             {
                 if (AppMgr.Japanese == 1)
                 {
-                    Text1 = "四角形";
+                    if (PolygonOption == 0) 
+                        Text1 = "正方形";
+                    else if (PolygonOption == 1)
+                        Text1 = "長方形";
+                    else if (PolygonOption == 2)
+                        Text1 = "ひし形";
+                    else if (PolygonOption == 3)
+                        Text1 = "平行四辺形";
+                    else 
+                        Text1 = "凸四角形";
                     // 凸四角形、正方形、長方形、ひし形、平行四辺形、等脚台形、
-                    Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " " +
-                        GetPNameByParentObject(Object3) + " " + GetPNameByParentObject(Object4) + " ";
+                    Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " "
+                        + GetPNameByParentObject(Object3) + " " + GetPNameByParentObject(Object4) + " ";
                 }
                 else
                 {
-                    Text1 = "Quadrilateral";
+                    if (PolygonOption == 0)
+                        Text1 = "square";
+                    else if (PolygonOption == 1)
+                        Text1 = "rectangle";
+                    else if (PolygonOption == 2)
+                        Text1 = "diamond";
+                    else if (PolygonOption == 3)
+                        Text1 = "parallelogram";
+                    else
+                        Text1 = "convex quadrilateral";
                     Text2 = "" + GetPNameByParentObject(Object1) + " " + GetPNameByParentObject(Object2) + " "
                         + GetPNameByParentObject(Object3) + " " + GetPNameByParentObject(Object4) + " ";
                 }
@@ -780,7 +798,7 @@ public class Log : MonoBehaviour
         }
         else if(_l.ObjectType == "Module")
         {
-            Module MD = Util.AddModule(_l.ModuleType, _l.Object1Id, _l.Object2Id, _l.Object3Id, _l.Id);
+            Module MD = Util.AddModule(_l.ModuleType, _l.Object1Id, _l.Object2Id, _l.Object 3Id, _l.Id);
             MD.Object4Id = _l.Object4Id;//optional
             if(_l.ModuleType == MENU.LINES_PERPENDICULAR)
             {

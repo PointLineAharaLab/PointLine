@@ -123,8 +123,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 114557651215550788, guid: d3c4ab116f4ec564ab930ab1bec9a87d,
           type: 3}
-        m_TargetAssemblyTypeName: Menu, Assembly-CSharp
-        m_MethodName: CreateQuadrilateralButton
+        m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
+        m_MethodName: OnClickQudrilateral
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -1426,26 +1426,71 @@ public class Module : MonoBehaviour {
     }
 
 
-    private float MakeShortSegmentLonger(Point pt1, Point pt2, float Constant)
+    private float MakethreeSegmentsIsometric(Point pt1, Point pt2, Point pt3)
     {
-        Vector3 v1 = pt2.Vec - pt1.Vec;
-        float mag = v1.magnitude;
-        if (mag < Constant)
+        Vector3 v12 = pt2.Vec - pt1.Vec;
+        float mag12 = v12.magnitude;
+        Vector3 v23 = pt3.Vec - pt2.Vec;
+        float mag23 = v23.magnitude;
+        Vector3 v31 = pt1.Vec - pt3.Vec;
+        float mag31 = v31.magnitude;
+        float mean = (mag12 + mag23 + mag31) / 3f;
+        float err = 0f;
+        float para = 0.1f;
         {
-            v1.Normalize();
-            float para = 0.1f;
-            float difference = (mag - Constant) * para;
+            v12.Normalize();
+            float difference = (mag12 - mean) * para;
             if (!pt1.Fixed)
             {
-                pt1.Vec += difference * v1;
+                pt1.Vec += difference * v12;
             }
             if (!pt2.Fixed)
             {
-                pt2.Vec -= difference * v1;
+                pt2.Vec -= difference * v12;
             }
-            return difference * 2;
+            err += difference * 2;
         }
-        return 0f;
+        v12 = pt2.Vec - pt1.Vec;
+        mag12 = v12.magnitude;
+        v23 = pt3.Vec - pt2.Vec;
+        mag23 = v23.magnitude;
+        v31 = pt1.Vec - pt3.Vec;
+        mag31 = v31.magnitude;
+        mean = (mag12 + mag23 + mag31) / 3f;
+        {
+            v23.Normalize();
+            float difference = (mag23 - mean) * para;
+            if (!pt2.Fixed)
+            {
+                pt2.Vec += difference * v23;
+            }
+            if (!pt3.Fixed)
+            {
+                pt3.Vec -= difference * v23;
+            }
+            err += difference * 2;
+        }
+        v12 = pt2.Vec - pt1.Vec;
+        mag12 = v12.magnitude;
+        v23 = pt3.Vec - pt2.Vec;
+        mag23 = v23.magnitude;
+        v31 = pt1.Vec - pt3.Vec;
+        mag31 = v31.magnitude;
+        mean = (mag12 + mag23 + mag31) / 3f;
+        {
+            v31.Normalize();
+            float difference = (mag31 - mean) * para;
+            if (!pt3.Fixed)
+            {
+                pt3.Vec += difference * v31;
+            }
+            if (!pt1.Fixed)
+            {
+                pt1.Vec -= difference * v31;
+            }
+            err += difference * 2;
+        }
+        return err;
     }
     private float MakeNarrowAngleWider(Point pt1, Point pt2, Point pt3, float Limiter)
     {
@@ -1547,7 +1592,7 @@ public class Module : MonoBehaviour {
             float err = 0f;
             if (PolygonOption == 0)
             {
-
+                err += MakethreeSegmentsIsometric(pt1, pt2, pt3);
             }
             else if (PolygonOption == 1)
             {

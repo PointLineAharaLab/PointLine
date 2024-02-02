@@ -1431,6 +1431,76 @@ public class Preference : MonoBehaviour
     }
     #endregion
 
+    #region QuarilateralPreference
+    void ModuleQuarilateralPreference(float Left, float Top, float Step, float height, int japanese)
+    {
+        string text = "";
+        if (japanese == 1)
+        {
+            //text = "三角形:";
+            //type = LogParent.parent.GetComponent<Module>().PolygonOption;
+            if (PolygonType == 0) text += "正方形";
+            else if (PolygonType == 1) text += "長方形";
+            else if (PolygonType == 2) text += "ひし形";
+            else if (PolygonType == 3) text += "平行四辺形";
+            else text = "凸四角形";
+        }
+        else
+        {
+            if (PolygonType == 0) text += "square";
+            else if (PolygonType == 1) text += "rectangle";
+            else if (PolygonType == 2) text += "diamond";
+            else if (PolygonType == 3) text += "parallelogram";
+            else text = "convex quadrilateral";
+        }
+        GUI.Label(new Rect(Left, Top, DialogWidth, height), text, LabelStyle);
+        Top += Step;
+        if (japanese == 1)
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "→正方形", false) == true) ? 0 : PolygonType;
+        else
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "-> square", false) == true) ? 0 : PolygonType;
+        Top += Step;
+        if (japanese == 1)
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "→長方形", false) == true) ? 1 : PolygonType;
+        else
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "->rectangle", false) == true) ? 1 : PolygonType;
+        Top += Step;
+        if (japanese == 1)
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "→ひし形", false) == true) ? 2 : PolygonType;
+        else
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "->diamond", false) == true) ? 2 : PolygonType;
+        Top += Step;
+        if (japanese == 1)
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "→平行四辺形", false) == true) ? 3 : PolygonType;
+        else
+            PolygonType = (labelAndButton(Left, Top, 0.2f, height, "　", "->parallelogram", false) == true) ? 3 : PolygonType;
+        Top += Step;
+        if (japanese == 1)
+            text = "削除";
+        else
+            text = "Destroy";
+        if (HalfButton(Left, Top, height, text))
+        {
+            Module md = LogParent.parent.GetComponent<Module>();
+            DeleteAModule(md.Id);
+            show = false;
+        }
+        Top += Step;
+        //
+        if (HalfButton(Left, Top, height, "Cancel"))
+        {
+            show = false;
+        }
+        if (HalfButton(Left + DialogWidth * 0.5f, Top, height, "OK"))
+        {
+            show = false;
+            LogParent.parent.GetComponent<Module>().PolygonOption = PolygonType;
+            AppMgr.ExecuteAllModules();
+        }
+    }
+    #endregion
+
+
     #region ModuleLocusPreferences
     void ModuleLocusPreference(float Left, float Top, float Step, float height, int japanese)
     {
