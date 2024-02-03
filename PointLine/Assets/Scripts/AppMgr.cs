@@ -1124,6 +1124,7 @@ public class Util
                         new XElement("FixRatio", md.FixRatio),
                         new XElement("Parameter", md.Parameter),
                         new XElement("ParaWeight", md.ParaWeight),
+                        new XElement("PolygonOption", md.PolygonOption),
                         new XElement("id", md.Id),
                         new XElement("name", md.ModuleName),
                         new XElement("active", md.Active)
@@ -1530,6 +1531,7 @@ public class Util
                         MD.ShowConstant = (bool.Parse(info.Element("ShowConstant").Value) == true);
                         MD.FixAngle = (bool.Parse(info.Element("FixAngle").Value) == true);
                         MD.FixRatio = (bool.Parse(info.Element("FixRatio").Value) == true);
+                        MD.PolygonOption = int.Parse(info.Element("PolygonOption").Value);
                         //Debug.Log(MD.ToString());
                         //ログ作成
                         Log lg = MD.GameLog.GetComponent<Log>();
