@@ -1426,6 +1426,48 @@ public class Module : MonoBehaviour {
     }
 
 
+    private float MakeShortSegmentLonger(Point pt1, Point pt2, float Constant)
+    {
+        Vector3 v12 = pt2.Vec - pt1.Vec;
+        float mag12 = v12.magnitude;
+        float para = 0.1f;
+        if (mag12 < Constant)
+        {
+            v12.Normalize();
+            float difference = (mag12 - Constant) * para;
+            if (!pt1.Fixed)
+            {
+                pt1.Vec += difference * v12;
+            }
+            if (!pt2.Fixed)
+            {
+                pt2.Vec -= difference * v12;
+            }
+            err += difference * 2;
+        }
+        return 0f;
+    }
+    private float MakeLongSegmentShorter(Point pt1, Point pt2, float Constant)
+    {
+        Vector3 v12 = pt2.Vec - pt1.Vec;
+        float mag12 = v12.magnitude;
+        float para = 0.1f;
+        if (mag12 > Constant)
+        {
+            v12.Normalize();
+            float difference = (mag12 - Constant) * para;
+            if (!pt1.Fixed)
+            {
+                pt1.Vec += difference * v12;
+            }
+            if (!pt2.Fixed)
+            {
+                pt2.Vec -= difference * v12;
+            }
+            err += difference * 2;
+        }
+        return 0f;
+    }
     private float MakethreeSegmentsIsometric(Point pt1, Point pt2, Point pt3)
     {
         Vector3 v12 = pt2.Vec - pt1.Vec;
@@ -1596,23 +1638,27 @@ public class Module : MonoBehaviour {
             }
             else if (PolygonOption == 1)
             {
-                err += MakeWideAngleNarrower(pt2, pt1, pt3, 85f * Mathf.PI / 180f);
-                err += MakeWideAngleNarrower(pt3, pt2, pt1, 85f * Mathf.PI / 180f);
-                err += MakeWideAngleNarrower(pt1, pt3, pt2, 85f * Mathf.PI / 180f);
+                err += MakeWideAngleNarrower(pt2, pt1, pt3, 75f * Mathf.PI / 180f);
+                err += MakeWideAngleNarrower(pt3, pt2, pt1, 75f * Mathf.PI / 180f);
+                err += MakeWideAngleNarrower(pt1, pt3, pt2, 75f * Mathf.PI / 180f);
             }
             else if (PolygonOption == 2)
             {
-                err += MakeNarrowAngleWider(pt2, pt1, pt3, 95f * Mathf.PI / 180f);
+                err += MakeNarrowAngleWider(pt2, pt1, pt3, 110f * Mathf.PI / 180f);
 
             }
+            // if angle BAC < 25 degree then the module makes this angle wider.
+            err += MakeNarrowAngleWider(pt2, pt1, pt3, 25f * Mathf.PI / 180f);
+            err += MakeNarrowAngleWider(pt3, pt2, pt1, 25f * Mathf.PI / 180f);
+            err += MakeNarrowAngleWider(pt1, pt3, pt2, 25f * Mathf.PI / 180f);
             //
-            //err += MakeShortSegmentLonger(pt1, pt2, 0.4f);
-            //err += MakeShortSegmentLonger(pt2, pt3, 0.4f);
-            //err += MakeShortSegmentLonger(pt3, pt1, 0.4f);
-            // if angle BAC < 15 degree then the module makes this angle wider.
-            err += MakeNarrowAngleWider(pt2, pt1, pt3, 14f * Mathf.PI / 180f);
-            err += MakeNarrowAngleWider(pt3, pt2, pt1, 14f * Mathf.PI / 180f);
-            err += MakeNarrowAngleWider(pt1, pt3, pt2, 14f * Mathf.PI / 180f);
+            err += MakeShortSegmentLonger(pt1, pt2, 0.5f);
+            err += MakeShortSegmentLonger(pt2, pt3, 0.5f);
+            err += MakeShortSegmentLonger(pt3, pt1, 0.5f);
+            //
+            err += MakeLongSegmentShorter(pt1, pt2, 10f);
+            err += MakeLongSegmentShorter(pt2, pt3, 10f);
+            err += MakeLongSegmentShorter(pt3, pt1, 10f);
             return err;
         }
         return 0f;

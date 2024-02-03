@@ -1,18 +1,10 @@
-Point,-1.477193,1.503797,0,0,False,True,A,True
-Point,-1.554214,-1.160933,0,1,False,True,B,True
-Line,0,1,1000,True,False,False,0.1,-1,False,,2.665843,L1
-Point,0.506858,-0.1798478,0,2,False,True,C,True
-Line,2,1,1001,True,False,False,0.1,-1,False,,2.282662,L2
-Line,2,0,1002,True,False,False,0.1,-1,False,,2.602137,L3
-Point,0.2064257,3.488713,0,3,False,True,D,True
-Point,2.191364,1.805115,0,4,False,True,E,True
-Line,3,4,1003,True,False,False,0.1,-1,False,,2.602783,L4
-Point,-0.5730994,-3.221118,0,5,False,True,F,True
-Point,1.487005,-2.239835,0,6,False,True,G,True
-Line,5,6,1004,True,False,False,0.1,-1,False,,2.281874,L5
-Point,-4.414977,1.411856,0,7,False,True,H,True
-Point,-3.666147,-2.191888,0,8,False,True,I,True
-Line,7,8,1005,True,False,False,0.1,-1,False,,3.680723,L6
-Module,29,0,3,4,3001,True,1,1,1.570796,False,False,True,0.1,0.2,四角形,2,0
-Module,29,1,5,6,3002,True,1,1,1.570796,False,False,True,0.1,0.2,四角形,2,0
-Module,29,1,8,7,3003,True,1,1,1.570796,False,False,True,0.1,0.2,四角形,-1,0
+Point,-4.535304,3.018239,0,0,False,True,A,True
+Point,-0.7644305,2.207489,0,1,False,True,B,True
+Point,-1.222256,4.956017,0,2,False,True,C,True
+Point,-2.495343,3.331558,0,3,False,True,D,True
+Circle,3,2.063881,2001,True,2.063881,0.1,False,C2
+Module,5,0,2001,0,3004,True,1,1,1.570796,False,False,True,0.1,0.2,点 - 円,-1,0
+Module,5,1,2001,0,3005,True,1,1,1.570796,False,False,True,0.1,0.2,点 - 円,-1,0
+Module,28,0,1,2,3006,True,1,1,1.570796,False,False,True,0.1,0.2,三角形,-1,1
+Module,5,2,2001,0,3009,True,1,1,1.570796,False,False,True,0.1,0.2,点 - 円,-1,0
+Module,5,1,2001,0,3010,True,1,1,1.570796,False,False,True,0.1,0.2,点 - 円,-1,0
