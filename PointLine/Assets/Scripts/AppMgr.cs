@@ -1,21 +1,26 @@
 ﻿
+using Newtonsoft.Json.Linq;
+using SimpleFileBrowser;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Web;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
-using SimpleFileBrowser;
-using System.Reflection;
-using UnityEngine.UIElements;
-using System.Xml.Linq;
 using System.Data;
+using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
+using System.Reflection;
+using System.Web;
+using System.Xml.Linq;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+
 
 //using cv2;
+//using OpenCvSharp.Demo;
+//using OpenCvSharp;
+//using OpenCvSharp.Aruco;
+
 
 
 /// <summary>
@@ -1589,7 +1594,32 @@ public class Util
 
     public static void LoadImageFileUsingPath(string path)
     {
+        //画像を読み込む
+        byte[] bytes = File.ReadAllBytes(path);
+        //Texture2D texture = new Texture2D(2, 2);
+        //texture.LoadImage(bytes);
+        //AppMgr.BackgroundTexture = texture;
+        //Mat mat = OpenCvSharp.Unity.TextureToMat(texture);
 
+        //Mat gray = new Mat();
+        //Cv2.CvtColor(mat, gray, ColorConversionCodes.BGR2GRAY);
+
+
+        // 画像書き出し
+        //Texture2D outTexture = new Texture2D(mat.Width, mat.Height, TextureFormat.ARGB32, false);
+        //OpenCvSharp.Unity.MatToTexture(mat, outTexture);
+        //AppMgr.BackgroundTexture = outTexture;
+
+        // 表示
+        //GameObject image = FindObjectOfType<RawImage>();
+        //image.GetComponent<RawImage>().texture = outTexture;        
+        //テクスチャへ変換する
+        //背景に貼り付ける
+        //OpenCVで画像を開く
+        //二値化などの前処理を行う
+        //ハフ変換で直線を検出する。
+        //直線検出から頂点を検出する。
+        //ハフ変換で円を検出する。
     }
 
     #endregion
