@@ -1,0 +1,14 @@
+Point,-5.785024,2.499043,0,0,False,True,A,True
+Point,-1.109718,2.377331,0,1,False,True,B,True
+Line,0,1,1000,True,False,False,0.1,0,False,,4.67689,L1
+Point,0.750832,1.590472,0,2,False,True,C,True
+Point,-3.920796,1.368642,0,3,False,True,D,True
+Line,2,3,1001,True,True,False,0.1,0,False,,4.676892,L2
+Point,-4.480775,0.23413,0,4,False,True,E,True
+Point,-1.071373,0.3385509,0,5,False,True,F,True
+Line,4,5,1002,True,False,True,0.1,1,False,,3.411,L3
+Point,-0.8441369,-0.4798648,0,6,False,True,G,True
+Point,-4.254843,-0.5247844,0,7,False,True,H,True
+Line,6,7,1003,True,False,False,0.1,1,False,,3.411002,L4
+Module,6,1000,1001,0,3000,True,1,1,1.570796,False,False,True,0.1,0.2,等長,-1,0
+Module,6,1002,1003,0,3001,True,1,1,1.570796,False,False,True,0.1,0.2,等長,-1,0

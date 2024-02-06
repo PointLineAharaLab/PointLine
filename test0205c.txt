@@ -1,0 +1,8 @@
+Point,-4.658365,1.509737,0,0,False,True,A,True
+Circle,0,1.975002,2000,True,1.975,0.1,True,C1
+Point,0.9123018,0.8800079,0,1,False,True,B,True
+Circle,1,2.628414,2001,True,2.628414,0.1,False,C2
+Point,-2.68699,1.390044,0,2,False,True,C,True
+Module,5,2,2000,0,3000,True,1,1,1.570796,False,False,True,0.1,0.2,点 - 円,-1,0
+Point,-0.7533733,2.913258,0,3,False,True,D,True
+Module,5,3,2001,0,3001,True,1,1,1.570796,False,False,True,0.1,0.2,点 - 円,-1,0

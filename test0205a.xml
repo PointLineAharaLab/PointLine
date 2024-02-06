@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PointLine>
+  <Object>
+    <ObjectType>Point</ObjectType>
+    <x>-3.1890204</x>
+    <y>1.57432556</y>
+    <z>0</z>
+    <id>0</id>
+    <fixed>false</fixed>
+    <name>A</name>
+    <displayName>true</displayName>
+    <active>true</active>
+  </Object>
+  <Object>
+    <ObjectType>Point</ObjectType>
+    <x>-0.509</x>
+    <y>1.817</y>
+    <z>0</z>
+    <id>1</id>
+    <fixed>false</fixed>
+    <name>B</name>
+    <displayName>false</displayName>
+    <active>true</active>
+  </Object>
+  <Object>
+    <ObjectType>Point</ObjectType>
+    <x>-2.333</x>
+    <y>-0.234</y>
+    <z>0</z>
+    <id>2</id>
+    <fixed>true</fixed>
+    <name>C</name>
+    <displayName>true</displayName>
+    <active>true</active>
+  </Object>
+  <Object>
+    <ObjectType>Point</ObjectType>
+    <x>0.46</x>
+    <y>0.089</y>
+    <z>0</z>
+    <id>3</id>
+    <fixed>true</fixed>
+    <name>D</name>
+    <displayName>false</displayName>
+    <active>true</active>
+  </Object>
+</PointLine>

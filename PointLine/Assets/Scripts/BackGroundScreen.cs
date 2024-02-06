@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+
 public class BackGroundScreen : MonoBehaviour
 {
     bool Show = true;
@@ -9,22 +10,27 @@ public class BackGroundScreen : MonoBehaviour
     public float PictureWidth;
     public float PictureHeight;
     Vector3 PictureScale;
+    public Texture2D BackgroundTexture;
+
     // Start is called before the first frame update
     void Start()
     {
         PictureWidth = 16f;
         PictureHeight = 12f;
         PictureScale = new Vector3(PictureWidth, PictureHeight, 0.01f);
+        BackgroundTexture = new Texture2D(2, 2);
+        ScreenPictureMaterial = new Material(Shader.Find("Unlit/Texture"));
     }
-
-    // Update is called once per frame
-    void Update()
+        // Update is called once per frame
+        void Update()
     {
 		if (Show)
 		{
             PictureScale.x = PictureWidth;
             PictureScale.y = PictureHeight;
             transform.localScale = PictureScale;
+            BackgroundTexture.LoadImage(AppMgr.ImageBytes);
+            ScreenPictureMaterial.SetTexture("BG", BackgroundTexture);
             GetComponent<MeshRenderer>().material = ScreenPictureMaterial;
         }
         else

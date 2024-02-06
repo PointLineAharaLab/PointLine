@@ -55,7 +55,7 @@ public class AppMgr : MonoBehaviour {
     public static int WorkListStart = 0;
 
     public static Vector3 LeftBottom, RightUp;
-
+    public static byte[] ImageBytes=null;
     public GameObject LogFolder;
 
     public static int ConvergencyCount=0;
@@ -64,7 +64,7 @@ public class AppMgr : MonoBehaviour {
     public static float ConvergencyError = 0.0001f;
     public static float ConvergencyThreshold = 0.000001f;
     public static bool ModuleOn = true;
-
+    
     public static int ClickRequire = 0;// 1: point, 2: line, 3:circle, 4:angle
     public static int CLICKREQ_NULL = 0;
     public static int CLICKREQ_POINT = 1;
@@ -1595,10 +1595,15 @@ public class Util
     public static void LoadImageFileUsingPath(string path)
     {
         //画像を読み込む
-        byte[] bytes = File.ReadAllBytes(path);
-        //Texture2D texture = new Texture2D(2, 2);
-        //texture.LoadImage(bytes);
-        //AppMgr.BackgroundTexture = texture;
+        AppMgr.ImageBytes = File.ReadAllBytes(path);
+        //for (int i=0; i<10; i++)
+        //{
+        //    Debug.Log(bytes[i]);
+        //}
+        //Debug.Log(bytes.Length);
+        //AppMgr.BackgroundTexture = new Texture2D(2, 2);
+        //AppMgr.BackgroundTexture.LoadImage(bytes);
+        //Debug.Log(AppMgr.BackgroundTexture);
         //Mat mat = OpenCvSharp.Unity.TextureToMat(texture);
 
         //Mat gray = new Mat();
