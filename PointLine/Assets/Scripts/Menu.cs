@@ -40,6 +40,9 @@ public class MENU
     public const int SAVE_TEX = 21;
     public const int TRIANGLE = 28;
     public const int QUADRILATERAL = 29;
+    public const int CROSSING_LL = 30;
+    public const int CROSSING_CL = 31;
+    public const int CROSSING_CC = 32;
 }
 
 
