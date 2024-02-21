@@ -57,6 +57,7 @@ public class Menu : MonoBehaviour
         "ButtonAddMidPoint(Clone)",
         "ButtonAddLine(Clone)",
         "ButtonAddCircle(Clone)",
+        "ButtonCrossingLL(Clone)",
         //2
         "ButtonPointOnPoint(Clone)",
         "ButtonPointOnLine(Clone)",
@@ -101,6 +102,8 @@ public class Menu : MonoBehaviour
     private string TextADD_LINE1 = " 直線を追加: もう一つ頂点を選択.";
     private string TextADD_CIRCLE0 = " 円を追加: 頂点を選択.";
     private string TextADD_CIRCLE1 = " 円を追加: 任意の場所をクリック";
+    private string TextCrossing0 = " 交点を追加: 円または線をクリック";
+    private string TextCrossing1 = " 交点を追加: 円または線をクリック";
     private string TextPOINT_ON_POINT0 = " 点を点の上に載せる: 頂点を選択.";
     private string TextPOINT_ON_POINT1 = " 点を点の上に載せる: もう一つ頂点を選択.";
     private string TextPOINT_ON_LINE0 = " 点を直線の上に載せる: 頂点を選択.";
@@ -162,6 +165,8 @@ public class Menu : MonoBehaviour
             TextADD_LINE1 = " Add a line : Select another point.";
             TextADD_CIRCLE0 = " Add a circle: Select a point.";
             TextADD_CIRCLE1 = " Add a circle: Click anywhere once.";
+            TextCrossing0 = " Add a crossing: Click a line or a circle.";
+            TextCrossing1 = " Add a crossing: Click a line or a circle.";
             TextPOINT_ON_POINT0 = " Set a point on another point: Select a point.";
             TextPOINT_ON_POINT1 = " Set a point on another point: Select an object.";
             TextPOINT_ON_LINE0 = " Set a point on a line: Select a point.";
@@ -268,12 +273,12 @@ public class Menu : MonoBehaviour
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextADD_LINE0);
-                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT_NULL;
                 }
                 else
                 {
                     GUILabel(TextADD_LINE1);
-                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT_NULL;
                 }
                 break;
             case MENU.POINT_ON_POINT:// lay a point on another object.
@@ -292,7 +297,7 @@ public class Menu : MonoBehaviour
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextPOINT_ON_LINE0);
-                    AppMgr.ClickRequire = AppMgr.CLICKREQ_NULL;
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT;
                 }
                 else
                 {
@@ -304,7 +309,7 @@ public class Menu : MonoBehaviour
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextADD_CIRCLE0);
-                    AppMgr.ClickRequire = AppMgr.CLICKREQ_NULL;
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT_NULL;
                 }
                 else
                 {
@@ -316,7 +321,7 @@ public class Menu : MonoBehaviour
                 if (AppMgr.ModeStep == 0)
                 {
                     GUILabel(TextPOINT_ON_CIRCLE0);
-                    AppMgr.ClickRequire = AppMgr.CLICKREQ_NULL;
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_POINT_NULL;
                 }
                 else
                 {
@@ -324,16 +329,16 @@ public class Menu : MonoBehaviour
                     AppMgr.ClickRequire = AppMgr.CLICKREQ_CIRCLE;
                 }
                 break;
-            case MENU.INTERSECTION:// どこかに挿入.
+            case MENU.CROSSING_LL:
                 if (AppMgr.ModeStep == 0)
                 {
-                    GUILabel(TextINTERSECTION0);
-                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
+                    GUILabel(TextCrossing0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE_CIRCLE;
                 }
                 else
                 {
-                    GUILabel(TextINTERSECTION1);
-                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE;
+                    GUILabel(TextCrossing0);
+                    AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE_CIRCLE;
                 }
                 break;
             case MENU.LINES_ISOMETRY:// make two lines isometry
@@ -528,7 +533,7 @@ public class Menu : MonoBehaviour
                 go[i].name == "ButtonPointOnPoint(Clone)" ||
                 go[i].name == "ButtonPointOnLine(Clone)" ||
                 go[i].name == "ButtonPointOnCircle(Clone)" ||
-                go[i].name == "ButtonIntersection(Clone)" ||
+                go[i].name == "ButtonCrossingLL(Clone)" ||
                 go[i].name == "ButtonIsom(Clone)" ||
                 go[i].name == "ButtonRatioLength(Clone)" || 
                 go[i].name == "ButtonPerp(Clone)" ||
@@ -568,7 +573,7 @@ public class Menu : MonoBehaviour
         CreatePointOnPointButton();
         CreatePointOnLineButton();
         CreatePointOnCircleButton();
-        CreateIntersectionButton();
+        CreateCrossingButton();
         CreateIsomButton();
         CreateRatioLengthButton(); 
         CreatePerpButton();
@@ -603,7 +608,7 @@ public class Menu : MonoBehaviour
                 Destroy(go[i]);
             }
         }
-
+        //AppMgr.DrawOn = false;
     }
     public void CreateMenuOffUI()
     {
@@ -683,10 +688,10 @@ public class Menu : MonoBehaviour
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateIntersectionButton()// CreatePointOnCircleButton()の後に挿入
+    public void CreateCrossingButton()// CreatePointOnCircleButton()の後に挿入
     {
         // Intersection button
-        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonIntersection");
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonCrossingLL");
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 2, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }

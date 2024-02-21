@@ -71,6 +71,8 @@ public class AppMgr : MonoBehaviour {
     public static int CLICKREQ_LINE = 2;
     public static int CLICKREQ_CIRCLE = 3;
     public static int CLICKREQ_ANGLE = 4;
+    public static int CLICKREQ_POINT_NULL = 5;
+    public static int CLICKREQ_LINE_CIRCLE = 6;
 
     // Use this for initialization
     void Start () {
