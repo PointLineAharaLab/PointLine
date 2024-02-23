@@ -1151,80 +1151,42 @@ public void OnMyMouseDown()
         }
     }
 
-    private void MakeIntersection(int MOP)
+    private void AddCrossing(int MOP)
     {
         Debug.Log(ModeStep + "," + MOP);
-        if (ModeStep == 0 && 1000 <= MOP && MOP < 2000)
-        {//モード６ステップ０ならば，「一つ目の線」をFirstClickIdに記録
-            Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+        if (ModeStep == 0 && 1000 <= MOP && MOP < 3000)
+        {//ステップ０ならば，「一つ目の線」をFirstClickIdに記録
+            Mode = MENU.CROSSING_LL;
             FirstClickId = MOP;
             ModeStep = 1;
+            if (1000 <= MOP && MOP < 2000)
+                Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+            if (2000 <= MOP && MOP < 3000)
+                Circle.MakeOneCircleSelected(MOP);//クリックしたポイントのみを選択
         }
-        else if (ModeStep == 0 && 2000 <= MOP && MOP < 3000)
-        {//ステップ０ならば，「一つ目の円」をFirstClickIdに記録
-            Circle.MakeOneCircleSelected(MOP);//クリックしたポイントのみを選択
-            FirstClickId = MOP;
-            ModeStep = 1;
-        }
-        else if (ModeStep == 1 && 1000 <= MOP && MOP < 2000)
+        else if (ModeStep == 1 && 1000 <= MOP && MOP < 3000)
         {//ステップ1ならば，「2つ目の線」をSecondClickIdに記録
-            Line.AddOneLineSelected(MOP);//クリックしたラインのみを選択
-            SecondClickId = MOP;
-            if (FirstClickId != SecondClickId)
+            if (FirstClickId != MOP)
             {
+                if (1000 <= MOP && MOP < 2000)
+                    Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
+                if (2000 <= MOP && MOP < 3000)
+                    Circle.MakeOneCircleSelected(MOP);//クリックしたポイントのみを選択
+                SecondClickId = MOP;
                 // 新しい点の追加
                 int NewPointId = PointId;
                 Util.AddPoint(MouseUpVec, PointId++);
                 // 新しいモジュールの追加
-                if (1000 <= FirstClickId && FirstClickId < 2000)
-                {// 一つ目に選んだものが直線のとき
-                    Util.AddModule(MENU.POINT_ON_LINE, NewPointId, FirstClickId, 0, ModuleId++);
-                    Util.AddModule(MENU.POINT_ON_LINE, NewPointId, SecondClickId, 0, ModuleId++);
-                }
-                else if (2000 <= FirstClickId && FirstClickId < 3000)
-                {// 一つ目に選んだものが円のとき
-                    Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, FirstClickId, 0, ModuleId++);
-                    Util.AddModule(MENU.POINT_ON_LINE, NewPointId, SecondClickId, 0, ModuleId++);
-                }
-                Mode = MENU.POINT_ON_LINE;
+                Util.AddModule(MENU.CROSSING_LL, NewPointId, FirstClickId, SecondClickId, ModuleId++);
+                Mode = MENU.CROSSING_LL;
                 AppMgr.ExecuteAllModules();
             }
             else
             {
-                Mode = MENU.INTERSECTION;
+                Mode = MENU.CROSSING_LL;
             }
             ModeStep = 0;
         }
-        else if (ModeStep == 1 && 2000 <= MOP && MOP < 3000)
-        {//ステップ1ならば，「2つ目の円」をSecondClickIdに記録
-            Line.AddOneLineSelected(MOP);//クリックした円のみを選択
-            SecondClickId = MOP;
-            if (FirstClickId != SecondClickId)
-            {
-                // 新しい点の追加
-                int NewPointId = PointId;
-                Util.AddPoint(MouseUpVec, PointId++);
-                // 新しいモジュールの追加
-                if (1000 <= FirstClickId && FirstClickId < 2000)
-                {// 一つ目に選んだものが直線のとき
-                    Util.AddModule(MENU.POINT_ON_LINE, NewPointId, FirstClickId, 0, ModuleId++);
-                    Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, SecondClickId, 0, ModuleId++);
-                }
-                else if (2000 <= FirstClickId && FirstClickId < 3000)
-                {// 一つ目に選んだものが円のとき
-                    Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, FirstClickId, 0, ModuleId++);
-                    Util.AddModule(MENU.POINT_ON_CIRCLE, NewPointId, SecondClickId, 0, ModuleId++);
-                }
-                Mode = MENU.POINT_ON_LINE;
-                AppMgr.ExecuteAllModules();
-            }
-            else
-            {
-                Mode = MENU.INTERSECTION;
-            }
-            ModeStep = 0;
-        }
-
     }
 
     private void MakeTwoLinesIsometry(int MOP)
@@ -2024,13 +1986,13 @@ public void OnMyMouseDown()
                     MakeAPointOnLine(MOP);
                 }
 
-                else if (Mode == MENU.INTERSECTION && ModeStep == 0)
+                else if (Mode == MENU.CROSSING_LL && ModeStep == 0)
                 {
-                    MakeIntersection(MOP);
+                    AddCrossing(MOP);
                 }
-                else if (Mode == MENU.INTERSECTION && ModeStep == 1)
+                else if (Mode == MENU.CROSSING_LL && ModeStep == 1)
                 {
-                    MakeIntersection(MOP);
+                    AddCrossing(MOP);
                 }
 
                 else if (Mode == MENU.LINES_ISOMETRY)
@@ -2076,16 +2038,16 @@ public void OnMyMouseDown()
                 }
                 else if (Mode == MENU.POINT_ON_CIRCLE && ModeStep == 1)
                 {//点を円に載せるのに、次に円を選ぶ
-                        MakeAPointOnCircle(MOP);
+                    MakeAPointOnCircle(MOP);
                 }
 
-                else if (Mode == MENU.INTERSECTION && ModeStep == 0)
+                else if (Mode == MENU.CROSSING_LL && ModeStep == 0)
                 {
-                    MakeIntersection(MOP);
+                    AddCrossing(MOP);
                 }
-                else if (Mode == MENU.INTERSECTION && ModeStep == 1)
+                else if (Mode == MENU.CROSSING_LL && ModeStep == 1)
                 {
-                    MakeIntersection(MOP);
+                    AddCrossing(MOP);
                 }
 
                 else if(Mode == MENU.CIRCLE_TANGENT_LINE && ModeStep == 0)

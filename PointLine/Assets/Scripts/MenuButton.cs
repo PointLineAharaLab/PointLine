@@ -37,7 +37,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
             MenuText = new string[]
             {
                 " out of menu ", " add a point ", " add a midpoint(AM) ", " add a line(AL) ", " add a circle(AC) ", // 0 - 4
-                " Set a point on another point(PP) ", " Set a point on a line(PL) ", " Set a point on a circle(PC) ", " Add an intersection ", //5 - 7
+                " Set a point on another point(PP) ", " Set a point on a line(PL) ", " Set a point on a circle(PC) ", " Add a crossing point ", //5 - 7
                 " Let two lines be isometry(LI) ","Ratio of two lines", " Let two lines be perpendicular(LP) ", " Let two lines be parallel(LQ) ", " Let a line be horizontal(LH) ", " Angle ", "Angle bisector", // 8 - 10
                 " Make a circle tangent to a line(TL) ", " Make a circle tangent to another circle(TC) ", "Add Triangle", "Add Quadrilateral", // 11 - 12
                 " Fix a point(FP)  ", "add a locus"," Delete a point(DP) ", " Delete all(DA) ", //13 - 15

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 
 public class Module : MonoBehaviour {
 
@@ -30,6 +32,41 @@ public class Module : MonoBehaviour {
 
 
     public Vector3 PreVec;// 軌跡を描くための変数
+
+    public Vector3 LineBy2Point(Vector3 p1, Vector3 p2)
+    {
+        return new Vector3(
+            p1.y - p2.y,
+            -p1.x + p2.x,
+            p1.x * p2.y - p2.x * p1.y
+            );
+    }
+
+    public Vector3 CrossingPoint(Vector3 line1, Vector3 line2)
+    {
+        float point0x = line1.y * line2.z - line1.z * line2.y;
+        float point0y = line1.z * line2.x - line1.x * line2.z;
+        float point0z = line1.x * line2.y - line1.y * line2.x;
+        if (point0z != 0f)
+        {
+            return new Vector3(point0x / point0z, point0y / point0z, 0f);
+        }
+        return new Vector3(0f, 0f, 0f);
+    }
+    /// <summary>
+    /// Return the foot of perpendicular from p3 to the segment p1-p2
+    /// </summary>
+    public Vector3 PerpendicularFoot(Vector3 p1, Vector3 p2, Vector3 p3) 
+    {
+        float tn = Vector3.Dot(p3 - p1, p2 - p1);
+        float td = Vector3.Dot(p2 - p1, p2 - p1);
+        if (td != 0)
+        {
+            float tt = tn / td;
+            return tt * (p2 - p1) + p1;
+        }
+        return new Vector3();
+    }
 
     // Use this for initialization
     void Start () {
@@ -319,6 +356,202 @@ public class Module : MonoBehaviour {
             }
             return 0f;
         }
+    }
+    #endregion
+
+    #region CROSSING
+    private float ModuleCROSSING()
+    {        // 交点を追加する
+        float err = 0f;
+        if (Object1 != null && Object2 != null && Object3 != null) 
+        {
+            Point point0 = Object1.GetComponent<Point>();
+            Line line1 = Object2.GetComponent<Line>();
+            Line line2 = Object3.GetComponent<Line>(); ;
+            Circle circle1 = Object2.GetComponent<Circle>();
+            Circle circle2 = Object3.GetComponent<Circle>();
+            if (point0 != null && line1 != null && line2 != null)
+            {
+                Point point11 = line1.Point1.GetComponent<Point>();
+                Point point12 = line1.Point2.GetComponent<Point>();
+                Vector3 v11 = point11.Vec;
+                Vector3 v12 = point12.Vec;
+                float line1a = v11.y - v12.y;
+                float line1b = - v11.x + v12.x;
+                float line1c = v11.x * v12.y - v12.x * v11.y;
+                Point point21 = line2.Point1.GetComponent<Point>();
+                Point point22 = line2.Point2.GetComponent<Point>();
+                Vector3 v21 = point21.Vec;
+                Vector3 v22 = point22.Vec;
+                float line2a = v21.y - v22.y;
+                float line2b = - v21.x + v22.x;
+                float line2c = v21.x * v22.y - v22.x * v21.y;
+                float point0x = line1b * line2c - line1c * line2b;
+                float point0y = line1c * line2a - line1a * line2c;
+                float point0z = line1a * line2b - line1b * line2a;
+                if (point0z != 0)
+                {
+                    point0x /= point0z;
+                    point0y /= point0z;
+                    Vector3 point0Diff = (new Vector3(point0x, point0y, 0f) - point0.Vec)*Parameter;
+                    float point0Err = point0Diff.magnitude;
+                    if (point0.Fixed == false)
+                    {
+                        point0.Vec += point0Diff;
+                        err += point0Err;
+                    }
+                }
+                float tn1 = Vector3.Dot(point0.Vec - point11.Vec, point12.Vec - point11.Vec);
+                float td1 = Vector3.Dot(point12.Vec - point11.Vec, point12.Vec - point11.Vec);
+                if (td1 != 0)
+                {
+                    float tt1 = tn1 / td1;
+                    Vector3 point1Diff = (tt1 * (point12.Vec - point11.Vec) + point11.Vec - point0.Vec) * Parameter * 0.33f;
+                    float point1Err = point1Diff.magnitude;
+                    if (point11.Fixed == false)
+                    {
+                        point11.Vec -= point1Diff;
+                        err += point1Err;
+                    }
+                    if (point12.Fixed == false)
+                    {
+                        point12.Vec -= point1Diff;
+                        err += point1Err;
+                    }
+
+                }
+                float tn2 = Vector3.Dot(point0.Vec - point21.Vec, point22.Vec - point21.Vec);
+                float td2 = Vector3.Dot(point22.Vec - point21.Vec, point22.Vec - point21.Vec);
+                if (td2 != 0)
+                {
+                    float tt2 = tn2 / td2;
+                    Vector3 point2Diff = (tt2 * (point22.Vec - point21.Vec) + point21.Vec - point0.Vec) * Parameter * 0.33f;
+                    float point2Err = point2Diff.magnitude;
+                    if (point21.Fixed == false)
+                    {
+                        point21.Vec -= point2Diff;
+                        err += point2Err;
+                    }
+                    if (point22.Fixed == false)
+                    {
+                        point22.Vec -= point2Diff;
+                        err += point2Err;
+                    }
+                }
+            }
+            if (point0 != null && line1 != null && circle2 != null)
+            {
+                Point point11 = line1.Point1.GetComponent<Point>();
+                Point point12 = line1.Point2.GetComponent<Point>();
+                Vector3 v11 = point11.Vec;
+                Vector3 v12 = point12.Vec;
+                Point point2 = circle2.CenterPoint.GetComponent<Point>();
+                float radius2 = circle2.Radius;
+                Vector3 pointM = PerpendicularFoot(point11.Vec, point12.Vec, point2.Vec);
+                float p2pM = (point2.Vec - pointM).magnitude;
+                float distanceFromM = radius2 * radius2 - p2pM * p2pM;
+                Vector3 p12n = (point11.Vec - point12.Vec).normalized;
+                if (distanceFromM < 0)
+                {
+                    distanceFromM = 0;// 
+                }
+                if (distanceFromM >= 0)
+                {
+                    float distance1 = (pointM + Mathf.Sqrt(distanceFromM) * p12n - point0.Vec).magnitude;
+                    float distance2 = (pointM - Mathf.Sqrt(distanceFromM) * p12n - point0.Vec).magnitude;
+                    if (distance1 < distance2)
+                    {
+                        Vector3 point0Diff = Parameter * (pointM + Mathf.Sqrt(distanceFromM) * p12n - point0.Vec);
+                        float point0Err = point0Diff.magnitude;
+                        point0.Vec += point0Diff;
+                        err += point0Err;
+                    }
+                    else
+                    {
+                        Vector3 point0Diff = Parameter * (pointM - Mathf.Sqrt(distanceFromM) * p12n - point0.Vec);
+                        float point0Err = point0Diff.magnitude;
+                        point0.Vec += point0Diff;
+                        err += point0Err;
+                    }
+                }
+                Vector3 point0m = PerpendicularFoot(point11.Vec, point12.Vec, point0.Vec);
+                Vector3 point1Diff = Parameter * 0.25f * (point0.Vec - point0m);
+                float point1Err = point1Diff.magnitude;
+                if (point11.Fixed == false)
+                {
+                    point11.Vec += point1Diff;
+                    err += point1Err;
+                }
+                if (point12.Fixed == false)
+                {
+                    point12.Vec += point1Diff;
+                    err += point1Err;
+                }
+                float distance02 = radius2 - (point0.Vec - point2.Vec).magnitude;
+                Vector3 point2Diff = distance02 * Parameter * 0.25f * Vector3.Normalize(point0.Vec - point2.Vec);
+                float point2Err = point2Diff.magnitude;
+                Debug.Log(point2Diff);
+                if (point2.Fixed == false) {
+                    //point2.Vec -= point2Diff;
+                    //err += point2Err;
+                }
+                float radius2Diff = distance02 * Parameter;
+                float radius2Err = Mathf.Abs(radius2Diff);
+                if (circle2.FixRadius == false)
+                {
+                    circle2.Radius -= radius2Diff;
+                    err += radius2Err;
+                }
+            }
+            if (point0 != null && circle1 != null && line2 != null)
+            {
+            }
+            if (point0 != null && circle1 != null && circle2 != null)
+            {
+            }
+        }
+        else
+        {
+            GameObject[] OBJs = FindObjectsOfType<GameObject>();
+            for (int i = 0; i < OBJs.Length; i++)
+            {
+                Point PT = OBJs[i].GetComponent<Point>();
+                Line LN = OBJs[i].GetComponent<Line>();
+                Circle CI = OBJs[i].GetComponent<Circle>();
+                if (PT != null && PT.Id == Object1Id)
+                {
+                    Object1 = OBJs[i];
+                }
+                if (LN != null)
+                {
+                    if (LN.Id == Object2Id)
+                    {
+                        Object2 = OBJs[i];
+                    }
+                    if (LN.Id == Object3Id)
+                    {
+                        Object3 = OBJs[i];
+                    }
+                }
+                if (CI != null)
+                {
+                    if (CI.Id == Object2Id)
+                    {
+                        Object2 = OBJs[i];
+                    }
+                    if (CI.Id == Object3Id)
+                    {
+                        Object3 = OBJs[i];
+                    }
+                }
+            }
+            if (Object1 == null || Object2 == null || Object3 == null)
+            {
+                Active = false;
+            }
+            return 0f;
+        }
+        return err;
     }
     #endregion
 
@@ -1776,6 +2009,8 @@ public class Module : MonoBehaviour {
                 return ModulePOINT_ON_LINE();
             case MENU.POINT_ON_CIRCLE:
                 return ModulePOINT_ON_CIRCLE();
+            case MENU.CROSSING_LL:
+                return ModuleCROSSING();
             case MENU.LINES_ISOMETRY:
                 return ModuleLINES_ISOMETRY();
             case MENU.LINES_PERPENDICULAR:

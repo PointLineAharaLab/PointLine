@@ -57,12 +57,11 @@ public class Menu : MonoBehaviour
         "ButtonAddMidPoint(Clone)",
         "ButtonAddLine(Clone)",
         "ButtonAddCircle(Clone)",
-        "ButtonCrossingLL(Clone)",
         //2
         "ButtonPointOnPoint(Clone)",
         "ButtonPointOnLine(Clone)",
         "ButtonPointOnCircle(Clone)",
-        "ButtonIntersection(Clone)", 
+        "ButtonCrossingLL(Clone)",
         //3
         "ButtonIsom(Clone)",
         "ButtonRatioLength(Clone)", 
@@ -103,7 +102,7 @@ public class Menu : MonoBehaviour
     private string TextADD_CIRCLE0 = " 円を追加: 頂点を選択.";
     private string TextADD_CIRCLE1 = " 円を追加: 任意の場所をクリック";
     private string TextCrossing0 = " 交点を追加: 円または線をクリック";
-    private string TextCrossing1 = " 交点を追加: 円または線をクリック";
+    private string TextCrossing1 = " 交点を追加: もう一つ円または線をクリック";
     private string TextPOINT_ON_POINT0 = " 点を点の上に載せる: 頂点を選択.";
     private string TextPOINT_ON_POINT1 = " 点を点の上に載せる: もう一つ頂点を選択.";
     private string TextPOINT_ON_LINE0 = " 点を直線の上に載せる: 頂点を選択.";
@@ -337,7 +336,7 @@ public class Menu : MonoBehaviour
                 }
                 else
                 {
-                    GUILabel(TextCrossing0);
+                    GUILabel(TextCrossing1);
                     AppMgr.ClickRequire = AppMgr.CLICKREQ_LINE_CIRCLE;
                 }
                 break;

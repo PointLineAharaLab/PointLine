@@ -563,6 +563,8 @@ public class Util
                     return "点 - 直線";
                 case MENU.POINT_ON_CIRCLE:
                     return "点 - 円";
+                case MENU.CROSSING_LL:
+                    return "交点";
                 case MENU.LINES_ISOMETRY:
                     return "等長";//"辺長比"
                 case MENU.LINES_PERPENDICULAR:
@@ -599,6 +601,8 @@ public class Util
                     return "point - line";
                 case MENU.POINT_ON_CIRCLE:
                     return "point - circle";
+                case MENU.CROSSING_LL:
+                    return "crossing";
                 case MENU.LINES_ISOMETRY:
                     return "isometry";//"辺長比"
                 case MENU.LINES_PERPENDICULAR:
@@ -647,6 +651,7 @@ public class Util
             obj.parent = g;
             obj.ModuleName = GetModuleNameByType(type);
             obj.FixRatio = fixRatio;
+            Debug.Log("check here");
             AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
 
             if (obj.Type == MENU.ADD_LOCUS)
