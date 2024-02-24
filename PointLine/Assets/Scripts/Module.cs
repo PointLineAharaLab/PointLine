@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.Diagnostics;
+using UnityEngine.Rendering;
 
 public class Module : MonoBehaviour {
 
@@ -64,6 +65,25 @@ public class Module : MonoBehaviour {
         {
             float tt = tn / td;
             return tt * (p2 - p1) + p1;
+        }
+        return new Vector3();
+    }
+    /// <summary>
+    /// Return the foot of perpendicular from p3 to the segment a1x+b1y+c1=0
+    /// </summary>
+    public Vector3 PerpendicularFoot2(float a1, float b1, float c1, Vector3 p3)
+    {
+        // -b1(x-p3x)+a1(y-p3y)=0
+        // -b1*x + a1*y + (b1*p3x-a1*p3y)=0
+        float a2 = -b1;
+        float b2 = a1;
+        float c2 = b1 * p3.x - a1 * p3.y;
+        float x = b1 * c2 - b2 * c1;
+        float y = c1 * a2 - c2 * a1;
+        float z = a1 * b2 - a2 * b1;
+        if (z != 0)
+        {
+            return new Vector3(x/z, y/z, 0f);
         }
         return new Vector3();
     }
@@ -439,7 +459,7 @@ public class Module : MonoBehaviour {
                     }
                 }
             }
-            if (point0 != null && line1 != null && circle2 != null)
+            else if (point0 != null && line1 != null && circle2 != null)
             {
                 Point point11 = line1.Point1.GetComponent<Point>();
                 Point point12 = line1.Point2.GetComponent<Point>();
@@ -503,11 +523,139 @@ public class Module : MonoBehaviour {
                     err += radius2Err;
                 }
             }
-            if (point0 != null && circle1 != null && line2 != null)
+            else if (point0 != null && circle1 != null && line2 != null)
             {
+                Point point11 = line2.Point1.GetComponent<Point>();
+                Point point12 = line2.Point2.GetComponent<Point>();
+                Point point2 = circle1.CenterPoint.GetComponent<Point>();
+                float radius2 = circle1.Radius;
+                Vector3 pointM = PerpendicularFoot(point11.Vec, point12.Vec, point2.Vec);
+                float p2pM = (point2.Vec - pointM).magnitude;
+                float distanceFromM = radius2 * radius2 - p2pM * p2pM;
+                Vector3 p12n = (point11.Vec - point12.Vec).normalized;
+                if (distanceFromM < 0)
+                {
+                    distanceFromM = 0;// 
+                }
+                if (distanceFromM >= 0)
+                {
+                    float distance1 = (pointM + Mathf.Sqrt(distanceFromM) * p12n - point0.Vec).magnitude;
+                    float distance2 = (pointM - Mathf.Sqrt(distanceFromM) * p12n - point0.Vec).magnitude;
+                    if (distance1 < distance2)
+                    {
+                        Vector3 point0Diff = Parameter * (pointM + Mathf.Sqrt(distanceFromM) * p12n - point0.Vec);
+                        float point0Err = point0Diff.magnitude;
+                        point0.Vec += point0Diff;
+                        err += point0Err;
+                    }
+                    else
+                    {
+                        Vector3 point0Diff = Parameter * (pointM - Mathf.Sqrt(distanceFromM) * p12n - point0.Vec);
+                        float point0Err = point0Diff.magnitude;
+                        point0.Vec += point0Diff;
+                        err += point0Err;
+                    }
+                }
+                Vector3 point0m = PerpendicularFoot(point11.Vec, point12.Vec, point0.Vec);
+                Vector3 point1Diff = Parameter * 0.25f * (point0.Vec - point0m);
+                float point1Err = point1Diff.magnitude;
+                if (point11.Fixed == false)
+                {
+                    point11.Vec += point1Diff;
+                    err += point1Err;
+                }
+                if (point12.Fixed == false)
+                {
+                    point12.Vec += point1Diff;
+                    err += point1Err;
+                }
+                float distance02 = radius2 - (point0.Vec - point2.Vec).magnitude;
+                Vector3 point2Diff = distance02 * Parameter * 0.25f * Vector3.Normalize(point0.Vec - point2.Vec);
+                float point2Err = point2Diff.magnitude;
+                Debug.Log(point2Diff);
+                if (point2.Fixed == false)
+                {
+                    //point2.Vec -= point2Diff;
+                    //err += point2Err;
+                }
+                float radius2Diff = distance02 * Parameter;
+                float radius2Err = Mathf.Abs(radius2Diff);
+                if (circle1.FixRadius == false)
+                {
+                    circle1.Radius -= radius2Diff;
+                    err += radius2Err;
+                }
             }
-            if (point0 != null && circle1 != null && circle2 != null)
+            else if (point0 != null && circle1 != null && circle2 != null)
             {
+                Point point1 = circle1.CenterPoint.GetComponent<Point>();
+                float radius1 = circle1.Radius;
+                Point point2 = circle2.CenterPoint.GetComponent<Point>();
+                float radius2 = circle2.Radius;
+                float a1 = 2 * (point2.Vec.x - point1.Vec.x);
+                float b1 = 2 * (point2.Vec.y - point1.Vec.y);
+                float c1 = point1.Vec.x * point1.Vec.x + point1.Vec.y * point1.Vec.y
+                    - point2.Vec.x * point2.Vec.x - point2.Vec.y * point2.Vec.y
+                    - radius1 * radius1 + radius2 * radius2;
+                Vector3 pointM = PerpendicularFoot2(a1, b1, c1, point1.Vec);
+                float p1pM = (point1.Vec - pointM).magnitude;
+                float distanceFromM = radius1* radius1 - p1pM * p1pM;
+                Vector3 p12n = Vector3.Normalize(new Vector3(- point2.Vec.y + point1.Vec.y, point2.Vec.x - point1.Vec.x));
+                if (distanceFromM < 0)
+                {
+                    distanceFromM = 0;// 
+                }
+                if (distanceFromM >= 0)
+                {
+                    float distance1 = (pointM + Mathf.Sqrt(distanceFromM) * p12n - point0.Vec).magnitude;
+                    float distance2 = (pointM - Mathf.Sqrt(distanceFromM) * p12n - point0.Vec).magnitude;
+                    if (distance1 < distance2)
+                    {
+                        Vector3 point0Diff = Parameter * (pointM + Mathf.Sqrt(distanceFromM) * p12n - point0.Vec);
+                        float point0Err = point0Diff.magnitude;
+                        point0.Vec += point0Diff;
+                        err += point0Err;
+                    }
+                    else
+                    {
+                        Vector3 point0Diff = Parameter * (pointM - Mathf.Sqrt(distanceFromM) * p12n - point0.Vec);
+                        float point0Err = point0Diff.magnitude;
+                        point0.Vec += point0Diff;
+                        err += point0Err;
+                    }
+                }
+                float distance01 = radius1 - (point0.Vec - point1.Vec).magnitude;
+                Vector3 point1Diff = distance01 * Parameter * 0.25f * Vector3.Normalize(point0.Vec - point1.Vec);
+                float point1Err = point1Diff.magnitude;
+                Debug.Log(point1Diff);
+                if (point1.Fixed == false)
+                {
+                    //point1.Vec -= point1Diff;
+                    //err += point1Err;
+                }
+                float radius1Diff = distance01 * Parameter;
+                float radius1Err = Mathf.Abs(radius1Diff);
+                if (circle1.FixRadius == false)
+                {
+                    circle1.Radius -= radius1Diff;
+                    err += radius1Err;
+                }
+                float distance02 = radius2 - (point0.Vec - point2.Vec).magnitude;
+                Vector3 point2Diff = distance02 * Parameter * 0.25f * Vector3.Normalize(point0.Vec - point2.Vec);
+                float point2Err = point2Diff.magnitude;
+                Debug.Log(point2Diff);
+                if (point2.Fixed == false)
+                {
+                    //point2.Vec -= point2Diff;
+                    //err += point2Err;
+                }
+                float radius2Diff = distance02 * Parameter;
+                float radius2Err = Mathf.Abs(radius2Diff);
+                if (circle2.FixRadius == false)
+                {
+                    circle2.Radius -= radius2Diff;
+                    err += radius2Err;
+                }
             }
         }
         else
