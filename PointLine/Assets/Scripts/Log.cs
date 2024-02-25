@@ -224,8 +224,21 @@ public class Log : MonoBehaviour
                 }
                 else
                 {
-                    Text1 = "Point on CIrcle";
+                    Text1 = "Point on Circle";
                     Text2 = GetPNameByParentObject(Object1) + " is on " + GetPNameByParentObject(Object2) + "";
+                }
+            }
+            else if (PName == "交点")
+            {
+                if (AppMgr.Japanese == 1)
+                {
+                    Text1 = "" + PName;
+                    Text2 = GetPNameByParentObject(Object1) + "は" + GetPNameByParentObject(Object2) + "と" + GetPNameByParentObject(Object3) +"の交点";
+                }
+                else
+                {
+                    Text1 = "Crossing";
+                    Text2 = GetPNameByParentObject(Object1) + " is the crossing of " + GetPNameByParentObject(Object2) + " and " + GetPNameByParentObject(Object3) + "";
                 }
             }
             else if (PName == "等長")

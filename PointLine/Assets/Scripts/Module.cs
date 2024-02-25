@@ -512,8 +512,8 @@ public class Module : MonoBehaviour {
                 float point2Err = point2Diff.magnitude;
                 Debug.Log(point2Diff);
                 if (point2.Fixed == false) {
-                    //point2.Vec -= point2Diff;
-                    //err += point2Err;
+                    point2.Vec -= point2Diff;
+                    err += point2Err;
                 }
                 float radius2Diff = distance02 * Parameter;
                 float radius2Err = Mathf.Abs(radius2Diff);
@@ -575,8 +575,8 @@ public class Module : MonoBehaviour {
                 Debug.Log(point2Diff);
                 if (point2.Fixed == false)
                 {
-                    //point2.Vec -= point2Diff;
-                    //err += point2Err;
+                    point2.Vec -= point2Diff;
+                    err += point2Err;
                 }
                 float radius2Diff = distance02 * Parameter;
                 float radius2Err = Mathf.Abs(radius2Diff);
@@ -630,8 +630,8 @@ public class Module : MonoBehaviour {
                 Debug.Log(point1Diff);
                 if (point1.Fixed == false)
                 {
-                    //point1.Vec -= point1Diff;
-                    //err += point1Err;
+                    point1.Vec -= point1Diff;
+                    err += point1Err;
                 }
                 float radius1Diff = distance01 * Parameter;
                 float radius1Err = Mathf.Abs(radius1Diff);
@@ -646,8 +646,8 @@ public class Module : MonoBehaviour {
                 Debug.Log(point2Diff);
                 if (point2.Fixed == false)
                 {
-                    //point2.Vec -= point2Diff;
-                    //err += point2Err;
+                    point2.Vec -= point2Diff;
+                    err += point2Err;
                 }
                 float radius2Diff = distance02 * Parameter;
                 float radius2Err = Mathf.Abs(radius2Diff);
@@ -2022,6 +2022,9 @@ public class Module : MonoBehaviour {
                 err += MakeWideAngleNarrower(pt2, pt1, pt3, 75f * Mathf.PI / 180f);
                 err += MakeWideAngleNarrower(pt3, pt2, pt1, 75f * Mathf.PI / 180f);
                 err += MakeWideAngleNarrower(pt1, pt3, pt2, 75f * Mathf.PI / 180f);
+                err += MakeNarrowAngleWider(pt2, pt1, pt3, 20f * Mathf.PI / 180f);
+                err += MakeNarrowAngleWider(pt3, pt2, pt1, 20f * Mathf.PI / 180f);
+                err += MakeNarrowAngleWider(pt1, pt3, pt2, 20f * Mathf.PI / 180f);
             }
             else if (PolygonOption == 2)
             {
@@ -2029,9 +2032,9 @@ public class Module : MonoBehaviour {
 
             }
             // if angle BAC < 25 degree then the module makes this angle wider.
-            err += MakeNarrowAngleWider(pt2, pt1, pt3, 25f * Mathf.PI / 180f);
-            err += MakeNarrowAngleWider(pt3, pt2, pt1, 25f * Mathf.PI / 180f);
-            err += MakeNarrowAngleWider(pt1, pt3, pt2, 25f * Mathf.PI / 180f);
+            err += MakeNarrowAngleWider(pt2, pt1, pt3, 20f * Mathf.PI / 180f);
+            err += MakeNarrowAngleWider(pt3, pt2, pt1, 20f * Mathf.PI / 180f);
+            err += MakeNarrowAngleWider(pt1, pt3, pt2, 20f * Mathf.PI / 180f);
             //
             err += MakeShortSegmentLonger(pt1, pt2, 0.5f);
             err += MakeShortSegmentLonger(pt2, pt3, 0.5f);

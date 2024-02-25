@@ -1438,14 +1438,30 @@ public class Util
                     string objectType = info.Element("ObjectType").Value;
                     if (objectType == "Point")
                     {
-                        float vx = float.Parse(info.Element("x").Value);
-                        float vy = float.Parse(info.Element("y").Value);
-                        float vz = float.Parse(info.Element("z").Value);
+                        float vx=0f, vy=0f, vz=0f;
+                        if (info.Element("x")==null || info.Element("y") == null)
+                        {
+                            vx = UnityEngine.Random.value*10f - 5f;
+                            vy = UnityEngine.Random.value*10f - 5f;
+                        }
+                        else
+                        {
+                            vx = float.Parse(info.Element("x").Value);
+                            vy = float.Parse(info.Element("y").Value);
+                        }
+                        if (info.Element("z") == null)
+                            vz = 0f;
+                        else 
+                            float.Parse(info.Element("z").Value);
                         Vector3 vec = new Vector3(vx, vy, vz);
-                        int id = int.Parse(info.Element("id").Value);
-                        bool fxd = bool.Parse(info.Element("fixed").Value);
-                        bool act = bool.Parse(info.Element("active").Value);
+                        int id = int.Parse(info.Element("id").Value);// id is required
                         Point pt = Util.AddPoint(vec, id);//　この段階でログファイルも作り終わっている。
+                        bool fxd = false;
+                        if (info.Element("fixed")!=null)
+                            fxd = bool.Parse(info.Element("fixed").Value);
+                        bool act = true;
+                        if (info.Element("active")!=null)
+                            act = bool.Parse(info.Element("active").Value);
                         pt.Fixed = fxd;
                         string pname = "";
                         if (info.Element("name") == null)
@@ -1465,20 +1481,32 @@ public class Util
                     }
                     else if (objectType == "Line")
                     {
-                        int o1 = int.Parse(info.Element("Point1Id").Value);
-                        int o2 = int.Parse(info.Element("Point2Id").Value);
-                        int id = int.Parse(info.Element("id").Value);
-                        bool act = bool.Parse(info.Element("active").Value);
+                        int o1 = int.Parse(info.Element("Point1Id").Value);// required
+                        int o2 = int.Parse(info.Element("Point2Id").Value);// required
+                        int id = int.Parse(info.Element("id").Value);// required
                         Line ln = AddLine(o1, o2, id);//　この段階でログファイルも作り終わっている。
-                        ln.LineName= info.Element("name").Value;
+                        bool act = true;
+                        if (info.Element("active")!=null) 
+                            act = bool.Parse(info.Element("active").Value);
+                        if (info.Element("name") == null)
+                            ln.LineName = "L" + id;
+                        else 
+                            ln.LineName = info.Element("name").Value;
+                        if (info.Element("ShowLength")!=null)
+                            ln.ShowLength = bool.Parse(info.Element("ShowLength").Value);
+                        if (info.Element("FixLength")!=null)
+                           ln.FixLength = bool.Parse(info.Element("FixLength").Value);
+                        if (info.Element("para") != null)
+                            ln.para = float.Parse(info.Element("para").Value);
+                        if (info.Element("Isometry")!=null)
+                            ln.Isometry = int.Parse(info.Element("Isometry").Value);
+                        if (info.Element("Bracket")!=null)
+                            ln.Bracket = bool.Parse(info.Element("Bracket").Value);
+                        if (info.Element("BracketText")!=null)
+                            ln.BracketText = info.Element("BracketText").Value;
+                        if (info.Element("edgeLength")!=null)
+                            ln.edgeLength = float.Parse(info.Element("edgeLength").Value);
                         GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
-                        ln.ShowLength = bool.Parse(info.Element("ShowLength").Value);
-                        ln.FixLength = bool.Parse(info.Element("FixLength").Value);
-                        ln.para = float.Parse(info.Element("para").Value);
-                        ln.Isometry = int.Parse(info.Element("Isometry").Value);
-                        ln.Bracket = bool.Parse(info.Element("Bracket").Value);
-                        ln.BracketText = info.Element("BracketText").Value;
-                        ln.edgeLength = float.Parse(info.Element("edgeLength").Value);
                         for (int i = 0; i < OBJs.Length; i++)
                         {
                             Point PT = OBJs[i].GetComponent<Point>();
