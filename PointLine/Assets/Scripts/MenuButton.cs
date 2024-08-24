@@ -500,9 +500,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         AppMgr.Mode = MENU.QUIT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#elif UNITY_WEBPLAYER
+#if UNITY_WEBPLAYER
 		Application.OpenURL("http://aharalab.sakura.ne.jp/");
 #else
 		Application.Quit();

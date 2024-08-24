@@ -1,9 +1,1 @@
-Point,-3.556942,2.020281,0,0,False,True,A,True
-Point,-3.26053,0.304212,0,1,False,True,B,True
-Point,-1.294852,0.0390017,0,2,False,True,C,True
-Point,-1.450858,1.848674,0,3,False,True,D,True
-Line,0,3,1000,True,False,False,0.1,-1,False,,2.113064,L1
-Line,0,1,1001,True,False,False,0.1,-1,False,,1.74148,L2
-Line,1,2,1002,True,False,False,0.1,-1,False,,1.983489,L3
-Line,2,3,1003,True,False,False,0.1,-1,False,,1.816384,L4
-Module,29,0,1,2,3000,True,1,1,1.570796,False,False,True,0.1,0.2,四角形,-1,0
+Point,-4.118565,1.661466,0,0,False,True,A,True

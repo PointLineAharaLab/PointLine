@@ -632,9 +632,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
             Mode = MENU.QUIT;
             ModeStep = 0;
             MenuOn = false;
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#elif UNITY_WEBPLAYER
+#if UNITY_WEBPLAYER
 		    Application.OpenURL("http://aharalab.sakura.ne.jp/");
 #else
 		    Application.Quit();
