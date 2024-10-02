@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Xml.Linq;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -32,6 +33,14 @@ public class AppMgr : MonoBehaviour {
     /// </summary>
     public static int Japanese = 1;
     /// 
+
+    /// <summary>
+    /// Game mode
+    /// true: On, false: Off
+    /// </summary>
+    public static bool GameMode=true;
+    public static int GameStageNumber = 0;
+    public static GameManager thisGameManager = null;
 
     public static int Mode = 0;
     public static int ModeStep = 0;

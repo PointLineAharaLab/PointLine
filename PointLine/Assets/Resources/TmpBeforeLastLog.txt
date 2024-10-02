@@ -1,11 +1,1 @@
-Point,-4.040562,2.347895,0,0,True,True,A,True
-Point,-6.48986,-2.223089,0,1,True,True,B,True
-Point,-1.107645,-1.833073,0,2,True,True,C,True
-Point,-4.960999,-1.209049,0,3,False,True,D,True
-Point,-4.50078,0.569423,0,4,False,True,E,True
-Module,12,0,3,4,3000,True,1,1,1.570796,False,False,True,0.1,0.2,中点,-1,0
-Point,-2.804212,-0.6318252,0,5,False,True,F,True
-Module,12,4,2,5,3001,True,1,1,1.570796,False,False,True,0.1,0.2,中点,-1,0
-Point,-4.647036,-1.427457,0,6,False,True,G,True
-Module,12,5,1,6,3002,True,1,1,1.570796,False,False,True,0.1,0.2,中点,-1,0
-Module,2,3,6,0,3003,True,1,1,1.570796,False,False,True,0.1,0.2,点 - 点,-1,0
+Point,-6.768867,2.5,0,0,False,True,A,True
