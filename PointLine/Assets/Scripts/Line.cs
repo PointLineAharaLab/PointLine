@@ -109,6 +109,13 @@ public class Line : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        LineUpdate();
+    }
+
+    public void LineUpdate()
+    {
+        LineRenderer rd = GetComponent<LineRenderer>();
+        //lr = GetComponent<LineRenderer>();
         if (AppMgr.pts == null) return;
         if (parent != null) parent.SetActive(Active);
         if (Point1 != null && Point2 != null)
@@ -148,24 +155,26 @@ public class Line : MonoBehaviour {
                 Active = false;
             }
         }
-        lr.SetPosition(0, Vec0);
-        lr.SetPosition(1, Vec1);
-        Renderer rd = GetComponent<Renderer>();
+        rd.SetPosition(0, Vec0);
+        rd.SetPosition(1, Vec1);
         if (Selected)
         {
-            if (Isometry>=0)
-                rd.material.color = Util.IsometrySelectedColor[Isometry%10];
+            if (Isometry >= 0)
+                rd.material.color = Util.IsometrySelectedColor[Isometry % 10];
             else
                 rd.material.color = SelectedColor;
         }
         else
         {
-            if (Isometry>=0)
+            if (Isometry >= 0) 
+            { 
+                Debug.Log(Isometry);
                 rd.material.color = Util.IsometryColor[Isometry % 10];
+            }
             else
                 rd.material.color = StandardColor;
         }
-        if(!FixLength)
+        if (!FixLength)
             edgeLength = (Vec1 - Vec0).magnitude;
     }
 

@@ -607,36 +607,22 @@ public class Log : MonoBehaviour
         MakePointLog(pt.Id, pt.Vec, pt.parent.gameObject, pt.Fixed, pt.Active, pt.PointName);
     }//  pt.parent.gameObject は pt.gameObject でも同じ意味のハズ  
 
-    public void MakeLineLog(int _id, int _o1, int _o2, GameObject _pa, bool _active, string _pname)
+    public void MakeLineLog(Line ln)
     {
         ObjectType = "Line";
-        Id = _id;
-        Object1Id = _o1;
-        Object2Id = _o2;
+        Id = ln.Id;
+        Object1Id = ln.Point1Id;
+        Object2Id = ln.Point2Id;
+        Object1 = ln.GetPoint1OfLine();
+        Object2 = ln.GetPoint2OfLine();
         Point[] OBJs = FindObjectsOfType<Point>();
-        for(int i=0; i<OBJs.Length; i++)
-        {
-            if(OBJs[i].Id == _o1)
-            {
-                Object1 = OBJs[i].gameObject;
-            }
-            if (OBJs[i].Id == _o2)
-            {
-                Object2 = OBJs[i].gameObject;
-            }
-        }
-        parent = _pa;
-        Active = _active;
+        parent = ln.parent;
+        Active = ln.Active;
         Show = Util.ShowLog;
-        PName = _pname;
+        PName = ln.LineName;
         Position.x = Util.LogLeft;
         Text1 = "直線 " + PName;
         Text2 = Object1.GetComponent<Point>().PointName+"-"+Object2.GetComponent<Point>().PointName;
-    }
-
-    public void MakeLineLog(Line ln)
-    {
-        MakeLineLog(ln.Id, ln.Point1Id, ln.Point2Id, ln.parent, ln.Active, ln.LineName);
     }
 
     public void MakeCircleLog(int _id, int _o1, float _rad, GameObject _pa, bool _active, string _pname)

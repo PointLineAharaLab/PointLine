@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour
     {
         if (AppMgr.GameOn)
         {
-            Debug.Log("GameManager.Start");
             InitilizeStage(StageNumber);
         }
     }
@@ -38,19 +37,21 @@ public class GameManager : MonoBehaviour
     private void InitilizeStage(int stageNmuber)
     {
         if (stageNmuber == 0) { 
-            Point newPoint1 = Util.AddPoint(new Vector3(1f, 0f, 0f), ClickOnPanel.PointId);
-            Point newPoint2 = Util.AddPoint(new Vector3(0f, 1f, 0f), ClickOnPanel.PointId);
-            Point newPoint3 = Util.AddPoint(new Vector3(-0.5f, -0.5f, 0f), ClickOnPanel.PointId);
+            Point newPoint1 = Util.AddPoint(new Vector3(1f, 0f, 0f));
+            Point newPoint2 = Util.AddPoint(new Vector3(0f, 1f, 0f));
+            Point newPoint3 = Util.AddPoint(new Vector3(-0.5f, -0.5f, 0f));
             newPoint1.Fixed = true;
             newPoint2.Fixed = true;
             newPoint3.Fixed = true;
             newPoint1.gameObject.transform.SetParent(masterObjects.transform, false);
             newPoint2.gameObject.transform.SetParent(masterObjects.transform, false);
             newPoint3.gameObject.transform.SetParent(masterObjects.transform, false);
-            Line newLine1 = Util.AddLine(0, 1,1000);
+            Line newLine1 = Util.AddLine(0, 1);
             newLine1.gameObject.transform.SetParent(masterObjects.transform, false);
             newLine1.GetPoint1OfLine();
             newLine1.GetPoint2OfLine();
+            newLine1.LineUpdate();
+            newLine1.Isometry = -1;
         }
         AppMgr.ExecuteAllModules();
     }

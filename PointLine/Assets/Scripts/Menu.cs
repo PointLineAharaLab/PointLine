@@ -109,8 +109,8 @@ public class Menu : MonoBehaviour
     private string TextPOINT_ON_LINE1 = " 点を直線の上に載せる: 直線を選択.";
     private string TextPOINT_ON_CIRCLE0 = " 点を円の上に載せる: 頂点を選択.";
     private string TextPOINT_ON_CIRCLE1 = " 点を円の上に載せる: 円を選択.";
-    private string TextINTERSECTION0 = "交点を追加：一つ選択";
-    private string TextINTERSECTION1 = "交点を追加：もう一つ選択";
+    //private string TextINTERSECTION0 = "交点を追加：一つ選択";
+    //private string TextINTERSECTION1 = "交点を追加：もう一つ選択";
     private string TextLINES_ISOMETRY0 = " ２直線を同じ長さにする: 直線を選択.";
     private string TextLINES_ISOMETRY1 = " ２直線を同じ長さにする: もう一つ直線を選択.";
     private string TextRATIO_LENGTH0 = "線分の長さの比：直線を選択";
@@ -172,8 +172,8 @@ public class Menu : MonoBehaviour
             TextPOINT_ON_LINE1 = " Set a point on a line: Select a line.";
             TextPOINT_ON_CIRCLE0 = " Set a point on a circle: Select a point.";
             TextPOINT_ON_CIRCLE1 = " Set a point on a circle: Select a circle.";
-            TextINTERSECTION0 = "Add an intersection: Select a line.";
-            TextINTERSECTION1 = "Add an intersection: Select another line.";
+            //TextINTERSECTION0 = "Add an intersection: Select a line.";
+            //TextINTERSECTION1 = "Add an intersection: Select another line.";
             TextLINES_ISOMETRY0 = " Make two lines isometry: Select a line.";
             TextLINES_ISOMETRY1 = " Make two lines isometry: Select another line.";
             TextRATIO_LENGTH0 = "Ratio of two segments : Select a line";

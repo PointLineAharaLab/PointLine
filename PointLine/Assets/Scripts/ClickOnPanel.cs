@@ -11,7 +11,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         get
         {
             AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
-            int newPointId = 0;
+            int newPointId = -1;
             int pointNumber = pts.Length;
             for (int i = 0; i < pointNumber; i++)
             {
@@ -28,7 +28,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         get
         {
             AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
-            int newLineId = 1000;
+            int newLineId = 999;
             int lineNumber = lns.Length;
             for (int i=0; i<lineNumber; i++)
             {
@@ -37,11 +37,43 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
                     newLineId = AppMgr.lns[i].Id;
                 }
             }
-            return newLineId;
+            return newLineId+1;
         }
     }
-    static int CircleId=2000;
-    static int ModuleId=3000;
+    static int CircleId
+    {
+        get
+        {
+            AppMgr.cis = MonoBehaviour.FindObjectsOfType<Circle>();
+            int newCircleId = 1999;
+            int circleNumber = cis.Length;
+            for (int i = 0; i < circleNumber; i++)
+            {
+                if (AppMgr.cis[i].Id > newCircleId)
+                {
+                    newCircleId = AppMgr.cis[i].Id;
+                }
+            }
+            return newCircleId + 1;
+        }
+    }
+    static int ModuleId
+    {
+        get
+        {
+            AppMgr.mds = MonoBehaviour.FindObjectsOfType<Module>();
+            int newModuleId = 2999;
+            int moduleNumber = mds.Length;
+            for (int i = 0; i< moduleNumber; i++)
+            {
+                if (AppMgr.mds[i].Id > newModuleId)
+                {
+                    newModuleId = AppMgr.mds[i].Id;
+                }
+            }
+            return newModuleId + 1;
+        }
+    }
 
     public int DraggedObjectId = 0;
     public int DraggedPointId = -1;
@@ -70,51 +102,38 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        SetId(0, 1000, 2000, 3000);
+        //SetId(0, 1000, 2000, 3000);
         FirstKey = "";
         Util.InitLog();
         WorldHeight = MainCamera.GetComponent<Camera>().orthographicSize;
         //Debug.Log(WorldHeight);
         Util.LogLeft = (WorldHeight / Screen.height * Screen.width)-1.5f;
-        Util.IsometryColor = new Color[10];
-        Util.IsometrySelectedColor = new Color[10];
-        for(int i=0; i<10; i++)
-        {
-            float vx = ColorCode[3 * i];
-            float vy = ColorCode[3 * i + 1];
-            float vz = ColorCode[3 * i + 2];
-            Util.IsometryColor[i] = new Color((vx + 1f) * 0.5f, (vy + 1f) * 0.5f, (vz + 1f) * 0.5f);
-            Util.IsometrySelectedColor[i] = new Color(vx, vy, vz);
-        }
     }
 
-    private readonly float[] ColorCode = new float[]{ 
-        0.7f, 0.7f, 0.0f,
-        0.0f, 0.7f, 0.7f, 
-        0.7f, 0.0f, 0.7f,
-        0.8f, 0.4f, 0.0f,
-        0.0f, 0.8f, 0.4f,
-        0.0f, 0.0f, 0.8f,
-        0.4f, 0.0f, 0.0f,
-        0.4f, 0.8f, 0.0f,
-        0.0f, 0.4f, 0.8f,
-        0.8f, 0.0f, 0.4f,
-    };
 
     void Update()
     {
         if (AppMgr.AccessWebOn)
         {
+            GameObject[] objs = FindObjectsOfType<GameObject>();
+            GameObject MessageText = null;
+            for (int i = 0; i < objs.Length; i++)
+            {
+                if (objs[i].name == "MessageText")
+                {
+                    MessageText = objs[i];
+                }
+            }
             // メッセージON;
             if (Japanese == 1)
-                AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "ファイル読み込み";
+                MessageText.GetComponent<TextMesh>().text = "ファイル読み込み";
             else
-                AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "Load File";
+                MessageText.GetComponent<TextMesh>().text = "Load File";
             //アクセス終了フラグONなら
             if (AppMgr.AccessWebEnd)
             {
                 //手続きを踏んでOFFにする。
-                AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "";
+                MessageText.GetComponent<TextMesh>().text = "";
                 AppMgr.AccessWebOn = false;
 
                 WebAccess wa = FindObjectOfType<WebAccess>();
@@ -184,8 +203,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     {/// 近い将来、いらなくなる
         //PointId = PId;
         //LineId = LId;
-        CircleId = CId;
-        ModuleId = MId;
+        //CircleId = CId;
+        //ModuleId = MId;
     }
 
     private float Hypot(float x, float y)
@@ -1050,7 +1069,6 @@ public void OnMyMouseDown()
                 Point newPoint = Util.AddMidpoint(FirstClickId, SecondClickId, PointId, ModuleId);
                 //ログの作成とlogsへの追加
                 Point.AddOnePointSelected(newPoint.Id);
-                ModuleId++;
             }
             Mode = MENU.ADD_MIDPOINT;
             //Mode = 0;
@@ -1105,7 +1123,6 @@ public void OnMyMouseDown()
             //cis = FindObjectsOfType<Circle>();
             Mode = MENU.ADD_CIRCLE;
             ModeStep = 0;
-            CircleId++;
             return CircleId - 1;
         }
         return -1;
@@ -1126,7 +1143,7 @@ public void OnMyMouseDown()
             if (FirstClickId != SecondClickId)
             {
                 // 新しいモジュールの追加
-                Util.AddModule(MENU.POINT_ON_POINT, FirstClickId, SecondClickId, 0, ModuleId++);
+                Util.AddModule(MENU.POINT_ON_POINT, FirstClickId, SecondClickId, 0, ModuleId);
             }
             Mode = MENU.POINT_ON_POINT;
             AppMgr.ExecuteAllModules();
@@ -1148,7 +1165,7 @@ public void OnMyMouseDown()
             Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
             SecondClickId = MOP;
             // 新しいモジュールの追加
-            Util.AddModule(MENU.POINT_ON_LINE, FirstClickId, SecondClickId, 0, ModuleId++);
+            Util.AddModule(MENU.POINT_ON_LINE, FirstClickId, SecondClickId, 0, ModuleId);
             // Debug.Log("New module was created " + FirstClickId + " " + SecondClickId);
             // 細い補助線の追加
             Util.AddThinLine(FirstClickId, SecondClickId);
@@ -1171,7 +1188,7 @@ public void OnMyMouseDown()
             Circle.AddOneCircleSelected(MOP);//クリックしたポイントを追加選択
             SecondClickId = MOP;
             // 新しいモジュールの追加
-            Util.AddModule(MENU.POINT_ON_CIRCLE, FirstClickId, SecondClickId, 0, ModuleId++);
+            Util.AddModule(MENU.POINT_ON_CIRCLE, FirstClickId, SecondClickId, 0, ModuleId);
             // Debug.Log("New module was created " + FirstClickId + " " + SecondClickId);
             Mode = MENU.POINT_ON_CIRCLE;
             //Mode = 0;
@@ -1205,7 +1222,7 @@ public void OnMyMouseDown()
                 // 新しい点の追加
                 Point newPoint = Util.AddPoint(MouseUpVec, PointId);
                 // 新しいモジュールの追加
-                Util.AddModule(MENU.CROSSING_LL, newPoint.Id, FirstClickId, SecondClickId, ModuleId++);
+                Util.AddModule(MENU.CROSSING_LL, newPoint.Id, FirstClickId, SecondClickId, ModuleId);
                 Mode = MENU.CROSSING_LL;
                 AppMgr.ExecuteAllModules();
             }
@@ -1231,7 +1248,7 @@ public void OnMyMouseDown()
             SecondClickId = MOP;
             if (FirstClickId != SecondClickId)
             {
-                Module NewMd = Util.AddModule(MENU.LINES_ISOMETRY, FirstClickId, SecondClickId, 0, ModuleId++);
+                Module NewMd = Util.AddModule(MENU.LINES_ISOMETRY, FirstClickId, SecondClickId, 0, ModuleId);
                 Util.SetIsometry();
             }
             Mode = MENU.LINES_ISOMETRY;
@@ -1256,7 +1273,7 @@ public void OnMyMouseDown()
             if (FirstClickId != SecondClickId)
             {
                 //追加するモジュールとしてはLINES_ISOMETRY
-                Module NewMd = Util.AddModule(MENU.LINES_ISOMETRY, FirstClickId, SecondClickId, 0, ModuleId++, false);
+                Module NewMd = Util.AddModule(MENU.LINES_ISOMETRY, FirstClickId, SecondClickId, 0, ModuleId, false);
                 Util.SetIsometry();
             }
             Mode = MENU.LINES_ISOMETRY;
@@ -1281,7 +1298,7 @@ public void OnMyMouseDown()
             if (FirstClickId != SecondClickId)
             {
                 // 新しいモジュールの追加
-                Module MD = Util.AddModule(MENU.LINES_PERPENDICULAR, FirstClickId, SecondClickId, 0, ModuleId++);
+                Module MD = Util.AddModule(MENU.LINES_PERPENDICULAR, FirstClickId, SecondClickId, 0, ModuleId);
                 // 新しい直角記号の追加
                 Util.AddAngleMark(FirstClickId, SecondClickId, MD.gameObject);
                 AppMgr.ExecuteAllModules();
@@ -1322,7 +1339,7 @@ public void OnMyMouseDown()
             {
                 if (Line1.Point1Id == Line2.Point1Id  || Line1.Point2Id == Line2.Point1Id)
                 {
-                    Util.AddModule(MENU.POINT_ON_LINE, Line2.Point2Id, Line1.Id, 0, ModuleId++);
+                    Util.AddModule(MENU.POINT_ON_LINE, Line2.Point2Id, Line1.Id, 0, ModuleId);
                     Mode = MENU.LINES_PARALLEL;
                     AppMgr.ExecuteAllModules();
                     ModeStep = 0;
@@ -1330,7 +1347,7 @@ public void OnMyMouseDown()
                 }
                 else if (Line1.Point1Id == Line2.Point2Id || Line1.Point2Id == Line2.Point2Id)
                 {
-                    Util.AddModule(MENU.POINT_ON_LINE, Line2.Point1Id, Line1.Id, 0, ModuleId++);
+                    Util.AddModule(MENU.POINT_ON_LINE, Line2.Point1Id, Line1.Id, 0, ModuleId);
                     Mode = MENU.LINES_PARALLEL;
                     AppMgr.ExecuteAllModules();
                     ModeStep = 0;
@@ -1338,7 +1355,7 @@ public void OnMyMouseDown()
                 }
             } 
             // さもなくば、新しいモジュールの追加
-            Util.AddModule(MENU.LINES_PARALLEL, FirstClickId, SecondClickId, 0, ModuleId++);
+            Util.AddModule(MENU.LINES_PARALLEL, FirstClickId, SecondClickId, 0, ModuleId);
             Mode = MENU.LINES_PARALLEL;
             AppMgr.ExecuteAllModules();
             //Mode = 0;
@@ -1352,7 +1369,7 @@ public void OnMyMouseDown()
             Line.MakeOneLineSelected(MOP);//クリックしたポイントのみを選択
             FirstClickId = MOP;
             // 新しいモジュールの追加
-            Util.AddModule(MENU.LINE_HORIZONTAL, FirstClickId, 0, 0, ModuleId++);
+            Util.AddModule(MENU.LINE_HORIZONTAL, FirstClickId, 0, 0, ModuleId);
             Mode = MENU.LINE_HORIZONTAL;
             AppMgr.ExecuteAllModules();
             //Mode = 0;
@@ -1381,7 +1398,7 @@ public void OnMyMouseDown()
             Point.AddOnePointSelected(MOP);//クリックした点を選択
             ThirdClickId = MOP;
             // 新しいモジュールの追加
-            Module MD = Util.AddModule(MENU.ANGLE, FirstClickId, SecondClickId, ThirdClickId, ModuleId++);
+            Module MD = Util.AddModule(MENU.ANGLE, FirstClickId, SecondClickId, ThirdClickId, ModuleId);
             MD.Constant = Mathf.PI / 3f;// 定数をプリセット
             //新たな直角マークの追加
             Util.AddAngleMark(FirstClickId, SecondClickId, ThirdClickId, MD.gameObject);
@@ -1405,7 +1422,7 @@ public void OnMyMouseDown()
             //Point.AddOnePointSelected(MOP);//クリックした点を選択
             SecondClickId = MOP;
             // 新しいモジュールの追加
-            Module MD = Util.AddModule(MENU.BISECTOR, FirstClickId, SecondClickId, 0, ModuleId++);
+            Module MD = Util.AddModule(MENU.BISECTOR, FirstClickId, SecondClickId, 0, ModuleId);
             Mode = MENU.BISECTOR;
             AppMgr.ExecuteAllModules();
             ModeStep = 0;
@@ -1425,7 +1442,7 @@ public void OnMyMouseDown()
             Line.AddOneLineSelected(MOP);//クリックしたポイントを追加選択
             SecondClickId = MOP;
             // 新しいモジュールの追加
-            Util.AddModule(MENU.CIRCLE_TANGENT_LINE, FirstClickId, SecondClickId, 0, ModuleId++);
+            Util.AddModule(MENU.CIRCLE_TANGENT_LINE, FirstClickId, SecondClickId, 0, ModuleId);
             Mode = MENU.CIRCLE_TANGENT_LINE;
             AppMgr.ExecuteAllModules();
             //Mode = 0;
@@ -1448,7 +1465,7 @@ public void OnMyMouseDown()
             if (FirstClickId != SecondClickId)
             {
                 // 新しいモジュールの追加
-                Util.AddModule(MENU.CIRCLE_TANGENT_CIRCLE, FirstClickId, SecondClickId, 0, ModuleId++);
+                Util.AddModule(MENU.CIRCLE_TANGENT_CIRCLE, FirstClickId, SecondClickId, 0, ModuleId);
             }
             Mode = MENU.CIRCLE_TANGENT_CIRCLE;
             AppMgr.ExecuteAllModules();
@@ -1479,7 +1496,7 @@ public void OnMyMouseDown()
             if (FirstClickId != MOP && SecondClickId != MOP)
             {
                 ThirdClickId = MOP;
-                Module MD = Util.AddModule(MENU.TRIANGLE, FirstClickId, SecondClickId, MOP, ModuleId++);
+                Module MD = Util.AddModule(MENU.TRIANGLE, FirstClickId, SecondClickId, MOP, ModuleId);
                 MD.PolygonOption = 0;
                 Mode = MENU.TRIANGLE;
                 AppMgr.ExecuteAllModules();
@@ -1519,7 +1536,7 @@ public void OnMyMouseDown()
             Point.MakeOnePointSelected(MOP);//クリックしたポイントを選択
             if (FirstClickId != MOP && SecondClickId != MOP && ThirdClickId != MOP)
             {
-                Module MD = Util.AddModule(MENU.QUADRILATERAL, FirstClickId, SecondClickId, ThirdClickId, ModuleId++);
+                Module MD = Util.AddModule(MENU.QUADRILATERAL, FirstClickId, SecondClickId, ThirdClickId, ModuleId);
                 MD.Object4Id = MOP;
                 MD.PolygonOption = 0;
                 if (MD.GameLog!=null)
@@ -1563,7 +1580,7 @@ public void OnMyMouseDown()
         Util.FixDisplay = true;
         Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
         FirstClickId = MOP;
-        Module NewMd = Util.AddModule(MENU.ADD_LOCUS, FirstClickId, 0, 0, ModuleId++);
+        Module NewMd = Util.AddModule(MENU.ADD_LOCUS, FirstClickId, 0, 0, ModuleId);
         Mode = MENU.ADD_LOCUS;
         ModeStep = 0;
     }

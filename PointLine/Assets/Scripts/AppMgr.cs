@@ -68,8 +68,7 @@ public class AppMgr : MonoBehaviour {
     public GameObject LogFolder;
 
     public static int ConvergencyCount=0;
-    public GameObject ConvergencyAlertText;
-    public static GameObject ConvergencyAlert;
+    //GameObject ConvergencyAlertText;
     public static float ConvergencyError = 0.0001f;
     public static float ConvergencyThreshold = 0.000001f;
     public static bool ModuleOn = true;
@@ -94,7 +93,6 @@ public class AppMgr : MonoBehaviour {
         LeftBottom = Camera.main.ScreenToWorldPoint(new Vector3(0f, 0f, 0f));
         RightUp = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0f));
         // set LogFolder.Tranform
-        AppMgr.ConvergencyAlert = ConvergencyAlertText;
 
     }
 
@@ -218,7 +216,16 @@ public class AppMgr : MonoBehaviour {
                 pt.transform.position = position;
             }
         }
-        AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "";// 
+        GameObject[] objs = FindObjectsOfType<GameObject>();
+        GameObject ConvergencyAlertText=null;
+        for (int i=0; i<objs.Length; i++)
+        {
+            if (objs[i].name== "MessageText")
+            {
+                ConvergencyAlertText = objs[i];
+            }
+        }
+        ConvergencyAlertText.GetComponent<TextMesh>().text = "";// 
         for (int repeat = 0; repeat < 200; repeat++)
         {
             previousErr = err;
@@ -246,9 +253,9 @@ public class AppMgr : MonoBehaviour {
                 {
                     //Debug.Log("Conflict" + ConvergencyCount + ":" + PerturbationCount);
                     if (Japanese == 1)
-                        AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "図形の不合理";
+                        ConvergencyAlertText.GetComponent<TextMesh>().text = "不合理";
                     else
-                        AppMgr.ConvergencyAlert.GetComponent<TextMesh>().text = "Conflict";
+                        ConvergencyAlertText.GetComponent<TextMesh>().text = "Conflict";
                     ModuleOn = false;
                 }
             }
@@ -289,13 +296,38 @@ public class Util
     public static float StartTop = 4f;
     public static bool ShowLog = true;
 
-    public static Color[] IsometryColor;
-    public static Color[] IsometrySelectedColor;
+    public static Color[] IsometryColor = new Color[10];
+    public static Color[] IsometrySelectedColor = new Color[10];
 
     /// <summary>
     /// 画面固定のためのフラグ
     /// </summary>
     public static bool FixDisplay = false;
+
+    Util()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            float vx = ColorCode[3 * i];
+            float vy = ColorCode[3 * i + 1];
+            float vz = ColorCode[3 * i + 2];
+            Util.IsometryColor[i] = new Color((vx + 1f) * 0.5f, (vy + 1f) * 0.5f, (vz + 1f) * 0.5f);
+            Util.IsometrySelectedColor[i] = new Color(vx, vy, vz);
+
+        }
+    }
+    private readonly float[] ColorCode = new float[]{
+        0.7f, 0.7f, 0.0f,
+        0.0f, 0.7f, 0.7f,
+        0.7f, 0.0f, 0.7f,
+        0.8f, 0.4f, 0.0f,
+        0.0f, 0.8f, 0.4f,
+        0.0f, 0.0f, 0.8f,
+        0.4f, 0.0f, 0.0f,
+        0.4f, 0.8f, 0.0f,
+        0.0f, 0.4f, 0.8f,
+        0.8f, 0.0f, 0.4f,
+    };
 
 
     public static float Magnitude(float x, float y)
@@ -381,8 +413,12 @@ public class Util
     }
 
     /// 頂点の生成
-    public static Point AddPoint(Vector3 V, int pointId)
+    public static Point AddPoint(Vector3 V, int pointId=-1)
     {
+        if (pointId < 0)
+        {
+            pointId = ClickOnPanel.PointId;
+        }
         // プレハブを取得
         Prefab = Resources.Load<GameObject>("Prefabs/Point");
         // プレハブからインスタンスを生成
@@ -487,21 +523,26 @@ public class Util
 
     #region AddLine
     ///線分の生成
-    public static Line AddLine(int first, int second, int lineId)
+    public static Line AddLine(int first, int second, int lineId = -1)
     {
-        // プレハブを取得
+        if (lineId < 0)
+        {
+            lineId = ClickOnPanel.LineId;
+        }        // プレハブを取得
         Prefab = Resources.Load<GameObject>("Prefabs/Line");
         // プレハブからインスタンスを生成
         GameObject g = Line.Instantiate(Prefab, Vector3.zero, Quaternion.identity) as GameObject;
-        Line obj = g.GetComponent<Line>();
-        if (obj != null)
+        Line ln = g.GetComponent<Line>();
+        if (ln != null)
         {
-            obj.Point1Id = first;
-            obj.Point2Id = second;
-            obj.Id = lineId;
-            obj.Active = true;
-            obj.parent = g;
-            obj.LineName = "L" + (obj.Id - 999);
+            ln.Point1Id = first;
+            ln.Point2Id = second;
+            ln.Point1 = ln.GetPoint1OfLine();
+            ln.Point2 = ln.GetPoint2OfLine();
+            ln.Id = lineId;
+            ln.Active = true;
+            ln.parent = g;
+            ln.LineName = "L" + (ln.Id - 999);//FindNewLineName()
             AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
 
             //もし余分なログがある場合には   余分なログは消す．
@@ -514,12 +555,12 @@ public class Util
             GetLogFolder();
             GameObject LogObj = MonoBehaviour.Instantiate<GameObject>(Prefab, Vector3.zero, Quaternion.identity, LogFolder.transform);
             Log lg = LogObj.GetComponent<Log>();
-            lg.MakeLineLog(obj);
+            lg.MakeLineLog(ln);
             //ログをlogsに追加
             AddLog(lg);
-            obj.GameLog = LogObj;
+            ln.GameLog = LogObj;
         }
-        return obj;
+        return ln;
     }
 
     #endregion
@@ -1216,7 +1257,7 @@ public class Util
                         }
                         while (str != null);
                         reader.Close();
-                        ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
+                        //ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
                         AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
                         AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
                         AppMgr.cis = MonoBehaviour.FindObjectsOfType<Circle>();
@@ -1310,6 +1351,7 @@ public class Util
             int id = int.Parse(item[3]);
             bool act = bool.Parse(item[4]);
             Line ln = AddLine(o1, o2, id);
+            ln.Active = act;
             if (item.Length > 5)
             {
                 ln.ShowLength = bool.Parse(item[5]);
@@ -1322,23 +1364,10 @@ public class Util
                 ln.LineName = item[12];
             }
             GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
-            for (int i = 0; i < OBJs.Length; i++)
-            {
-                Point PT = OBJs[i].GetComponent<Point>();
-                if (PT != null)
-                {
-                    if (PT.Id == o1)
-                    {
-                        ln.Point1 = OBJs[i];
-                    }
-                    if (PT.Id == o2)
-                    {
-                        ln.Point2 = OBJs[i];
-                    }
-                }
-            }
+            ln.Point1 = ln.GetPoint1OfLine();
+            ln.Point2 = ln.GetPoint2OfLine();
             Log lg = ln.GameLog.GetComponent<Log>();
-            lg.MakeLineLog(id, o1, o2, ln.parent, act, ln.LineName);
+            lg.MakeLineLog(ln);
             return lg;
         }
         else if (item[0] == "Circle")
@@ -1518,23 +1547,10 @@ public class Util
                         if (info.Element("edgeLength")!=null)
                             ln.edgeLength = float.Parse(info.Element("edgeLength").Value);
                         GameObject[] OBJs = MonoBehaviour.FindObjectsOfType<GameObject>();
-                        for (int i = 0; i < OBJs.Length; i++)
-                        {
-                            Point PT = OBJs[i].GetComponent<Point>();
-                            if (PT != null)
-                            {
-                                if (PT.Id == o1)
-                                {
-                                    ln.Point1 = OBJs[i];
-                                }
-                                if (PT.Id == o2)
-                                {
-                                    ln.Point2 = OBJs[i];
-                                }
-                            }
-                        }
+                        ln.Point1 = ln.GetPoint1OfLine();
+                        ln.Point2 = ln.GetPoint2OfLine();
                         Log lg = ln.GameLog.GetComponent<Log>();
-                        lg.MakeLineLog(id, o1, o2, ln.parent, act, ln.LineName);
+                        lg.MakeLineLog(ln);
                     }
                     else if (objectType == "Circle")
                     {
@@ -1622,7 +1638,7 @@ public class Util
                 {
                     if (MId <= AppMgr.mds[k].Id) MId = AppMgr.mds[k].Id + 1;
                 }
-                ClickOnPanel.SetId(PId, LId, CId, MId);
+                //ClickOnPanel.SetId(PId, LId, CId, MId);
             }
             //catch (Exception e)
             //{
@@ -1880,7 +1896,7 @@ public class Util
                 }
                 while (str != null);
                 reader.Close();
-                ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
+                //ClickOnPanel.SetId(PId + 1, LId + 1, CId + 1, MId + 1);
                 AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
                 AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
                 AppMgr.cis = MonoBehaviour.FindObjectsOfType<Circle>();
