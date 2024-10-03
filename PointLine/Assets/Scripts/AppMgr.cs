@@ -528,7 +528,8 @@ public class Util
         if (lineId < 0)
         {
             lineId = ClickOnPanel.LineId;
-        }        // プレハブを取得
+        }        
+        // プレハブを取得
         Prefab = Resources.Load<GameObject>("Prefabs/Line");
         // プレハブからインスタンスを生成
         GameObject g = Line.Instantiate(Prefab, Vector3.zero, Quaternion.identity) as GameObject;

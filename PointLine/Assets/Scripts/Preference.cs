@@ -883,6 +883,7 @@ public class Preference : MonoBehaviour
         {
             show = false;
             Line ln = LogParent.parent.GetComponent<Line>();
+            AppMgr.pts = FindObjectsOfType<Point>();
             if (PName1 != ln.Point1.GetComponent<Point>().PointName)
             {
                 for (int i=0; i<AppMgr.pts.Length; i++)

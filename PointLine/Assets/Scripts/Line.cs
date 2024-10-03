@@ -149,14 +149,27 @@ public class Line : MonoBehaviour {
                 Point1Id = -1;
                 Active = false;
             }
+            else
+            {
+                Vec0 = Point1.GetComponent<Point>().transform.position;
+                vec0.z = 0.0f;
+            }
             if (Point2 == null)
             {
                 Point2Id = -1;
                 Active = false;
             }
+            else
+            {
+                Vec1 = Point2.GetComponent<Point>().transform.position;
+                vec1.z = 0.0f;
+            }
         }
+        Debug.Log(Vec0);
+        Debug.Log(Vec1);
         rd.SetPosition(0, Vec0);
         rd.SetPosition(1, Vec1);
+        Debug.Log(rd.GetPosition(0));
         if (Selected)
         {
             if (Isometry >= 0)
@@ -168,7 +181,6 @@ public class Line : MonoBehaviour {
         {
             if (Isometry >= 0) 
             { 
-                Debug.Log(Isometry);
                 rd.material.color = Util.IsometryColor[Isometry % 10];
             }
             else
