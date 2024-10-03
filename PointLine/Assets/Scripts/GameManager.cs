@@ -1,16 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     private int StageNumber=0;// AppMgr.GameStageNumber‚Æ˜AŒg
-    public GameStageObjects thisStageObjects = null;
+    public Module[] UserModules = null;
+    public Module[] MasterModules = null;
+    public Point[] MasterPoints = null;
+    public GameObject masterObjects;//= GameObject.Find("MasterObjects");
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (AppMgr.GameOn)
+        {
+            Debug.Log("GameManager.Start");
+            InitilizeStage(StageNumber);
+        }
     }
 
     // Update is called once per frame
@@ -27,32 +35,27 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void InitilizeStage()
+    private void InitilizeStage(int stageNmuber)
     {
-
+        if (stageNmuber == 0) { 
+            Point newPoint1 = Util.AddPoint(new Vector3(1f, 0f, 0f), ClickOnPanel.PointId);
+            Point newPoint2 = Util.AddPoint(new Vector3(0f, 1f, 0f), ClickOnPanel.PointId);
+            Point newPoint3 = Util.AddPoint(new Vector3(-0.5f, -0.5f, 0f), ClickOnPanel.PointId);
+            newPoint1.Fixed = true;
+            newPoint2.Fixed = true;
+            newPoint3.Fixed = true;
+            newPoint1.gameObject.transform.SetParent(masterObjects.transform, false);
+            newPoint2.gameObject.transform.SetParent(masterObjects.transform, false);
+            newPoint3.gameObject.transform.SetParent(masterObjects.transform, false);
+            Line newLine1 = Util.AddLine(0, 1,1000);
+            newLine1.gameObject.transform.SetParent(masterObjects.transform, false);
+            newLine1.GetPoint1OfLine();
+            newLine1.GetPoint2OfLine();
+        }
+        AppMgr.ExecuteAllModules();
     }
 
 
 
-
 }
-
-/// <summary>
-/// 
-/// </summary>
-public class GameStageObjects
-{
-    public Module[] UserModules = null;
-    public Module[] MasterModules = null;
-
-
-    /// <summary>
-    /// constructor
-    /// </summary>
-    GameStageObjects()
-    {
-
-    }
-}
-
 

@@ -6,8 +6,40 @@ using UnityEngine.SceneManagement;
 
 public class ClickOnPanel : AppMgr //MonoBehaviour
 {
-    static int PointId=0;
-    static int LineId=1000;
+    static public int PointId
+    {
+        get
+        {
+            AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
+            int newPointId = 0;
+            int pointNumber = pts.Length;
+            for (int i = 0; i < pointNumber; i++)
+            {
+                if (AppMgr.pts[i].Id > newPointId)
+                {
+                    newPointId = AppMgr.pts[i].Id;
+                }
+            }
+            return newPointId+1;
+        }
+    }
+    static public int LineId
+    {
+        get
+        {
+            AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
+            int newLineId = 1000;
+            int lineNumber = lns.Length;
+            for (int i=0; i<lineNumber; i++)
+            {
+                if (AppMgr.lns[i].Id > newLineId)
+                {
+                    newLineId = AppMgr.lns[i].Id;
+                }
+            }
+            return newLineId;
+        }
+    }
     static int CircleId=2000;
     static int ModuleId=3000;
 
@@ -149,9 +181,9 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     }
 
     public static void SetId(int PId, int LId, int CId, int MId)
-    {
-        PointId = PId;
-        LineId = LId;
+    {/// 近い将来、いらなくなる
+        //PointId = PId;
+        //LineId = LId;
         CircleId = CId;
         ModuleId = MId;
     }
@@ -991,14 +1023,13 @@ public void OnMyMouseDown()
 
     private int AddNewPoint()
     {
-        Util.AddPoint(MouseUpVec, PointId);
+        Point newPoint = Util.AddPoint(MouseUpVec, PointId);
         //        Util.DebugLog();
         // 新しい点をselected，そのほかの点は選択をはずす。
-        Point.MakeOnePointSelected(PointId);
+        Point.MakeOnePointSelected(newPoint.Id);
         Line.AllLinesUnselected();
         Circle.AllCirclesUnselected();
-        PointId++;
-        return PointId - 1;
+        return newPoint.Id;
     }
 
     private void AddNewMidpoint(int MOP)
@@ -1016,10 +1047,9 @@ public void OnMyMouseDown()
             if (FirstClickId != SecondClickId)
             {
                 // 新しい点の追加
-                Util.AddMidpoint(FirstClickId, SecondClickId, PointId, ModuleId);
+                Point newPoint = Util.AddMidpoint(FirstClickId, SecondClickId, PointId, ModuleId);
                 //ログの作成とlogsへの追加
-                Point.AddOnePointSelected(PointId);
-                PointId++;
+                Point.AddOnePointSelected(newPoint.Id);
                 ModuleId++;
             }
             Mode = MENU.ADD_MIDPOINT;
@@ -1043,9 +1073,10 @@ public void OnMyMouseDown()
             // 新しい線の追加
             if (FirstClickId != SecondClickId)
             {
-                Util.AddLine(FirstClickId, SecondClickId, LineId++);
+                
+                Line newLine = Util.AddLine(FirstClickId, SecondClickId, LineId);
                 //追加したラインを選択
-                Line.MakeOneLineSelected(LineId - 1);
+                Line.MakeOneLineSelected(newLine.Id);
             }
             Point.AllPointsUnselected();
             Mode = MENU.ADD_LINE;
@@ -1172,10 +1203,9 @@ public void OnMyMouseDown()
                     Circle.MakeOneCircleSelected(MOP);//クリックしたポイントのみを選択
                 SecondClickId = MOP;
                 // 新しい点の追加
-                int NewPointId = PointId;
-                Util.AddPoint(MouseUpVec, PointId++);
+                Point newPoint = Util.AddPoint(MouseUpVec, PointId);
                 // 新しいモジュールの追加
-                Util.AddModule(MENU.CROSSING_LL, NewPointId, FirstClickId, SecondClickId, ModuleId++);
+                Util.AddModule(MENU.CROSSING_LL, newPoint.Id, FirstClickId, SecondClickId, ModuleId++);
                 Mode = MENU.CROSSING_LL;
                 AppMgr.ExecuteAllModules();
             }
@@ -1755,7 +1785,6 @@ public void OnMyMouseDown()
         lns = null;
         cis = null;
         mds = null;
-        PointId = 0;
         Mode = MENU.DELETE_ALL;
         //Mode = 0;
         ModeStep = 0;

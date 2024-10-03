@@ -34,11 +34,6 @@ public class AppMgr : MonoBehaviour {
     public static int Japanese = 1;
     /// 
 
-    /// <summary>
-    /// Game mode
-    /// true: On, false: Off
-    /// </summary>
-    public static bool GameMode=true;
     public static int GameStageNumber = 0;
     public static GameManager thisGameManager = null;
 
@@ -53,6 +48,11 @@ public class AppMgr : MonoBehaviour {
     public static bool AccessWebOn = false;
     public static bool AccessWebEnd = false;
     public static bool WorkListOn = false;
+    /// <summary>
+    /// Game mode
+    /// true: On, false: Off
+    /// </summary>
+    public static bool GameOn = true;
 
     public static Point[] pts = null;
     public static Line[] lns = null;
@@ -386,7 +386,8 @@ public class Util
         // プレハブを取得
         Prefab = Resources.Load<GameObject>("Prefabs/Point");
         // プレハブからインスタンスを生成
-        GameObject obj = Point.Instantiate<GameObject>(Prefab, V, Quaternion.identity);
+        GameObject obj;
+        obj = Point.Instantiate<GameObject>(Prefab, V, Quaternion.identity);
         Point pt = obj.GetComponent<Point>();
         if (pt != null)
         {
@@ -520,6 +521,7 @@ public class Util
         }
         return obj;
     }
+
     #endregion
 
     #region AddCircle
