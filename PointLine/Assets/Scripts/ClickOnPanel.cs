@@ -216,7 +216,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     {
         List<int> ret = new List<int>();
         pts=MonoBehaviour.FindObjectsOfType<Point>();
-        Debug.Log(pts[0]);
+        //Debug.Log(pts[0]);
         if (pts == null) return ret;
         for (int i = 0; i < pts.Length; i++)
         {

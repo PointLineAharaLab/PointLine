@@ -227,8 +227,8 @@ public class Menu : MonoBehaviour
         if (AppMgr.GameOn)
         {
             //AppMgr.DrawOn = false;
-            //CreateGameMenu();
-            CreateMenuOffUI();
+            CreateGameMenu();
+            //CreateMenuOffUI();
         }
         else
         {
