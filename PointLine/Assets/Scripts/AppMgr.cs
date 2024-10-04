@@ -35,10 +35,10 @@ public class AppMgr : MonoBehaviour {
     /// 
 
     public static int GameStageNumber = 0;
-    public static GameManager thisGameManager = null;
 
     public static int Mode = 0;
     public static int ModeStep = 0;
+    public static bool ModeNeutralOn = false;
 
     public static bool DrawOn = true;
     public static bool MenuOn = false;
@@ -53,7 +53,9 @@ public class AppMgr : MonoBehaviour {
     /// true: On, false: Off
     /// </summary>
     public static bool GameOn = true;
-    public static List<int> GameMenuItems = null;
+    public static int[] GameMenuItems = new int[40];// max = 32 in 10/05/2024 
+    public static GameObject GameMasterObjects;
+    public static GameObject GameMasterMenu;
 
     public static Point[] pts = null;
     public static Line[] lns = null;
@@ -274,6 +276,34 @@ public class AppMgr : MonoBehaviour {
             }
         }
 
+    }
+
+    /// <summary>
+    ///     Create a new fixed point for the game by gamemaster.
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns>the new point</returns>
+    public static Point GameInitializeFixedPoint(Vector3 v)
+    {
+        GameMasterObjects = GameObject.Find("MasterObjects");
+        Point newPoint = Util.AddPoint(v);
+        newPoint.Fixed = true;
+        newPoint.gameObject.transform.SetParent(GameMasterObjects.transform, false);
+        AppMgr.pts = MonoBehaviour.FindObjectsOfType<Point>();
+        return newPoint;
+    }
+
+    public static Line GameInitializeLine(int p1, int p2)
+    {
+        GameMasterObjects = GameObject.Find("MasterObjects");
+        Line newLine = Util.AddLine(p1, p2);
+        newLine.gameObject.transform.SetParent(GameMasterObjects.transform, false);
+        newLine.GetPoint1OfLine();
+        newLine.GetPoint2OfLine();
+        newLine.LineUpdate();
+        newLine.Isometry = -1;
+        AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
+        return newLine;
     }
 
 }
@@ -2211,4 +2241,6 @@ public class Util
         }
         AppMgr.ExecuteAllModules();
     }
+
+
 }

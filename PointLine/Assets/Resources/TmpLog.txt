@@ -1,2 +1,7 @@
-Point,-1.632124,0.2158892,0,0,False,True,A,True
-Circle,0,2.825406,2000,True,0,0.1,False,C1
+Point,1,0,0,0,True,True,A,True
+Point,0,1,0,1,True,True,B,True
+Point,-0.5,-0.5,0,2,True,True,C,True
+Line,0,1,1000,True,False,False,0.1,-1,False,,1.414214,L1
+Line,1,2,1001,True,False,False,0.1,-1,False,,1.581139,L2
+Line,0,2,1002,True,False,False,0.1,-1,False,,1.581139,L3
+Circle,0,5.015571,2000,True,0,0.1,False,C1

@@ -1120,14 +1120,19 @@ public void OnMyMouseDown()
         {// モード４ステップ１ならば、点 MouseUpVec を使って円を描く。
             //半径を計算する
             float rd = Hypot(MouseUpVec.x - FirstClickVec.x, MouseUpVec.y - FirstClickVec.y);
-            Util.AddCircle(FirstClickId, rd, CircleId);
+            Circle ci = Util.AddCircle(FirstClickId, rd, CircleId);
             // 新しい点をselected，そのほかの点は選択をはずす。
             Circle.MakeOneCircleSelected(CircleId);
             Point.AllPointsUnselected();
             //cis = FindObjectsOfType<Circle>();
             Mode = MENU.ADD_CIRCLE;
             ModeStep = 0;
-            return CircleId - 1;
+            if (AppMgr.GameOn)
+            {
+                AppMgr.GameMenuItems[MENU.ADD_CIRCLE]--;
+                ModeNeutralOn = true;
+            }
+            return ci.Id;
         }
         return -1;
     }

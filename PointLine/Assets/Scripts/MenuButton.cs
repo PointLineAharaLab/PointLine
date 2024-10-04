@@ -105,6 +105,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
+        AppMgr.ModeNeutralOn = true;
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
@@ -118,6 +119,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
+        AppMgr.ModeNeutralOn = false;
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
@@ -515,6 +517,20 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         if(GameStageNumber == 0)
         {
             Debug.Log("Welcome.");
+            AppMgr.GameInitializeFixedPoint(new Vector3(1f, 0f, 0f));//0
+            AppMgr.GameInitializeFixedPoint(new Vector3(0f, 1f, 0f));//1
+            AppMgr.GameInitializeFixedPoint(new Vector3(-0.5f, -0.5f, 0f));//2
+            AppMgr.GameInitializeLine(0, 1);
+            AppMgr.GameInitializeLine(1, 2);
+            AppMgr.GameInitializeLine(0, 2);
+            AppMgr.ExecuteAllModules();
+            AppMgr.GameMenuItems[MENU.ADD_CIRCLE]=1;
+            DestroyGameSelectMenu();
+            CreateGameMenu();
+            AppMgr.Mode = 0;
+            AppMgr.ModeStep = 0;
+            AppMgr.MenuOn = false;
+
         }
     }
 #endregion

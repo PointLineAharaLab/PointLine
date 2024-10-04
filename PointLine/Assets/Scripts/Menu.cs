@@ -226,8 +226,9 @@ public class Menu : MonoBehaviour
         //ガイドボタンの表示
         if (AppMgr.GameOn)
         {
-            //AppMgr.DrawOn = false;
-            CreateGameMenu();
+            AppMgr.DrawOn = false;
+            AppMgr.ModeNeutralOn = true;
+            CreateGameSelectMenu();
             //CreateMenuOffUI();
         }
         else
@@ -627,65 +628,89 @@ public class Menu : MonoBehaviour
     public void CreateMenuOffUI()
     {
         CreateMenuOnButton();
-        if (AppMgr.GameOn)
-        {
-            if (AppMgr.GameMenuItems != null)
-            {
-                for (int i = 0; i < AppMgr.GameMenuItems.Count; i++)
-                {
-                    if (AppMgr.GameMenuItems[i] == MENU.ADD_CIRCLE)
-                    {
-                        CreateAddCircleButton(0, i+1);
-                    }
-                }
-            }
-        }
     }
 
     public void CreateGameMenu()
     {
-        CreateGameSelectButton(0,1);
+        if (AppMgr.GameOn)
+        {
+            int count = 1;
+            if (AppMgr.GameMenuItems[MENU.ADD_CIRCLE] > 0 )
+            {
+                CreateAddCircleButton(0, count++);
+            }
+        }
+    }
+    public void DestoryGameMenu()
+    {
+        for (int i = 0; i < AppMgr.GameMenuItems.Length; i++) AppMgr.GameMenuItems[i] = 0;
+        GameObject[] go = MonoBehaviour.FindObjectsOfType<GameObject>();
+        for (int i = 0; i < go.Length; i++)
+        {
+            if (go[i].name == "ButtonAddCircle(Clone)")
+            {
+                Destroy(go[i]);
+            }
+        }
+    }
+
+    public void CreateGameSelectMenu()
+    {
+        CreateGameSelectButton(1, 1);
+    }
+
+    public void DestroyGameSelectMenu()
+    {
+        GameObject[] go = MonoBehaviour.FindObjectsOfType<GameObject>();
+        for (int i = 0; i < go.Length; i++)
+        {
+            if (go[i].name == "ButtonGameSelect1(Clone)"
+                )
+            {
+                Destroy(go[i]);
+            }
+        }
     }
     #endregion
 
     #region メニューの各ボタンの生成
-    public void CreateMenuOnButton()
+    public void CreateMenuOnButton(int cx = 0, int cy = 0)
     {
         // MenuOn button
 
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonMenuOn");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f, -75f, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateMenuOffButton()
+    public void CreateMenuOffButton(int cx=0, int cy=0)
     {
         // MenuOff button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonMenuOff");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f, -75f, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateAddPointButton()
+    public void CreateAddPointButton(int cx = 0, int cy = 1)
     {
         // AddPoint button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAddPoint");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f, -75f-150f, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateAddMidPointButton()
+    public void CreateAddMidPointButton(int cx = 1, int cy = 1)
     {
         // AddMidpoint button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAddMidPoint");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f, -75f - 150f, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
-    public void CreateAddLineButton()
+    public void CreateAddLineButton(int cx = 2, int cy = 1)
     {
         // AddLine button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAddLine");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
     public void CreateAddCircleButton(int cx=3, int cy=1)
@@ -696,215 +721,215 @@ public class Menu : MonoBehaviour
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreatePointOnPointButton()
+    public void CreatePointOnPointButton(int cx = 0, int cy = 2)
     {
         // PointToPoint button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonPointOnPoint");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 0, -75f - 150f * 2, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreatePointOnLineButton()
+    public void CreatePointOnLineButton(int cx = 1, int cy = 2)
     {
         // PointToPoint button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonPointOnLine");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 2, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreatePointOnCircleButton()
+    public void CreatePointOnCircleButton(int cx = 2, int cy = 2)
     {
         // PointToPoint button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonPointOnCircle");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 2, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateCrossingButton()// CreatePointOnCircleButton()の後に挿入
+    public void CreateCrossingButton(int cx = 3, int cy = 2)// CreatePointOnCircleButton()の後に挿入
     {
         // Intersection button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonCrossingLL");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 2, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateIsomButton()
+    public void CreateIsomButton(int cx = 0, int cy = 3)
     {
         // isom button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonIsom");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 0, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateRatioLengthButton()
+    public void CreateRatioLengthButton(int cx = 1, int cy = 3)
     {
         // ratio_length button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonRatioLength");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 3, 0f), Quaternion.identity);// ここは、座標計算をしなくて済むように改造。
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);// ここは、座標計算をしなくて済むように改造。
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     } 
 
-    public void CreatePerpButton()
+    public void CreatePerpButton(int cx = 2, int cy = 3)
     {
         // perp button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonPerp");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateParaButton()
+    public void CreateParaButton(int cx = 3, int cy = 3)
     {
         // para button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonPara");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateHoriButton()
+    public void CreateHoriButton(int cx = 4, int cy = 3)
     {
         // para button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonHori");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 4, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateAngleButton()
+    public void CreateAngleButton(int cx = 5, int cy = 3)
     {
         // angle button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAngle");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 5, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateBisectorButton()
+    public void CreateBisectorButton(int cx = 6, int cy = 3)
     {
         // bisector button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonBisector");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 6, -75f - 150f * 3, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateTangentL2CButton()
+    public void CreateTangentL2CButton(int cx = 0, int cy = 4)
     {
         // TangentL2C button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonTangentL2C");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 0, -75f - 150f * 4, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateTangentC2CButton()
+    public void CreateTangentC2CButton(int cx = 1, int cy = 4)
     {
         // TangentC2C button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonTangentC2C");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 4, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateTriangleButton()
+    public void CreateTriangleButton(int cx = 2, int cy = 4)
     {
         // Triangle button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonTriangle");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 4, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
-    public void CreateQuadrilateralButton()
+    public void CreateQuadrilateralButton(int cx = 3, int cy = 4)
     {
         // Quadrilateral button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonQuadrilateral");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 4, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
-    public void CreateFixPointButton()
+    public void CreateFixPointButton(int cx = 0, int cy = 5)
     {
         // FixPoint button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonFixPoint");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 0, -75f - 150f * 5, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateAddLocusButton()
+    public void CreateAddLocusButton(int cx = 1, int cy = 5)
     {
         // AddLine button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAddLocus");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 5, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateDeletePointButton()
+    public void CreateDeletePointButton(int cx = 2, int cy = 5)
     {
         // DeletePoint button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonDeletePoint");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 5, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateDeleteAllButton()
+    public void CreateDeleteAllButton(int cx = 3, int cy = 5)
     {
         // DeleteAll button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonDeleteAll");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 5, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateUndoButton()
+    public void CreateUndoButton(int cx = 0, int cy = 6)
     {
         // Undo button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonUndo");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 0, -75f - 150f * 6, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateRedoButton()
+    public void CreateRedoButton(int cx = 1, int cy = 6)
     {
         // Redo button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonRedo");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 6, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateShowLogsButton()
+    public void CreateShowLogsButton(int cx = 2, int cy = 6)
     {
         // Redo button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonShowLogs");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 6, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateSaveButton()
+    public void CreateSaveButton(int cx = 0, int cy = 7)
     {
 #if UNITY_STANDALONE
         // Save button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonSave");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 0, -75f - 150f * 7, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
 #endif
     }
 
-    public void CreateOpenButton()
+    public void CreateOpenButton(int cx = 1, int cy = 7)
     {
 #if UNITY_STANDALONE
         // Open button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonOpen");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 1, -75f - 150f * 7, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
 #endif
     }
 
-        public void CreateSaveToTeXButton()
+        public void CreateSaveToTeXButton(int cx = 2, int cy = 7)
     {
 #if UNITY_STANDALONE
         // SaveToTeX button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonSave2TeX");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f * 7, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
 #endif
     }
 
-    public void CreateQuitButton()
+    public void CreateQuitButton(int cx = 3, int cy = 7)
     {
         // Quit button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonQuit");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f * 7, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy , 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
     #endregion
@@ -913,10 +938,9 @@ public class Menu : MonoBehaviour
     public void CreateGameSelectButton(int cx=0, int cy=1)
     {
         // GameSelect button
-        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonMenuOn");
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonGameSelect1");
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f *cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
-        Debug.Log("OK2");
     }
 
 
