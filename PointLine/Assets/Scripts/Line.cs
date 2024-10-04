@@ -70,13 +70,13 @@ public class Line : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        lr = GetComponent<LineRenderer>();
+        //lr = GetComponent<LineRenderer>();
 
-        Vec0 = new Vector3(0, 0, 0);
-        Vec1 = new Vector3(0, 0, 0);
+        //Vec0 = new Vector3(0, 0, 0);
+        //Vec1 = new Vector3(0, 0, 0);
 
-        lr.SetPosition(0, Vec0);
-        lr.SetPosition(1, Vec1);
+        //lr.SetPosition(0, Vec0);
+        //lr.SetPosition(1, Vec1);
         Active = true;
         Isometry = -1;
     }
@@ -165,11 +165,10 @@ public class Line : MonoBehaviour {
                 vec1.z = 0.0f;
             }
         }
-        Debug.Log(Vec0);
-        Debug.Log(Vec1);
         rd.SetPosition(0, Vec0);
         rd.SetPosition(1, Vec1);
-        Debug.Log(rd.GetPosition(0));
+        //Debug.Log(rd.GetPosition(0));
+        //Debug.Log(rd.GetPosition(1));
         if (Selected)
         {
             if (Isometry >= 0)
@@ -186,8 +185,9 @@ public class Line : MonoBehaviour {
             else
                 rd.material.color = StandardColor;
         }
-        if (!FixLength)
+        if (!FixLength) { 
             edgeLength = (Vec1 - Vec0).magnitude;
+        }
     }
 
     public static void AllLinesUnselected()

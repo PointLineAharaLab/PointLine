@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -10,12 +11,15 @@ public class GameManager : MonoBehaviour
     public Module[] MasterModules = null;
     public Point[] MasterPoints = null;
     public GameObject masterObjects;//= GameObject.Find("MasterObjects");
+    public GameObject masterMenu;
+    
 
     // Start is called before the first frame update
     void Start()
     {
         if (AppMgr.GameOn)
         {
+            AppMgr.GameMenuItems  = new List<int>();
             InitilizeStage(StageNumber);
         }
     }
@@ -34,29 +38,49 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void InitilizeStage(int stageNmuber)
+
+    private Point InitializeFixedPoint(Vector3 v)
     {
-        if (stageNmuber == 0) { 
-            Point newPoint1 = Util.AddPoint(new Vector3(1f, 0f, 0f));
-            Point newPoint2 = Util.AddPoint(new Vector3(0f, 1f, 0f));
-            Point newPoint3 = Util.AddPoint(new Vector3(-0.5f, -0.5f, 0f));
-            newPoint1.Fixed = true;
-            newPoint2.Fixed = true;
-            newPoint3.Fixed = true;
-            newPoint1.gameObject.transform.SetParent(masterObjects.transform, false);
-            newPoint2.gameObject.transform.SetParent(masterObjects.transform, false);
-            newPoint3.gameObject.transform.SetParent(masterObjects.transform, false);
-            Line newLine1 = Util.AddLine(0, 1);
-            newLine1.gameObject.transform.SetParent(masterObjects.transform, false);
-            newLine1.GetPoint1OfLine();
-            newLine1.GetPoint2OfLine();
-            newLine1.LineUpdate();
-            newLine1.Isometry = -1;
-        }
-        AppMgr.ExecuteAllModules();
+        Point newPoint = Util.AddPoint(v);
+        newPoint.Fixed = true;
+        newPoint.gameObject.transform.SetParent(masterObjects.transform, false);
+        AppMgr.pts = FindObjectsOfType<Point>();
+        return newPoint;
     }
 
+    private Line InitializeLine(int p1, int p2)
+    {
+        Line newLine = Util.AddLine(p1, p2);
+        newLine.gameObject.transform.SetParent(masterObjects.transform, false);
+        newLine.GetPoint1OfLine();
+        newLine.GetPoint2OfLine();
+        newLine.LineUpdate();
+        newLine.Isometry = -1;
+        AppMgr.lns = MonoBehaviour.FindObjectsOfType<Line>();
+        return newLine;
+    }
+    private void InitilizeStage(int stageNmuber)
+    {
+        if (stageNmuber == 0) {
+            InitializeFixedPoint(new Vector3(1f, 0f, 0f));//0
+            InitializeFixedPoint(new Vector3(0f, 1f, 0f));//1
+            InitializeFixedPoint(new Vector3(-0.5f, -0.5f, 0f));//2
+            InitializeLine(0, 1);
+            InitializeLine(1, 2);
+            InitializeLine(0, 2);
+            AppMgr.ExecuteAllModules();
+            AppMgr.GameMenuItems.Add(MENU.ADD_CIRCLE);
+        }
+    }
 
+}
+
+
+class MenuItem
+{
+    int MenuId;
+    int Remaining;
+    public MenuItem() { }
 
 }
 

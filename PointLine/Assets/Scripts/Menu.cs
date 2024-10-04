@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEditor;
+using JetBrains.Annotations;
 
 public class MENU
 {
@@ -150,6 +152,8 @@ public class Menu : MonoBehaviour
 
     static float MenuOnTextWidth;
     static Rect GuideTextRect;
+
+    public GameObject GameItems;
 
     #region Start
     //  initialization
@@ -612,6 +616,19 @@ public class Menu : MonoBehaviour
     public void CreateMenuOffUI()
     {
         CreateMenuOnButton();
+        if (AppMgr.GameOn)
+        {
+            if (AppMgr.GameMenuItems != null)
+            {
+                for (int i = 0; i < AppMgr.GameMenuItems.Count; i++)
+                {
+                    if (AppMgr.GameMenuItems[i] == MENU.ADD_CIRCLE)
+                    {
+                        CreateAddCircleButton(0, i+1);
+                    }
+                }
+            }
+        }
     }
     #endregion
 
@@ -655,11 +672,11 @@ public class Menu : MonoBehaviour
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 2, -75f - 150f, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
-    public void CreateAddCircleButton()
+    public void CreateAddCircleButton(int cx=3, int cy=1)
     {
         // AddCircle button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAddCircle");
-        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * 3, -75f - 150f, 0f), Quaternion.identity);
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 

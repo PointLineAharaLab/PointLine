@@ -215,6 +215,8 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     private List<int> MouseOnPoints(Vector3 v)
     {
         List<int> ret = new List<int>();
+        pts=MonoBehaviour.FindObjectsOfType<Point>();
+        Debug.Log(pts[0]);
         if (pts == null) return ret;
         for (int i = 0; i < pts.Length; i++)
         {
@@ -231,6 +233,7 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
     private List<int> MouseOnLines(Vector3 v)
     {
         List<int> ret = new List<int>();
+
         if (lns == null) return ret;
         for (int i = 0; i < lns.Length; i++)
         {
@@ -974,6 +977,7 @@ public void OnMyMouseDown()
         MouseDownVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         MouseDownVec.z = 0.0f;
         DraggedPointId = MousePointPosition();
+        Debug.Log(DraggedPointId);
         DraggedObjectId = getObjectFromMousePosition(false);
         //print(DraggedPointId);
         DraggedGameLogStartTop = Util.StartTop;
