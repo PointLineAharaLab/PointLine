@@ -52,7 +52,7 @@ public class AppMgr : MonoBehaviour {
     /// Game mode
     /// true: On, false: Off
     /// </summary>
-    public static bool GameOn = true;
+    public static bool GameOn = false;
     public static List<int> GameMenuItems = null;
 
     public static Point[] pts = null;

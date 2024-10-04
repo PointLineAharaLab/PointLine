@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEditor;
 using JetBrains.Annotations;
+using System.Diagnostics.Eventing.Reader;
 
 public class MENU
 {
@@ -223,7 +224,17 @@ public class Menu : MonoBehaviour
         canvas = FindObjectOfType<Canvas>();
 
         //ガイドボタンの表示
-        CreateMenuOffUI();
+        if (AppMgr.GameOn)
+        {
+            //AppMgr.DrawOn = false;
+            //CreateGameMenu();
+            CreateMenuOffUI();
+        }
+        else
+        {
+　          CreateMenuOffUI();
+        }
+
     }
     #endregion
 
@@ -630,6 +641,11 @@ public class Menu : MonoBehaviour
             }
         }
     }
+
+    public void CreateGameMenu()
+    {
+        CreateGameSelectButton(0,1);
+    }
     #endregion
 
     #region メニューの各ボタンの生成
@@ -892,5 +908,16 @@ public class Menu : MonoBehaviour
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
     #endregion
+
+
+    public void CreateGameSelectButton(int cx=0, int cy=1)
+    {
+        // GameSelect button
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonMenuOn");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f *cy, 0f), Quaternion.identity);
+        MenuButton.Go.transform.SetParent(canvas.transform, false);
+        Debug.Log("OK2");
+    }
+
 
 }

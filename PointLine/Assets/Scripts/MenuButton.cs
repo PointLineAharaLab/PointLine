@@ -16,6 +16,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
     private string[] MenuText;
     public string PrefabName;
     public GUIStyle menuHoverStyle;
+    public int GameStageNumber = 0;
 
     #region Start
     // Use this for initialization
@@ -507,6 +508,14 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
 #endif
         return;
 
+    }
+
+    public void OnClickGameSelect()
+    {
+        if(GameStageNumber == 0)
+        {
+            Debug.Log("Welcome.");
+        }
     }
 #endregion
 

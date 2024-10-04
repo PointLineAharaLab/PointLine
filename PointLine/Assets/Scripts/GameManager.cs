@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
         if (AppMgr.GameOn)
         {
             AppMgr.GameMenuItems  = new List<int>();
-            InitilizeStage(StageNumber);
+            //InitilizeStage(StageNumber);
         }
     }
 
