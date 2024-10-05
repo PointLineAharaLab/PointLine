@@ -1188,8 +1188,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e28d34cd9637614f844b63a5150fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameMasterObjects: {fileID: 0}
-  GameMasterMenu: {fileID: 0}
   LogFolder: {fileID: 687776870}
   DraggedObjectId: 0
   DraggedPointId: 0
@@ -2021,8 +2019,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98315f0d8bf2ffe45804606701ec9a2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameMasterObjects: {fileID: 1509901702}
-  GameMasterMenu: {fileID: 646124519}
   LogFolder: {fileID: 687776870}
 --- !u!4 &1412326162
 Transform:

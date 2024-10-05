@@ -10,9 +10,11 @@ using UnityEngine.EventSystems;
 using UnityEditor;
 using JetBrains.Annotations;
 using System.Diagnostics.Eventing.Reader;
+using Newtonsoft.Json.Serialization;
 
 public class MENU
 {
+    public const int NULL = -1;
     public const int ADD_POINT = 0;
     public const int ADD_MIDPOINT = 12;
     public const int ADD_LINE = 1;
@@ -96,6 +98,7 @@ public class Menu : MonoBehaviour
     #endregion
 
     #region ヘッダーメッセージ一覧
+    private string TextNULL = "";
     private string TextADD_POINT0 = "メニュー ";
     private string TextADD_POINT1 = " クリックすれば点を追加できます． ";
     private string TextADD_MIDPOINT0 = " 中点を追加: 頂点を選択.";
@@ -227,9 +230,8 @@ public class Menu : MonoBehaviour
         if (AppMgr.GameOn)
         {
             AppMgr.DrawOn = false;
-            AppMgr.ModeNeutralOn = true;
+            AppMgr.Mode = MENU.NULL;
             CreateGameSelectMenu();
-            //CreateMenuOffUI();
         }
         else
         {
@@ -281,9 +283,10 @@ public class Menu : MonoBehaviour
         //ガイドテキストはMyStyleに従う。
         switch (AppMgr.Mode)
         {
+            case MENU.NULL:
+                GUILabel(TextNULL); break;
             case MENU.ADD_POINT:
-                GUILabel(TextADD_POINT1);
-                break;
+                GUILabel(TextADD_POINT1); break;
             case MENU.ADD_LINE:// draw a line
                 if (AppMgr.ModeStep == 0)
                 {
@@ -627,7 +630,23 @@ public class Menu : MonoBehaviour
     }
     public void CreateMenuOffUI()
     {
-        CreateMenuOnButton();
+        if (AppMgr.GameOn)
+        {
+            if (AppMgr.Mode == MENU.NULL)
+            {
+                AppMgr.DrawOn = false;
+                CreateGameSelectMenu();
+            }
+            else
+            {
+                //AppMgr.DrawOn = true;
+                CreateGameMenu();
+            }
+        }
+        else
+        {
+            CreateMenuOffUI();
+        }
     }
 
     public void CreateGameMenu()
@@ -637,7 +656,8 @@ public class Menu : MonoBehaviour
             int count = 1;
             if (AppMgr.GameMenuItems[MENU.ADD_CIRCLE] > 0 )
             {
-                CreateAddCircleButton(0, count++);
+                GameObject g = CreateAddCircleButton(0, count);
+                CreateNumberNextButton(g, AppMgr.GameMenuItems[MENU.ADD_CIRCLE]);
             }
         }
     }
@@ -683,7 +703,7 @@ public class Menu : MonoBehaviour
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
 
-    public void CreateMenuOffButton(int cx=0, int cy=0)
+    public void CreateMenuOffButton(int cx = 0, int cy = 0)
     {
         // MenuOff button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonMenuOff");
@@ -713,12 +733,13 @@ public class Menu : MonoBehaviour
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
     }
-    public void CreateAddCircleButton(int cx=3, int cy=1)
+    public GameObject CreateAddCircleButton(int cx=3, int cy=1)
     {
         // AddCircle button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonAddCircle");
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f * cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
+        return MenuButton.Go;
     }
 
     public void CreatePointOnPointButton(int cx = 0, int cy = 2)
@@ -935,13 +956,22 @@ public class Menu : MonoBehaviour
     #endregion
 
 
-    public void CreateGameSelectButton(int cx=0, int cy=1)
+    public GameObject CreateGameSelectButton(int cx=0, int cy=1)
     {
         // GameSelect button
         GameObject Prefab = Resources.Load<GameObject>("Prefabs/ButtonGameSelect1");
         MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(100f + 150f * cx, -75f - 150f *cy, 0f), Quaternion.identity);
         MenuButton.Go.transform.SetParent(canvas.transform, false);
+        return MenuButton.Go;
     }
 
-
+    public void CreateNumberNextButton(GameObject go, int remaining)
+    {
+        GameObject Prefab = Resources.Load<GameObject>("Prefabs/RemainingItems");
+        MenuButton.Go = MenuButton.Instantiate<GameObject>(Prefab, new Vector3(-117f,-1220f, 0f), Quaternion.identity);
+        MenuButton.Go.transform.localScale = new Vector3(0.22f, 0.22f, 1);
+        MenuButton.Go.transform.SetParent(go.transform, false);
+        MenuButton.Go.GetComponent<TextMesh>().text = remaining.ToString();
+        Debug.Log("CreateNumberNextButton : "+remaining);
+    }
 }

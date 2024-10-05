@@ -4,4 +4,5 @@ Point,-0.5,-0.5,0,2,True,True,C,True
 Line,0,1,1000,True,False,False,0.1,-1,False,,1.414214,L1
 Line,1,2,1001,True,False,False,0.1,-1,False,,1.581139,L2
 Line,0,2,1002,True,False,False,0.1,-1,False,,1.581139,L3
-Circle,0,5.015571,2000,True,0,0.1,False,C1
+Point,-3.229329,0.3198129,0,3,False,True,D,True
+Circle,3,1.51527,2000,True,0,0.1,False,C1

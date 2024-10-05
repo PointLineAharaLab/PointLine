@@ -105,7 +105,10 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
-        AppMgr.ModeNeutralOn = true;
+        if (AppMgr.GameOn)
+        {
+            AppMgr.Mode = MENU.NULL;
+        }
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
@@ -119,7 +122,10 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
-        AppMgr.ModeNeutralOn = false;
+        if (AppMgr.GameOn)
+        {
+            AppMgr.Mode = MENU.NULL;
+        }
         DestroyMenuOnUI();
         CreateMenuOffUI();
         AppMgr.DrawOn = true;
@@ -394,7 +400,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         Debug.Log("clear all  (mouse)");
         AppMgr.Mode = MENU.DELETE_ALL;
         ClickOnPanel.DeleteAll();
-        AppMgr.Mode = 0;
+        AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
         DestroyMenuOnUI();
@@ -406,7 +412,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         Debug.Log("undo (mouse)");
         AppMgr.Mode = MENU.UNDO;
         Util.Undo();
-        AppMgr.Mode = 0;
+        AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
         DestroyMenuOnUI();
@@ -419,8 +425,8 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         Debug.Log("redo  (mouse)");
         AppMgr.Mode = MENU.REDO;
         Util.Redo();
-        AppMgr.Mode = 0;
-        AppMgr.ModeStep = 0;
+        AppMgr.Mode = MENU.ADD_POINT;
+        AppMgr.ModeStep = MENU.ADD_POINT;
         AppMgr.MenuOn = false;
         DestroyMenuOnUI();
         CreateMenuOffUI();
@@ -430,7 +436,6 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
     {
         Debug.Log("show/hide logs  (mouse)");
         AppMgr.Mode = MENU.ADD_POINT;
-        AppMgr.Mode = 0;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
         Log[] Logs = MonoBehaviour.FindObjectsOfType<Log>();
@@ -479,7 +484,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         CreateMenuOffUI();
         Util.OpenLogSelectFile();
         //SceneManager.LoadScene("OpenDialog");
-        AppMgr.Mode = 0;
+        AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
         //AppMgr.DrawOn = true;
@@ -492,7 +497,7 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
         DestroyMenuOnUI();
         CreateMenuOffUI();
         Util.SaveTeXFileSelectFile();
-        AppMgr.Mode = 0;
+        AppMgr.Mode = MENU.ADD_POINT;
         AppMgr.ModeStep = 0;
         AppMgr.MenuOn = false;
         //AppMgr.DrawOn = true;
@@ -524,11 +529,12 @@ public class MenuButton : Menu, IPointerEnterHandler, IPointerExitHandler
             AppMgr.GameInitializeLine(1, 2);
             AppMgr.GameInitializeLine(0, 2);
             AppMgr.ExecuteAllModules();
-            AppMgr.GameMenuItems[MENU.ADD_CIRCLE]=1;
+            AppMgr.GameMenuItems[MENU.ADD_CIRCLE]=2;
             DestroyGameSelectMenu();
             CreateGameMenu();
-            AppMgr.Mode = 0;
+            AppMgr.Mode = MENU.NULL;
             AppMgr.ModeStep = 0;
+            AppMgr.DrawOn = true;
             AppMgr.MenuOn = false;
 
         }

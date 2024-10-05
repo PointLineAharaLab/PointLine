@@ -199,14 +199,6 @@ public class ClickOnPanel : AppMgr //MonoBehaviour
         Util.SetIsometry();
     }
 
-    public static void SetId(int PId, int LId, int CId, int MId)
-    {/// 近い将来、いらなくなる
-        //PointId = PId;
-        //LineId = LId;
-        //CircleId = CId;
-        //ModuleId = MId;
-    }
-
     private float Hypot(float x, float y)
     {
         return Mathf.Sqrt(x * x + y * y);
@@ -1113,8 +1105,9 @@ public void OnMyMouseDown()
             Point.MakeOnePointSelected(MOP);//クリックしたポイントのみを選択
             FirstClickId = MOP;
             FirstClickVec = MouseUpVec;
+            Debug.Log("AddCircle : Modestep0 ");
             ModeStep = 1;
-            return CircleId;
+            return FirstClickId;
         }
         else if (ModeStep == 1)
         {// モード４ステップ１ならば、点 MouseUpVec を使って円を描く。
@@ -1124,13 +1117,13 @@ public void OnMyMouseDown()
             // 新しい点をselected，そのほかの点は選択をはずす。
             Circle.MakeOneCircleSelected(CircleId);
             Point.AllPointsUnselected();
-            //cis = FindObjectsOfType<Circle>();
             Mode = MENU.ADD_CIRCLE;
             ModeStep = 0;
             if (AppMgr.GameOn)
             {
                 AppMgr.GameMenuItems[MENU.ADD_CIRCLE]--;
-                ModeNeutralOn = true;
+                Debug.Log("AddCircle : Modestep1 : " + AppMgr.GameMenuItems[MENU.ADD_CIRCLE]);
+                Mode = MENU.NULL;
             }
             return ci.Id;
         }

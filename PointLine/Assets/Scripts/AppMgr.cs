@@ -38,7 +38,6 @@ public class AppMgr : MonoBehaviour {
 
     public static int Mode = 0;
     public static int ModeStep = 0;
-    public static bool ModeNeutralOn = false;
 
     public static bool DrawOn = true;
     public static bool MenuOn = false;
